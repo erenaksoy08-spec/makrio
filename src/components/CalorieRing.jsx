@@ -100,6 +100,7 @@ export default function CalorieRing({ consumed, goal, color = '#3DA5FF', shape =
         </svg>
       ) : (
         <svg width={size} height={size} className="-rotate-90">
+          {/* boş halka — gömme kanal hissi veren rafine track */}
           <circle
             cx={size / 2}
             cy={size / 2}
@@ -107,7 +108,27 @@ export default function CalorieRing({ consumed, goal, color = '#3DA5FF', shape =
             fill="none"
             stroke="var(--color-track)"
             strokeWidth={stroke}
+            opacity="0.5"
           />
+          {/* dış kenar ince gölge çizgisi */}
+          <circle
+            cx={size / 2}
+            cy={size / 2}
+            r={radius + stroke / 2 - 0.75}
+            fill="none"
+            stroke="rgba(0,0,0,0.28)"
+            strokeWidth="1.5"
+          />
+          {/* iç kenar ince ışık çizgisi */}
+          <circle
+            cx={size / 2}
+            cy={size / 2}
+            r={radius - stroke / 2 + 0.75}
+            fill="none"
+            stroke="rgba(255,255,255,0.06)"
+            strokeWidth="1.5"
+          />
+          {/* dolum */}
           <circle
             cx={size / 2}
             cy={size / 2}
