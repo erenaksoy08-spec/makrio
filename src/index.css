@@ -1,0 +1,838 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg: #0a0a0a;
+  --color-surface: #141414;
+  --color-border: #262626;
+  --color-text: #f5f5f5;
+  --color-text-muted: #a3a3a3;
+  --color-accent: #ffffff;
+  --color-track: #2a2a2a;
+}
+
+:root {
+  color-scheme: dark;
+  --icon-muted: rgba(255, 255, 255, 0.55);
+}
+
+[data-theme='light'],
+[data-theme='pixel'],
+[data-theme='pixel-color'] {
+  --icon-muted: rgba(76, 74, 71, 0.55);
+}
+
+[data-theme='light'] {
+  color-scheme: light;
+  --color-bg: #f6f5f3;
+  --color-surface: #ffffff;
+  --color-border: #e6e3de;
+  --color-text: #1c1917;
+  --color-text-muted: #78716c;
+  --color-accent: #1c1917;
+  --color-track: #e2ded7;
+}
+
+/* ──────────────────────────────────────────────────────────────
+   Piksel Tema (10 gün streak ödülü) — 8-bit, pastel, sempatik.
+   Referans: piksel beyin görseli — krem zemin, pembe/mavi paleti,
+   Pixelify Sans piksel fontu, köşeleri kırpılmış "chunky" kartlar.
+   ────────────────────────────────────────────────────────────── */
+@font-face {
+  font-family: 'Pixelify Sans';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('/fonts/pixelify-sans-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329,
+    U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: 'Pixelify Sans';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('/fonts/pixelify-sans-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* Silkscreen'in '4' glifi üstü dolu olduğu için okunmuyor — sadece '4' Pixelify'dan gelsin */
+@font-face {
+  font-family: 'Pixel Digit Fix';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('/fonts/pixelify-sans-latin.woff2') format('woff2');
+  unicode-range: U+0034;
+}
+
+/* Silkscreen — rakamlar için: piksel tarzını koruyan ama çok daha okunaklı arcade font */
+@font-face {
+  font-family: 'Silkscreen';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/silkscreen-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Silkscreen';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/silkscreen-latin-700.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* Aydınlık varyant — krem ama göz almayan, hafif kırık zemin */
+[data-theme='pixel'] {
+  color-scheme: light;
+  --color-bg: #e9e4d8;
+  --color-surface: #f6f2e9;
+  --color-border: #d5cebe;
+  --color-text: #4c4a47;
+  --color-text-muted: #98917f;
+  --color-accent: #5fa8e8;
+  --color-track: #ddd6c7;
+}
+
+/* Koyu varyant — sıcak retro gece */
+[data-theme='pixel-dark'] {
+  color-scheme: dark;
+  --color-bg: #17161c;
+  --color-surface: #201f27;
+  --color-border: #343240;
+  --color-text: #ecebe6;
+  --color-text-muted: #9c99a3;
+  --color-accent: #7db8f0;
+  --color-track: #2c2a34;
+}
+
+/* Renkli varyant — yumuşak retro nane yeşili (Game Boy esintisi) */
+[data-theme='pixel-color'] {
+  color-scheme: light;
+  --color-bg: #d8e2c9;
+  --color-surface: #ecf1de;
+  --color-border: #bfcbaa;
+  --color-text: #3e4938;
+  --color-text-muted: #828f76;
+  --color-accent: #4e9d68;
+  --color-track: #cbd6b8;
+}
+
+[data-theme^='pixel'] body {
+  font-family: 'Pixelify Sans', system-ui, sans-serif;
+}
+
+/* Sayılar Silkscreen ile: Pixelify'ın süslü rakamları yerine net arcade rakamlar */
+[data-theme^='pixel'] .tabular-nums,
+[data-theme^='pixel'] svg text {
+  font-family: 'Pixel Digit Fix', 'Silkscreen', 'Pixelify Sans', system-ui, sans-serif;
+  letter-spacing: -0.03em;
+}
+
+/* Koyu temaya göre yazılmış beyaz hairline/cam katmanları açık varyantlarda ılık grafite çevir */
+[data-theme='pixel'] [class*='border-white'],
+[data-theme='pixel-color'] [class*='border-white'] {
+  border-color: rgba(93, 82, 63, 0.18);
+}
+
+[data-theme='pixel'] [class*='bg-white/'],
+[data-theme='pixel-color'] [class*='bg-white/'] {
+  background-color: rgba(93, 82, 63, 0.07);
+}
+
+/* Beyaz premium CTA'lar ve dolgular → varyantın piksel accent'i */
+[data-theme^='pixel'] .bg-white {
+  background-color: var(--color-accent);
+}
+
+[data-theme^='pixel'] .bg-white\/90 {
+  background-color: var(--color-accent);
+}
+
+[data-theme='pixel'] .text-black,
+[data-theme='pixel-color'] .text-black {
+  color: #ffffff;
+}
+
+/* Arama vurgusu vb. beyaz metinler → accent (görseldeki "STILL" gibi) */
+[data-theme='pixel'] .text-white,
+[data-theme='pixel-color'] .text-white {
+  color: var(--color-accent);
+}
+
+[data-theme^='pixel'] .accent-white {
+  accent-color: var(--color-accent);
+}
+
+/* Piksel köşeler: yuvarlaklığı kırp, chunky 8-bit hissi ver */
+[data-theme^='pixel'] .rounded-3xl {
+  border-radius: 8px;
+}
+
+[data-theme^='pixel'] .rounded-2xl {
+  border-radius: 6px;
+}
+
+[data-theme^='pixel'] .rounded-xl {
+  border-radius: 5px;
+}
+
+[data-theme^='pixel'] .rounded-lg {
+  border-radius: 4px;
+}
+
+/* Skeleton'ı açık zeminlere uyarla */
+[data-theme='pixel'] .skeleton {
+  background: linear-gradient(90deg, #ddd7c8 25%, #eae5d8 50%, #ddd7c8 75%);
+  background-size: 800px 100%;
+}
+
+[data-theme='pixel-color'] .skeleton {
+  background: linear-gradient(90deg, #cdd8ba 25%, #dfe8cf 50%, #cdd8ba 75%);
+  background-size: 800px 100%;
+}
+
+/* Piksel oyun hissi: bar/geçiş easing'leri kademeli (steps) çalışsın */
+[data-theme^='pixel'] .btn-primary,
+[data-theme^='pixel'] .btn-icon,
+[data-theme^='pixel'] .btn-chip,
+[data-theme^='pixel'] .btn-nav {
+  transition-timing-function: steps(3, end);
+}
+
+/* Piksel beyin — seremonide hafif 8-bit zıplama */
+@keyframes pixel-bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+.pixel-bounce {
+  animation: pixel-bounce 0.9s steps(2, end) infinite;
+}
+
+/* Bar dolumları: piksel temada kare köşe + boncuk deseni + kademeli dolum */
+[data-theme^='pixel'] .bar-fill {
+  border-radius: 0 !important;
+  background-image: repeating-linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.28) 0 3px,
+    transparent 3px 6px
+  );
+  transition-timing-function: steps(7, end) !important;
+}
+
+[data-theme^='pixel'] .bar-track {
+  border-radius: 0 !important;
+}
+
+/* Yuvarlak ikon butonları (+ / −) piksel temada kare-vari olsun */
+[data-theme^='pixel'] .btn-icon {
+  border-radius: 6px !important;
+}
+
+/* Aktifleşen piksel ikon: tek seferlik 8-bit pop */
+@keyframes pixel-pop {
+  0% {
+    transform: scale(0.55);
+  }
+  55% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.pixel-pop {
+  animation: pixel-pop 0.32s steps(3, end);
+}
+
+/* Piksel alev: kesik kesik titreme (8-bit yanma hissi) */
+@keyframes pixel-flicker {
+  0%,
+  100% {
+    transform: scaleY(1);
+    filter: brightness(1);
+  }
+  50% {
+    transform: scaleY(1.09);
+    filter: brightness(1.18);
+  }
+}
+
+.pixel-flicker {
+  animation: pixel-flicker 0.7s steps(2, end) infinite;
+  transform-origin: bottom;
+  display: inline-flex;
+}
+
+/* Piksel kabarcık: suyun içinde kesik kesik yükselip kaybolur */
+@keyframes pixel-bubble {
+  0% {
+    transform: translateY(0);
+    opacity: 0.9;
+  }
+  100% {
+    transform: translateY(-7px);
+    opacity: 0;
+  }
+}
+
+.pixel-bubble {
+  animation: pixel-bubble 1.6s steps(5, end) infinite;
+}
+
+/* Piksel geri butonu — retro sert gölge, basınca "çöker" */
+.pixel-back {
+  box-shadow: 2px 2px 0 var(--color-border);
+}
+
+.pixel-back:active {
+  transform: translate(2px, 2px);
+  box-shadow: 0 0 0 var(--color-border);
+}
+
+/* Gramaj kaydırıcısı — piksel temada thumb bir piksel elma, bar kalın ve kare */
+[data-theme^='pixel'] .gram-slider {
+  height: 10px;
+  border-radius: 2px;
+}
+
+[data-theme^='pixel'] .gram-slider::-webkit-slider-thumb {
+  appearance: none;
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 9 9' shape-rendering='crispEdges'%3E%3Crect x='4' y='0' width='1' height='2' fill='%238c6239'/%3E%3Crect x='5' y='1' width='2' height='1' fill='%236FCF97'/%3E%3Crect x='2' y='2' width='2' height='1' fill='%23e8564b'/%3E%3Crect x='5' y='2' width='2' height='1' fill='%23e8564b'/%3E%3Crect x='1' y='3' width='7' height='3' fill='%23e8564b'/%3E%3Crect x='2' y='3' width='1' height='2' fill='%23ffb3ab'/%3E%3Crect x='2' y='6' width='5' height='1' fill='%23e8564b'/%3E%3Crect x='2' y='7' width='2' height='1' fill='%23c9433a'/%3E%3Crect x='5' y='7' width='2' height='1' fill='%23c9433a'/%3E%3C/svg%3E")
+    center / contain no-repeat;
+  cursor: grab;
+  transition: transform 0.15s steps(2, end);
+}
+
+[data-theme^='pixel'] .gram-slider:active::-webkit-slider-thumb {
+  transform: scale(1.3);
+  cursor: grabbing;
+}
+
+[data-theme^='pixel'] .gram-slider::-moz-range-thumb {
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 9 9' shape-rendering='crispEdges'%3E%3Crect x='4' y='0' width='1' height='2' fill='%238c6239'/%3E%3Crect x='5' y='1' width='2' height='1' fill='%236FCF97'/%3E%3Crect x='2' y='2' width='2' height='1' fill='%23e8564b'/%3E%3Crect x='5' y='2' width='2' height='1' fill='%23e8564b'/%3E%3Crect x='1' y='3' width='7' height='3' fill='%23e8564b'/%3E%3Crect x='2' y='3' width='1' height='2' fill='%23ffb3ab'/%3E%3Crect x='2' y='6' width='5' height='1' fill='%23e8564b'/%3E%3Crect x='2' y='7' width='2' height='1' fill='%23c9433a'/%3E%3Crect x='5' y='7' width='2' height='1' fill='%23c9433a'/%3E%3C/svg%3E")
+    center / contain no-repeat;
+  cursor: grab;
+}
+
+/* ──────────────────────────────────────────────────────────────
+   Demir Çağı — Old School Gym teması (1 gün streak ödülü).
+   Fontlar normal temayla birebir aynı (sistem fontu). Sade antrasit
+   zemin; barlar gerçek bir metalik bench barı gibi (renkler korunur).
+   ────────────────────────────────────────────────────────────── */
+[data-theme='gym'] {
+  color-scheme: dark;
+  --color-bg: #17191c; /* sade antrasit */
+  --color-surface: #22262a; /* döküm demir plaka */
+  --color-border: #3a3f44; /* fırçalanmış metal kenar */
+  --color-text: #eceae4; /* tebeşir beyazı */
+  --color-text-muted: #90949a;
+  --color-accent: #c0392b; /* çiğ demir kırmızısı */
+  --color-track: #2b3035;
+  --icon-muted: rgba(236, 234, 228, 0.55);
+}
+
+/* Zemin: tek renk antrasit, tepeden çok hafif premium ışık — doku yok */
+[data-theme='gym'] body {
+  background-color: #17191c;
+  background-image: radial-gradient(130% 85% at 50% -20%, rgba(255, 255, 255, 0.038), transparent 55%);
+  background-attachment: fixed;
+}
+
+/* Kartlar: temiz metalik plaka — üstte ince ışık, hafif iç gölge */
+[data-theme='gym'] .bg-surface {
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.028), transparent 42%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.045), inset 0 -1px 3px rgba(0, 0, 0, 0.35);
+}
+
+/* Köşeleri hafif sertleştir — oturaklı ama abartısız */
+[data-theme='gym'] .rounded-3xl {
+  border-radius: 10px;
+}
+[data-theme='gym'] .rounded-2xl {
+  border-radius: 8px;
+}
+
+/* Beyaz CTA → fırçalanmış çelik plaka */
+[data-theme='gym'] .bg-white {
+  background-image: linear-gradient(180deg, #71757a, #4c5054 55%, #3c4044);
+  color: #f2f0ea !important;
+  border: 1px solid #23262a;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22), inset 0 -2px 3px rgba(0, 0, 0, 0.5);
+}
+[data-theme='gym'] .bg-white .text-black,
+[data-theme='gym'] .bg-white.text-black {
+  color: #f2f0ea !important;
+}
+
+/* ── Makro/kalori barları: 80s vinil ağırlık cilası ──
+   Renk (inline backgroundColor) korunur. Üzerine: parlak emaye/vinil cila
+   (üstte keskin spekular şerit, altta koyulaşan gövde) + uçta retro
+   "hız çizgileri". Temiz, dolgun, Golden Era ekipman boyası hissi. */
+[data-theme='gym'] .bar-track {
+  border-radius: 9999px !important;
+  background-color: #1c1f22 !important;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.8), inset 0 -1px 0 rgba(255, 255, 255, 0.04),
+    0 1px 0 rgba(255, 255, 255, 0.045);
+}
+[data-theme='gym'] .bar-fill {
+  border-radius: 9999px !important;
+  background-image:
+    /* uçta 80s hız çizgileri — iki beyaz eğik şerit */
+    linear-gradient(
+      115deg,
+      transparent 0 5px,
+      rgba(255, 255, 255, 0.55) 5px 8px,
+      transparent 8px 13px,
+      rgba(255, 255, 255, 0.55) 13px 16px,
+      transparent 16px
+    ),
+    /* parlak vinil cila — üst spekular şerit, alt gövde gölgesi */
+    linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.55) 0%,
+      rgba(255, 255, 255, 0.28) 22%,
+      rgba(255, 255, 255, 0.04) 45%,
+      rgba(0, 0, 0, 0.1) 62%,
+      rgba(0, 0, 0, 0.34) 100%
+    );
+  background-size: 26px 100%, 100% 100%;
+  background-position: right center, 0 0;
+  background-repeat: no-repeat, no-repeat;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.22), 0 1px 3px rgba(0, 0, 0, 0.55);
+}
+
+/* İkon butonları: hafif dökme demir düğme */
+[data-theme='gym'] .btn-icon {
+  border-radius: 6px !important;
+}
+
+/* Skeleton'ı antrasit tonlarına uyarla */
+[data-theme='gym'] .skeleton {
+  background: linear-gradient(90deg, #24282b 25%, #30353a 50%, #24282b 75%);
+  background-size: 800px 100%;
+}
+
+html,
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+#root {
+  min-height: 100svh;
+}
+
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+@keyframes water-wave-move {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-11px);
+  }
+}
+
+.water-wave-a {
+  animation: water-wave-move 2.2s linear infinite;
+}
+
+.water-wave-b {
+  animation: water-wave-move 3.1s linear infinite reverse;
+}
+
+@keyframes bubble-rise {
+  0% {
+    transform: translateY(0) scale(0.6);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.9;
+  }
+  85% {
+    opacity: 0.7;
+  }
+  100% {
+    transform: translateY(-15px) scale(1);
+    opacity: 0;
+  }
+}
+
+.water-bubble {
+  animation: bubble-rise 2.4s ease-in infinite;
+  transform-box: fill-box;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -400px 0;
+  }
+  100% {
+    background-position: 400px 0;
+  }
+}
+
+@keyframes reward-sheen {
+  0% {
+    transform: translateX(-120%);
+  }
+  60%,
+  100% {
+    transform: translateX(120%);
+  }
+}
+
+.reward-sheen {
+  animation: reward-sheen 3.4s ease-in-out infinite;
+}
+
+/* Ödül seremonisi — dönen ışık hüzmeleri (iki katman, zıt yönlü) */
+@keyframes reward-rays {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.reward-rays {
+  animation: reward-rays 16s linear infinite;
+}
+
+@keyframes reward-rays-rev {
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
+.reward-rays-rev {
+  animation: reward-rays-rev 26s linear infinite;
+}
+
+/* Madalyon yüzeyinde süzülen ışık taraması */
+@keyframes medal-sheen {
+  0% {
+    transform: translateX(-130%);
+  }
+  55%,
+  100% {
+    transform: translateX(130%);
+  }
+}
+
+.medal-sheen {
+  animation: medal-sheen 4.2s ease-in-out infinite;
+}
+
+/* Seremoni — yükselen altın toz zerreleri */
+@keyframes dust-float {
+  0% {
+    transform: translateY(30px) scale(0.6);
+    opacity: 0;
+  }
+  18% {
+    opacity: 0.85;
+  }
+  80% {
+    opacity: 0.2;
+  }
+  100% {
+    transform: translateY(-190px) scale(1);
+    opacity: 0;
+  }
+}
+
+/* Mühürlü madalyon — altın nabız */
+@keyframes medal-pulse {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 0 rgba(242, 169, 59, 0.4),
+      0 0 20px rgba(242, 169, 59, 0.3);
+  }
+  50% {
+    box-shadow:
+      0 0 0 9px rgba(242, 169, 59, 0),
+      0 0 30px rgba(242, 169, 59, 0.55);
+  }
+}
+
+.medal-pulse {
+  animation: medal-pulse 1.8s ease-in-out infinite;
+}
+
+/* Premium alt menü (20 gün ödülü) — kuyumcu işçiliği:
+   üst kenarda altın ışık hattı + süzülen parlama, aktif sekmede
+   mücevher kenarlıklı cam pill ve yavaşça dönen ışık halkası. */
+@property --lux-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@keyframes nav-lux-rotate {
+  to {
+    --lux-angle: 360deg;
+  }
+}
+
+/* ışık hattı üzerinde soldan sağa kayan parlama */
+@keyframes nav-lux-sweep {
+  0% {
+    transform: translateX(-120%);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  48% {
+    transform: translateX(330%);
+    opacity: 1;
+  }
+  56%,
+  100% {
+    transform: translateX(330%);
+    opacity: 0;
+  }
+}
+
+.nav-lux-edge {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(192, 132, 252, 0.45) 22%,
+    rgba(244, 215, 140, 0.9) 50%,
+    rgba(192, 132, 252, 0.45) 78%,
+    transparent
+  );
+  box-shadow: 0 0 14px rgba(244, 215, 140, 0.3);
+  overflow: hidden;
+}
+
+.nav-lux-edge::after {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 34%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.95) 50%, transparent);
+  animation: nav-lux-sweep 5.2s cubic-bezier(0.45, 0, 0.25, 1) infinite;
+}
+
+.nav-pill-lux {
+  overflow: hidden;
+  border: 1px solid transparent;
+  background:
+    linear-gradient(
+        180deg,
+        color-mix(in srgb, #f4d78c 13%, var(--color-surface)),
+        color-mix(in srgb, #c084fc 9%, var(--color-surface))
+      )
+      padding-box,
+    conic-gradient(
+        from var(--lux-angle),
+        rgba(244, 215, 140, 0.95),
+        rgba(192, 132, 252, 0.4) 28%,
+        rgba(244, 215, 140, 0.12) 52%,
+        rgba(192, 132, 252, 0.4) 76%,
+        rgba(244, 215, 140, 0.95)
+      )
+      border-box;
+  animation: nav-lux-rotate 5s linear infinite;
+}
+
+/* pill üzerinden periyodik geçen ince parlama */
+.nav-pill-lux::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 38%, rgba(255, 255, 255, 0.32) 50%, transparent 62%);
+  transform: translateX(-130%);
+  animation: nav-lux-pill-sheen 5.2s ease-in-out infinite;
+}
+
+@keyframes nav-lux-pill-sheen {
+  0%,
+  52% {
+    transform: translateX(-130%);
+  }
+  82%,
+  100% {
+    transform: translateX(130%);
+  }
+}
+
+/* ── Vitrin (mağaza) ─────────────────────────────────────────
+   Giriş kartı: yavaşça dönen altın-mor ışık çerçevesi.
+   Tente: indigo-altın çizgili saçak + fisto (yarım daire) kenar. */
+.vitrin-frame {
+  border: 1px solid transparent;
+  background:
+    linear-gradient(var(--color-surface), var(--color-surface)) padding-box,
+    conic-gradient(
+        from var(--lux-angle),
+        rgba(242, 201, 76, 0.85),
+        rgba(167, 139, 250, 0.45) 28%,
+        rgba(242, 201, 76, 0.12) 52%,
+        rgba(167, 139, 250, 0.45) 76%,
+        rgba(242, 201, 76, 0.85)
+      )
+      border-box;
+  animation: nav-lux-rotate 6s linear infinite;
+}
+
+.vitrin-awning {
+  background: repeating-linear-gradient(90deg, #241a49 0 26px, #f2c94c 26px 52px);
+}
+
+.vitrin-scallop {
+  background: repeating-linear-gradient(90deg, #241a49 0 26px, #f2c94c 26px 52px);
+  -webkit-mask-image: radial-gradient(circle at 13px 0, #000 11.5px, transparent 12px);
+  mask-image: radial-gradient(circle at 13px 0, #000 11.5px, transparent 12px);
+  -webkit-mask-size: 26px 12px;
+  mask-size: 26px 12px;
+  -webkit-mask-repeat: repeat-x;
+  mask-repeat: repeat-x;
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #1c1c1c 25%, #272727 50%, #1c1c1c 75%);
+  background-size: 800px 100%;
+  animation: shimmer 1.4s infinite linear;
+  border-radius: 8px;
+}
+
+/* ──────────────────────────────────────────────────────────────
+   Press / release animation tiers.
+   Press-in is fast + linear (instant under the finger).
+   Release is slower + spring (cubic-bezier overshoot, alive feel).
+   This works because :active's own `transition` governs the move
+   INTO that state, while the resting selector's `transition`
+   governs the move back OUT of it on release.
+   ────────────────────────────────────────────────────────────── */
+@layer components {
+  .btn-primary,
+  .btn-icon,
+  .btn-chip,
+  .btn-row,
+  .btn-nav {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    user-select: none;
+    will-change: transform;
+    cursor: pointer;
+  }
+
+  .btn-primary:disabled,
+  .btn-icon:disabled,
+  .btn-chip:disabled {
+    cursor: not-allowed;
+    opacity: 0.4;
+    transform: none !important;
+    filter: none !important;
+    transition: opacity 120ms ease;
+  }
+
+  /* btn-primary — full-width green CTAs (Kaydet, Devam Et, Ekle) */
+  .btn-primary {
+    transition:
+      transform 220ms cubic-bezier(0.34, 1.56, 0.64, 1),
+      filter 220ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .btn-primary:active:not(:disabled) {
+    transform: scale(0.96);
+    filter: brightness(0.88);
+    transition:
+      transform 80ms ease-in,
+      filter 80ms ease-in;
+  }
+
+  /* btn-icon — small round/square icon buttons (water +/-, favorite star) */
+  .btn-icon {
+    transition:
+      transform 180ms cubic-bezier(0.34, 1.56, 0.64, 1),
+      opacity 180ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .btn-icon:active:not(:disabled) {
+    transform: scale(0.82);
+    opacity: 0.7;
+    transition:
+      transform 70ms ease-in,
+      opacity 70ms ease-in;
+  }
+
+  /* btn-chip — selection chips / toggles (meal type, gender, activity) */
+  .btn-chip {
+    transition:
+      transform 190ms cubic-bezier(0.34, 1.56, 0.64, 1),
+      opacity 190ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .btn-chip:active:not(:disabled) {
+    transform: scale(0.91);
+    opacity: 0.75;
+    transition:
+      transform 75ms ease-in,
+      opacity 75ms ease-in;
+  }
+
+  /* btn-row — full-width tappable list rows (food search results) */
+  .btn-row {
+    transition:
+      opacity 160ms ease-out,
+      transform 160ms ease-out;
+  }
+  .btn-row:active {
+    opacity: 0.6;
+    transform: translateX(2px);
+    transition:
+      opacity 60ms ease-in,
+      transform 60ms ease-in;
+  }
+
+  /* btn-nav — bottom navigation links */
+  .btn-nav {
+    transition:
+      transform 170ms cubic-bezier(0.34, 1.56, 0.64, 1),
+      opacity 170ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .btn-nav:active {
+    transform: scale(0.8);
+    opacity: 0.6;
+    transition:
+      transform 65ms ease-in,
+      opacity 65ms ease-in;
+  }
+
+  /* bar-row — SVG <g> bars in WeeklyBarChart. SVG transform-origin
+     behaves differently than HTML, so this tier animates opacity
+     only (no scale/translate) to avoid the bar shifting oddly. */
+  .bar-row {
+    transition: opacity 160ms ease-out;
+  }
+  .bar-row:active {
+    opacity: 0.6;
+    transition: opacity 60ms ease-in;
+  }
+}
