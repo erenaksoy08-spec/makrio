@@ -1,10 +1,60 @@
+import useBlokTheme from '../hooks/useBlokTheme'
+
 // Plaka — Vitrin'in para birimi. Gerçek tri-grip kauçuk olimpik plakadan
 // modellenmiştir: siyah kauçuk gövde, üç tutma yuvası, yuvarlatılmış üçgen
 // yüz paneli, çelik bar deliği. Sahip olunan sayı plakanın üstüne büyük ve
 // net beyaz damgayla basılır (gerçek plakalardaki "15" gibi).
+// Blok Diyarı'nda plaka da bloklaşır: sekizgen voxel plaka, kare çelik delik.
 export default function PlateIcon({ size = 40, value }) {
+  const blok = useBlokTheme()
   const str = value != null ? String(value) : null
   const fs = str ? (str.length >= 5 ? 17 : str.length === 4 ? 21 : str.length === 3 ? 26 : 30) : 0
+
+  if (blok) {
+    return (
+      <svg width={size} height={size} viewBox="0 0 96 96" shapeRendering="crispEdges">
+        {/* sekizgen kauçuk gövde */}
+        <polygon
+          points="30,4 66,4 92,30 92,66 66,92 30,92 4,66 4,30"
+          fill="#252527"
+          stroke="#000"
+          strokeWidth="2"
+        />
+        {/* iç yüz paneli */}
+        <polygon points="34,14 62,14 82,34 82,62 62,82 34,82 14,62 14,34" fill="#313134" />
+        {/* üst-sol blok ışığı / alt-sağ gölge */}
+        <polygon points="30,4 66,4 62,14 34,14" fill="rgba(255,255,255,0.14)" />
+        <polygon points="4,30 14,34 14,62 4,66" fill="rgba(255,255,255,0.07)" />
+        <polygon points="66,92 30,92 34,82 62,82" fill="rgba(0,0,0,0.4)" />
+        <polygon points="92,66 82,62 82,34 92,30" fill="rgba(0,0,0,0.28)" />
+        {/* kare çelik delik */}
+        <rect x="38" y="44" width="20" height="20" fill="#9EA2A8" />
+        <rect x="42" y="48" width="12" height="12" fill="#111113" />
+        <rect x="38" y="44" width="20" height="3" fill="#D7DADE" />
+        {/* sayı damgası */}
+        {str && (
+          <text
+            x="48"
+            y="30"
+            textAnchor="middle"
+            dominantBaseline="central"
+            fontWeight="800"
+            fontSize={fs}
+            fill="#FBFBFB"
+            style={{
+              letterSpacing: '-0.03em',
+              fontVariantNumeric: 'tabular-nums',
+              paintOrder: 'stroke',
+              stroke: 'rgba(0,0,0,0.55)',
+              strokeWidth: 1.5,
+            }}
+          >
+            {str}
+          </text>
+        )}
+      </svg>
+    )
+  }
 
   // tutma yuvası yayları — üst-sol, üst-sağ, alt (fotoğraftaki yerleşim)
   const grip = (centerDeg) => {

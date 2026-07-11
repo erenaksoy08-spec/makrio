@@ -1,8 +1,12 @@
 import usePixelTheme from '../hooks/usePixelTheme'
+import useBlokTheme from '../hooks/useBlokTheme'
 import { PixelMealIcon } from './pixelSprites'
+import { BlokMealIcon } from './blokSprites'
 
 export default function MealPeriodIcon({ type, color, size = 18 }) {
   const pixel = usePixelTheme()
+  const blok = useBlokTheme()
+  if (blok) return <BlokMealIcon type={type} color={color} size={size} />
   if (pixel) return <PixelMealIcon type={type} color={color} size={size} />
 
   const stroke = color

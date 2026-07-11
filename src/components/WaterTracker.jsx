@@ -9,9 +9,11 @@ const WATER_BLUE = '#29B6F6'
 const SHAKER_ML = 1500
 
 export default function WaterTracker({ consumed_ml, goal_ml, weightKg, onAdd, onUndo, canUndo, realistic = false }) {
-  const pixel = usePixelTheme()
+  const pixelTheme = usePixelTheme()
   const { profile } = useAuth()
   const gym = profile?.preferences?.theme === 'gym'
+  // Blok Diyarı bardakları da 8-bit dilinde doldurur.
+  const pixel = pixelTheme || profile?.preferences?.theme === 'blok'
   const smiley = profile?.preferences?.waterStyle === 'smiley'
 
   // Gym teması: her kap 1,5 L matara → hedef 1,5 L'ye bölünür.

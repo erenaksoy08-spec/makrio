@@ -7,6 +7,7 @@ import HistoryIcon from './HistoryIcon'
 import ProfileIcon from './ProfileIcon'
 import StarIcon from './StarIcon'
 import { PixelNavIcon } from './pixelSprites'
+import { BlokNavIcon } from './blokSprites'
 
 const ITEMS = [
   { to: '/', label: 'Ana Sayfa', Icon: HomeIcon, pixelName: 'home', end: true, activeColor: 'var(--color-text)' },
@@ -20,6 +21,7 @@ export default function BottomNav() {
   const { profile } = useAuth()
   const premium = profile?.preferences?.navStyle === 'premium'
   const pixel = String(profile?.preferences?.theme ?? '').startsWith('pixel')
+  const blok = profile?.preferences?.theme === 'blok'
 
   return (
     <nav
@@ -29,7 +31,10 @@ export default function BottomNav() {
     >
       {premium && <span className="nav-lux-edge pointer-events-none absolute inset-x-0 top-0 h-[2px]" />}
       <div className="mx-auto flex max-w-md justify-around">
-        {ITEMS.map(({ to, label, Icon, pixelName, end, activeColor }) => (
+        {ITEMS.map(({ to, label, Icon, pixelName, end, activeColor: baseColor }) => {
+          // Blok Diyarı: İlerleme'nin mücevheri zümrüt — etiket de yeşile döner.
+          const activeColor = blok && pixelName === 'star' ? '#4EC94E' : baseColor
+          return (
           <NavLink
             key={to}
             to={to}
@@ -58,7 +63,9 @@ export default function BottomNav() {
                     animate={{ y: premium && isActive ? -3 : 0 }}
                     transition={{ type: 'spring', stiffness: 500, damping: 18 }}
                   >
-                    {pixel ? (
+                    {blok ? (
+                      <BlokNavIcon name={pixelName} isActive={isActive} />
+                    ) : pixel ? (
                       <PixelNavIcon name={pixelName} isActive={isActive} activeColor={activeColor} />
                     ) : (
                       <Icon key={isActive ? 'active' : 'inactive'} isActive={isActive} />
@@ -74,7 +81,8 @@ export default function BottomNav() {
               </>
             )}
           </NavLink>
-        ))}
+          )
+        })}
       </div>
     </nav>
   )

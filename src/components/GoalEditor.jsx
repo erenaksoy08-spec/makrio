@@ -69,6 +69,8 @@ export default function GoalEditor({ currentWeight, onClose }) {
     return profile?.goal === 'gain' ? Math.round(start + 5) : Math.round(start - 5)
   })
   const [manualMacros, setManualMacros] = useState(prefs.manualMacros ?? null)
+  // Koru modu ince ayarı: bakım kalorisine çok küçük bir elle kaydırma (±150 kcal).
+  const [maintainAdjust, setMaintainAdjust] = useState(prefs.maintainAdjust ?? 0)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
 
@@ -83,7 +85,7 @@ export default function GoalEditor({ currentWeight, onClose }) {
     // kalori hedefi hıza göre sabittir
     let calories
     if (goal === 'maintain') {
-      calories = tdee
+      calories = tdee + Number(maintainAdjust || 0)
     } else {
       const dailyDelta = (rate * KCAL_PER_KG) / 7
       calories = Math.round(goal === 'lose' ? tdee - dailyDelta : tdee + dailyDelta)
@@ -109,7 +111,7 @@ export default function GoalEditor({ currentWeight, onClose }) {
     for (let i = 0; i <= n; i++) points.push({ kg: Math.round((start + (target - start) * (i / n)) * 10) / 10 })
 
     return { bmr, tdee, calories, macros, points, valid, weeks, endDate }
-  }, [profile, goal, rate, target, start, hasBody, manualMacros])
+  }, [profile, goal, rate, target, start, hasBody, manualMacros, maintainAdjust])
 
   if (!hasBody) {
     return <p className="py-6 text-center text-sm text-text-muted">Önce profil bilgilerini tamamla.</p>
@@ -124,9 +126,12 @@ export default function GoalEditor({ currentWeight, onClose }) {
     if (goal === 'maintain') {
       delete nextPrefs.targetWeight
       delete nextPrefs.goalRate
+      if (Number(maintainAdjust)) nextPrefs.maintainAdjust = Number(maintainAdjust)
+      else delete nextPrefs.maintainAdjust
     } else {
       nextPrefs.targetWeight = Number(target)
       nextPrefs.goalRate = Number(rate)
+      delete nextPrefs.maintainAdjust
     }
     if (manualMacros) nextPrefs.manualMacros = manualMacros
     else delete nextPrefs.manualMacros
@@ -166,6 +171,39 @@ export default function GoalEditor({ currentWeight, onClose }) {
           </button>
         ))}
       </div>
+
+      {goal === 'maintain' && (
+        <div className="rounded-xl border border-border px-4 py-3">
+          <div className="mb-2 flex items-center justify-between">
+            <span className="text-sm text-text-muted">İnce ayar</span>
+            <span className="text-sm font-semibold tabular-nums text-text">
+              {Number(maintainAdjust) === 0
+                ? 'Dengede'
+                : `${Number(maintainAdjust) > 0 ? '+' : ''}${maintainAdjust} kcal`}
+            </span>
+          </div>
+          <input
+            type="range"
+            min="-150"
+            max="150"
+            step="10"
+            value={maintainAdjust}
+            onChange={(e) => {
+              setMaintainAdjust(Number(e.target.value))
+              setManualMacros(null)
+            }}
+            className="w-full accent-[color:var(--color-accent)]"
+          />
+          <div className="mt-1 flex justify-between text-[10px] text-text-muted">
+            <span>−150</span>
+            <span>0</span>
+            <span>+150</span>
+          </div>
+          <p className="mt-2 text-[11px] leading-relaxed text-text-muted">
+            Koruma kalorisini küçük adımlarla kendine göre kaydır — günlük yakımın çevresinde ufak bir esneklik.
+          </p>
+        </div>
+      )}
 
       {goal !== 'maintain' && (
         <>
@@ -252,7 +290,15 @@ export default function GoalEditor({ currentWeight, onClose }) {
       {/* projection */}
       <div className="rounded-2xl border border-white/5 bg-bg p-4">
         {goal === 'maintain' ? (
-          <p className="py-4 text-center text-sm text-text-muted">Mevcut kilonu koruyacaksın.</p>
+          <p className="py-4 text-center text-sm text-text-muted">
+            Mevcut kilonu koruyacaksın.
+            {Number(maintainAdjust) !== 0 && (
+              <span className="mt-1 block text-xs">
+                Günlük yakımın {Number(maintainAdjust) > 0 ? '+' : ''}
+                {maintainAdjust} kcal ince ayarlı.
+              </span>
+            )}
+          </p>
         ) : !calc.valid ? (
           <p className="py-4 text-center text-sm text-text-muted">
             Hedef kilo, güncel kilonun {goal === 'lose' ? 'altında' : 'üstünde'} olmalı.

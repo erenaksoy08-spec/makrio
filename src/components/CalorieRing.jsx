@@ -1,9 +1,13 @@
 import { useEffect, useState } from 'react'
 import { useCountUp } from '../hooks/useCountUp'
 import usePixelTheme from '../hooks/usePixelTheme'
+import useBlokTheme from '../hooks/useBlokTheme'
 
 export default function CalorieRing({ consumed, goal, color = '#3DA5FF', shape = 'circle' }) {
-  const pixel = usePixelTheme()
+  const pixelTheme = usePixelTheme()
+  const blok = useBlokTheme()
+  // Blok Diyarı da piksel halka dilini kullanır: kademeli dolum, keskin uçlar.
+  const pixel = pixelTheme || blok
   const square = shape === 'square'
   const size = 172
   const stroke = 16

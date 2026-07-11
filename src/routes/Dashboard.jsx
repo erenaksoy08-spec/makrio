@@ -64,6 +64,21 @@ export default function Dashboard() {
     }
   }, [goals, weightLogs, profile?.weight_kg, user.id])
 
+  // "Dört Vakit" görevi: bu ziyaretin vaktini sessizce işaretle (günlük sıfırlanır).
+  useEffect(() => {
+    if (!profile?.preferences) return
+    const hour = new Date().getHours()
+    const period =
+      hour >= 5 && hour < 12 ? 'morning' : hour >= 12 && hour < 17 ? 'afternoon' : hour >= 17 && hour < 22 ? 'evening' : 'night'
+    const q = profile.preferences.quests ?? {}
+    const daily = q.daily?.date === today ? q.daily : { date: today, periods: [], collected: {} }
+    if ((daily.periods ?? []).includes(period)) return
+    const next = { ...q, daily: { ...daily, periods: [...(daily.periods ?? []), period] } }
+    supabase
+      .rpc('update_preferences', { p_preferences: { ...profile.preferences, quests: next } })
+      .then(() => refreshProfile())
+  }, [profile, today, refreshProfile])
+
   async function handleAddWater(amount_ml) {
     await supabase.from('water_logs').insert({ user_id: user.id, date: today, amount_ml })
     loadAll()

@@ -6,11 +6,23 @@ export const CURRENCY = 'Plaka'
 
 export const STORE_ITEMS = [
   {
+    id: 'blok-theme',
+    category: 'Tema',
+    title: 'Blok Diyarı',
+    description:
+      'Uygulama kare kare bir maden dünyasına dönüşür: toprak zemin, taş butonlar, XP yeşili barlar ve blok yazı.',
+    price: 10,
+    deal: true, // Vitrin fırsatı — kaçırılmayacak fiyat.
+    prefKey: 'theme',
+    prefValue: 'blok',
+    accent: '#7CBD4B',
+  },
+  {
     id: 'square-ring',
     category: 'Halka',
     title: 'Kare Kalori Halkası',
     description: 'Ana sayfadaki kalori halkası yumuşak köşeli, keskin duruşlu bir kareye dönüşür.',
-    price: 300,
+    price: 30,
     prefKey: 'ringShape',
     prefValue: 'square',
     accent: '#4FC3F7',
@@ -21,7 +33,7 @@ export const STORE_ITEMS = [
     title: 'Özel Zemin Renkleri',
     description:
       'Uygulamanın zeminini özenle seçilmiş dört derin tondan biriyle boya. Temalarla birlikte kullanılamaz — bir tema aktifken temanın kendi zemini geçerlidir.',
-    price: 450,
+    price: 50,
     prefKey: 'bgColor',
     variants: [
       { value: '#0E1526', label: 'Gece Mavisi' },
@@ -36,7 +48,7 @@ export const STORE_ITEMS = [
     category: 'Prestij',
     title: 'Altın Kullanıcı Adı',
     description: "Adın Arkadaş Ligi'nde altın parıltısıyla yazılır — sıralamada herkes görür.",
-    price: 600,
+    price: 100,
     prefKey: 'nameColor',
     prefValue: 'gold',
     accent: '#F2C94C',

@@ -1,9 +1,13 @@
 import usePixelTheme from '../hooks/usePixelTheme'
+import useBlokTheme from '../hooks/useBlokTheme'
 import { PixelShield } from './pixelSprites'
+import { BlokShield } from './blokSprites'
 
 // Streak kurtarıcı logosu — seriyi (ateşi) koruyan bir kalkan içinde alev.
 export default function StreakSaverIcon({ size = 24, active = true }) {
   const pixel = usePixelTheme()
+  const blok = useBlokTheme()
+  if (blok) return <BlokShield size={size} active={active} />
   if (pixel) return <PixelShield size={size} active={active} />
 
   const uid = `saver-${Math.round(size)}-${active ? 'on' : 'off'}`

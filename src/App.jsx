@@ -15,6 +15,8 @@ import Progress from './routes/Progress'
 import League from './routes/League'
 import Store from './routes/Store'
 import Hall from './routes/Hall'
+import Quests from './routes/Quests'
+import Inventory from './routes/Inventory'
 import LegalPage from './routes/LegalPage'
 
 export default function App() {
@@ -40,6 +42,8 @@ export default function App() {
                 <Route path="/lig" element={<League />} />
                 <Route path="/vitrin" element={<Store />} />
                 <Route path="/salon" element={<Hall />} />
+                <Route path="/gorevler" element={<Quests />} />
+                <Route path="/envanter" element={<Inventory />} />
               </Route>
             </Route>
           </Route>

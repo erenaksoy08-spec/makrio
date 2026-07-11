@@ -18,10 +18,13 @@ export default function WeeklyBarChart({ days, macroTotals, selectedDay, onSelec
   const pixel = usePixelTheme()
   const { profile } = useAuth()
   const gym = profile?.preferences?.theme === 'gym'
+  const blok = profile?.preferences?.theme === 'blok'
   const today = todayStr()
-  const radius = pixel ? 0 : gym ? 1 : RADIUS
+  const radius = pixel || blok ? 0 : gym ? 1 : RADIUS
   // 8-bit büyüme: bar yüksekliği kademeli (quantized) dolsun
   const pixelEase = (t) => Math.floor(t * 6) / 6
+  // Blok istifi: bloklar teker teker konur — 5 kademeli, daha iri adımlar
+  const blokEase = (t) => Math.floor(t * 5) / 5
 
   const dayData = days.map((d) => {
     const m = macroTotals[d] ?? { protein_g: 0, carbs_g: 0, fat_g: 0 }
@@ -36,8 +39,19 @@ export default function WeeklyBarChart({ days, macroTotals, selectedDay, onSelec
     <svg
       width="100%"
       viewBox={`0 0 ${WIDTH} ${CHART_HEIGHT + LABEL_HEIGHT}`}
-      shapeRendering={pixel ? 'crispEdges' : 'auto'}
+      shapeRendering={pixel || blok ? 'crispEdges' : 'auto'}
     >
+      {blok && (
+        <defs>
+          {/* blok derzleri — 8px'lik küpler: altta/sağda gölge, üstte ışık */}
+          <pattern id="wbar-blok" width="8" height="8" patternUnits="userSpaceOnUse">
+            <rect width="8" height="8" fill="transparent" />
+            <rect y="7" width="8" height="1" fill="rgba(0,0,0,0.3)" />
+            <rect x="7" width="1" height="8" fill="rgba(0,0,0,0.18)" />
+            <rect y="0" width="8" height="1" fill="rgba(255,255,255,0.12)" />
+          </pattern>
+        </defs>
+      )}
       {pixel && (
         <defs>
           {/* piksel boncuk deseni — barların üzerine yatay tarama çizgileri */}
@@ -98,9 +112,9 @@ export default function WeeklyBarChart({ days, macroTotals, selectedDay, onSelec
               height={CHART_HEIGHT - TOP_PAD}
               rx={radius}
               fill="var(--color-track)"
-              opacity={gym ? 0.55 : 0.35}
-              stroke={gym ? 'rgba(0,0,0,0.45)' : 'none'}
-              strokeWidth={gym ? 1 : 0}
+              opacity={gym ? 0.55 : blok ? 0.6 : 0.35}
+              stroke={gym || blok ? 'rgba(0,0,0,0.45)' : 'none'}
+              strokeWidth={gym || blok ? 1 : 0}
             />
 
             {barHeight > 0 && (
@@ -117,14 +131,18 @@ export default function WeeklyBarChart({ days, macroTotals, selectedDay, onSelec
                   transition={
                     pixel
                       ? { duration: 0.6, delay: i * 0.06, ease: pixelEase }
-                      : // Ağır kalkış: barlar plaka kaldırır gibi güçlükle yükselip oturur.
-                        { type: 'spring', stiffness: 60, damping: 14, mass: 1.5, delay: i * 0.1 }
+                      : blok
+                        ? // Blok istifi: küpler kat kat oturur.
+                          { duration: 0.7, delay: i * 0.07, ease: blokEase }
+                        : // Ağır kalkış: barlar plaka kaldırır gibi güçlükle yükselip oturur.
+                          { type: 'spring', stiffness: 60, damping: 14, mass: 1.5, delay: i * 0.1 }
                   }
                 >
                   {rendered.map((s, idx) =>
                     s.v > 0 ? <rect key={idx} x={x} y={s.y} width={barWidth} height={s.h} fill={s.c} /> : null
                   )}
                   {pixel && <rect x={x} y={topY} width={barWidth} height={barHeight} fill="url(#wbar-scan)" />}
+                  {blok && <rect x={x} y={topY} width={barWidth} height={barHeight} fill="url(#wbar-blok)" />}
                   {gym && (
                     <>
                       {/* plaka olukları + mat gölge */}
@@ -161,7 +179,7 @@ export default function WeeklyBarChart({ days, macroTotals, selectedDay, onSelec
                 fill={active ? 'var(--color-text)' : 'var(--color-text-muted)'}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: pixel ? i * 0.06 + 0.4 : i * 0.1 + 0.45, duration: 0.35 }}
+                transition={{ delay: pixel ? i * 0.06 + 0.4 : blok ? i * 0.07 + 0.5 : i * 0.1 + 0.45, duration: 0.35 }}
               >
                 {kcal}
               </motion.text>

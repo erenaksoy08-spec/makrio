@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import RewardMedallion from './RewardMedallion'
 
@@ -31,6 +32,9 @@ export default function RewardCeremony({
   const [phase, setPhase] = useState(mode === 'reveal' ? 'sealed' : 'open')
   const a = reward.accent
   const revealed = mode === 'reveal' && phase === 'open'
+  // Kuşanma yönetimi Envanter'e taşındı: uygulama seçeneği yalnız ödül ilk
+  // açıldığında (reveal) sunulur; sonrasında ödül "alınmış" olarak sergilenir.
+  const manageable = mode === 'reveal'
 
   // Patlama parçacıkları — her seremoni için bir kez üretilir.
   const particles = useMemo(
@@ -288,7 +292,7 @@ export default function RewardCeremony({
             </h2>
             <p className="mt-1.5 text-sm leading-relaxed text-text-muted">{reward.description}</p>
 
-            {reward.duo && mode !== 'locked' ? (
+            {reward.duo && mode !== 'locked' && manageable ? (
               <div className="mt-5 w-full">
                 <div className="grid grid-cols-2 gap-2.5">
                   {reward.duo.map((item, i) => {
@@ -349,7 +353,7 @@ export default function RewardCeremony({
                       : 'Hediyeni seç — istersen ikisini birden aç.'}
                 </p>
               </div>
-            ) : reward.id === 'pixel-theme' && mode !== 'locked' ? (
+            ) : reward.id === 'pixel-theme' && mode !== 'locked' && manageable ? (
               <div className="mt-5 w-full">
                 <div className="grid grid-cols-3 gap-2">
                   {PIXEL_VARIANTS.map((v, i) => {
@@ -431,6 +435,37 @@ export default function RewardCeremony({
                 </div>
                 <p className="mt-3 text-xs text-text-muted">Serini sürdür, bu madalyon seni bekliyor.</p>
               </div>
+            ) : !manageable ? (
+              /* alınmış ödül — kuşanma Envanter'den yapılır */
+              <div className="mt-5 flex w-full flex-col items-center gap-3">
+                <div className="flex items-center gap-2">
+                  <span
+                    className="rounded-full border px-3 py-1.5 text-[11px] font-semibold"
+                    style={{ borderColor: `${a}40`, backgroundColor: `${a}14`, color: a }}
+                  >
+                    🎒 Envanterinde
+                  </span>
+                  {active && (
+                    <span
+                      className="rounded-full px-3 py-1.5 text-[11px] font-bold text-black"
+                      style={{ backgroundColor: a }}
+                    >
+                      ✓ Kuşanılı
+                    </span>
+                  )}
+                </div>
+                <Link
+                  to="/envanter"
+                  className="btn-primary w-full rounded-2xl py-3 text-center text-sm font-semibold"
+                  style={{
+                    background: 'rgba(255,255,255,0.06)',
+                    border: `1px solid ${a}59`,
+                    color: a,
+                  }}
+                >
+                  Envanterde Yönet
+                </Link>
+              </div>
             ) : (
               <motion.button
                 type="button"
@@ -475,7 +510,7 @@ export default function RewardCeremony({
             )}
 
             <button type="button" onClick={onClose} className="btn-chip mt-3 px-4 py-1.5 text-sm text-text-muted">
-              Kapat
+              {manageable && mode !== 'locked' ? '🎒 Envantere Gönder' : 'Kapat'}
             </button>
           </motion.div>
         )}

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
@@ -15,6 +16,8 @@ import StreakCelebration from '../components/StreakCelebration'
 import SwipeableLogRow from '../components/SwipeableLogRow'
 import SupplementTracker from '../components/SupplementTracker'
 import { useSmoothNumber } from '../hooks/useSmoothNumber'
+import GoldGate from '../components/GoldGate'
+import { isGold, FREE_LOG_LIMIT } from '../lib/gold'
 
 // Aktif ("Şimdi") öğün ikonu için gün zamanına özel renk.
 const NOW_COLORS = {
@@ -189,6 +192,9 @@ export default function DailyLog() {
   const [customForm, setCustomForm] = useState({ name_tr: '', calories_per_100g: '', protein_per_100g: '', carbs_per_100g: '', fat_per_100g: '' })
   const [customError, setCustomError] = useState('')
   const [customSaving, setCustomSaving] = useState(false)
+  // Ücretsiz plan: günlük kayıt limiti dolunca Gold daveti açılır.
+  const [goldGate, setGoldGate] = useState(false)
+  const gold = isGold(profile)
 
   // Seriyi güncelle; bugünün İLK kaydıysa kutlama animasyonunu tetikle.
   async function bumpStreak() {
@@ -295,8 +301,16 @@ export default function DailyLog() {
 
   // Tek dokunuşla ekleme: yemeği görünen porsiyonuyla (100g / varsayılan) anında kaydeder,
   // kullanıcı arama ekranında kalıp eklemeye devam edebilir.
+  // Ücretsiz plan: seçili günde limit dolduysa eklemeden önce Gold daveti aç.
+  function hitFreeLimit() {
+    if (gold || logs.length < FREE_LOG_LIMIT) return false
+    setGoldGate(true)
+    return true
+  }
+
   async function quickAdd(food) {
     if (quickState[food.id]) return
+    if (hitFreeLimit()) return
     setSearchError('')
     setQuickState((s) => ({ ...s, [food.id]: 'saving' }))
 
@@ -310,7 +324,7 @@ export default function DailyLog() {
     const { data: canAdd } = await supabase.rpc('can_add_food_log', { p_date: selectedDate })
     if (canAdd === false) {
       clear()
-      setSearchError('Bugünkü kayıt limitine ulaştın. Premium ile sınırsız ekleyebilirsin.')
+      setGoldGate(true)
       return
     }
 
@@ -465,13 +479,14 @@ export default function DailyLog() {
 
   async function logRecipe() {
     if (!recipeDetail) return
+    if (hitFreeLimit()) return
     setRecipeSaving(true)
     setRecipeError('')
 
     const { data: canAdd } = await supabase.rpc('can_add_food_log', { p_date: selectedDate })
     if (canAdd === false) {
       setRecipeSaving(false)
-      setRecipeError('Bugünkü kayıt limitine ulaştın. Premium ile sınırsız ekleyebilirsin.')
+      setGoldGate(true)
       return
     }
 
@@ -533,6 +548,7 @@ export default function DailyLog() {
 
   async function handleAdd() {
     if (!selectedFood || !amount || saved) return
+    if (!editingId && hitFreeLimit()) return
     setSubmitting(true)
     setError('')
 
@@ -559,7 +575,7 @@ export default function DailyLog() {
     const { data: canAdd } = await supabase.rpc('can_add_food_log', { p_date: selectedDate })
     if (canAdd === false) {
       setSubmitting(false)
-      setError('Bugünkü kayıt limitine ulaştın. Premium ile sınırsız ekleyebilirsin.')
+      setGoldGate(true)
       return
     }
 
@@ -634,13 +650,16 @@ export default function DailyLog() {
   const preview = selectedFood ? computeMacrosForAmount(selectedFood, Number(amount) || 0) : null
   const activeMealMeta = MEAL_TYPES.find((m) => m.value === activeMeal)
 
-  // Her görünümde üstte yüzen seri kutlaması (fixed konumlu).
+  // Her görünümde üstte yüzen seri kutlaması + Gold daveti (fixed konumlu).
   const celebrationEl = (
-    <AnimatePresence>
-      {celebration && (
-        <StreakCelebration streak={celebration.streak} onClose={() => setCelebration(null)} />
-      )}
-    </AnimatePresence>
+    <>
+      <AnimatePresence>
+        {celebration && (
+          <StreakCelebration streak={celebration.streak} onClose={() => setCelebration(null)} />
+        )}
+      </AnimatePresence>
+      <AnimatePresence>{goldGate && <GoldGate onClose={() => setGoldGate(false)} />}</AnimatePresence>
+    </>
   )
 
   if (creatingCustom) {
@@ -1720,6 +1739,37 @@ export default function DailyLog() {
             ))}
           </div>
         </div>
+      )}
+
+      {/* Ücretsiz plan sayacı — limit dolmadan Gold'u tatlı dille hatırlatır */}
+      {!gold && !logsLoading && (
+        <Link
+          to="/profil"
+          className="btn-row flex items-center gap-2.5 rounded-2xl border px-3.5 py-2.5"
+          style={{
+            borderColor: 'rgba(245,200,75,0.28)',
+            background: 'linear-gradient(90deg, rgba(245,200,75,0.08), rgba(245,200,75,0.02))',
+          }}
+        >
+          <span className="flex items-center gap-1">
+            {Array.from({ length: FREE_LOG_LIMIT }, (_, i) => (
+              <span
+                key={i}
+                className="h-1.5 w-4 rounded-full"
+                style={{
+                  backgroundColor: i < logs.length ? '#F5C84B' : 'rgba(255,255,255,0.12)',
+                  boxShadow: i < logs.length ? '0 0 6px rgba(245,200,75,0.5)' : 'none',
+                }}
+              />
+            ))}
+          </span>
+          <span className="flex-1 text-[11px] text-text-muted">
+            Ücretsiz kayıt · <span className="font-semibold tabular-nums text-text">{Math.min(logs.length, FREE_LOG_LIMIT)}/{FREE_LOG_LIMIT}</span>
+          </span>
+          <span className="shrink-0 text-[11px] font-semibold" style={{ color: '#F5C84B' }}>
+            👑 Sınırsız için Gold
+          </span>
+        </Link>
       )}
 
       {logsLoading ? (

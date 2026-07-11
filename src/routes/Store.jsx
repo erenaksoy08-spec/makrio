@@ -1,9 +1,11 @@
 import { useMemo, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import BackButton from '../components/BackButton'
 import PlateIcon from '../components/PlateIcon'
+import PlateBalance from '../components/PlateBalance'
 import { STORE_ITEMS, CURRENCY, scoopBalance, ownsItem, GOLD_NAME_STYLE } from '../lib/store'
 
 // Vitrin'in kendi kimliği — uygulama temasından bağımsız gece butiği paleti.
@@ -32,63 +34,26 @@ function Corners() {
   )
 }
 
-// Uygula düğmesi — çifte altın hatlı, mühür gibi. Butiğe özel; uygulamanın
-// başka hiçbir yerinde bu dil kullanılmaz.
-function ApplyButton({ applied, disabled, onClick }) {
-  return (
-    <motion.button
-      type="button"
-      disabled={disabled}
-      onClick={onClick}
-      whileTap={{ scale: 0.93 }}
-      className="btn-chip relative overflow-hidden rounded-full px-4 py-2 text-[9px] font-bold uppercase tracking-[0.22em] disabled:opacity-50"
-      style={
-        applied
-          ? {
-              background: `linear-gradient(135deg, #F6E3A6, ${GOLD} 45%, ${GOLD_DEEP})`,
-              color: '#171106',
-              border: '1px solid rgba(0,0,0,0.3)',
-              boxShadow: `0 4px 16px ${GOLD}45, inset 0 1px 0 rgba(255,255,255,0.45)`,
-            }
-          : {
-              border: `1px solid ${HAIRLINE}`,
-              color: GOLD,
-              background: 'rgba(232,193,90,0.04)',
-            }
-      }
-    >
-      {/* çifte hat — iç çerçeve */}
-      <span
-        className="pointer-events-none absolute inset-[3px] rounded-full"
-        style={{ border: applied ? '1px solid rgba(23,17,6,0.3)' : '1px solid rgba(232,193,90,0.22)' }}
-      />
-      {!applied && (
-        <span
-          className="medal-sheen pointer-events-none absolute inset-0"
-          style={{
-            background: 'linear-gradient(115deg, transparent 40%, rgba(232,193,90,0.28) 50%, transparent 60%)',
-          }}
-        />
-      )}
-      <span className="relative flex items-center gap-1.5">
-        {applied ? (
-          <>
-            Uygulandı<span style={{ fontSize: 8, lineHeight: 1 }}>✦</span>
-          </>
-        ) : (
-          <>
-            <span style={{ fontSize: 6.5, lineHeight: 1 }}>◆</span>
-            Uygula
-            <span style={{ fontSize: 6.5, lineHeight: 1 }}>◆</span>
-          </>
-        )}
-      </span>
-    </motion.button>
-  )
-}
-
 // Vitrin camı önizlemeleri — fanus içinde mini sahneler.
 function ItemPreview({ item, firstName }) {
+  if (item.id === 'blok-theme') {
+    // Çim bloğu — izometrik mini küp, kenarları keskin piksel.
+    return (
+      <svg width="40" height="40" viewBox="0 0 40 40" shapeRendering="crispEdges">
+        <polygon points="20,5 34,12 20,19 6,12" fill="#7CBD4B" />
+        <polygon points="20,5 34,12 20,19 6,12" fill="none" stroke="#5E9838" strokeWidth="1" />
+        <polygon points="6,12 20,19 20,35 6,28" fill="#8A5A32" />
+        <polygon points="34,12 20,19 20,35 34,28" fill="#6E4526" />
+        {/* toprak benekleri */}
+        <rect x="10" y="20" width="3" height="3" fill="#75492A" />
+        <rect x="14" y="26" width="3" height="3" fill="#9C6839" />
+        <rect x="24" y="23" width="3" height="3" fill="#5C3A20" />
+        <rect x="28" y="28" width="3" height="3" fill="#7D4F2C" />
+        {/* çim ışıltısı */}
+        <rect x="17" y="9" width="4" height="3" fill="#93D45F" />
+      </svg>
+    )
+  }
   if (item.id === 'square-ring') {
     return (
       <svg width="40" height="40" viewBox="0 0 64 64">
@@ -183,8 +148,8 @@ export default function Store() {
     }
     setConfirmId(null)
     navigator.vibrate?.([14, 40, 20])
+    // Yeni alınan ürün seçim bekler: hemen uygula ya da envantere gönder.
     setJustBought(item.id)
-    setTimeout(() => setJustBought(null), 1600)
     await applyPrefs({
       scoops: balance - item.price,
       ownedItems: [...new Set([...(preferences.ownedItems ?? []), item.id])],
@@ -226,19 +191,8 @@ export default function Store() {
 
       <div className="flex items-center justify-between">
         <BackButton to="/ilerleme" label="İlerleme" />
-        {/* kasa — bakiye plakası: sayı, ağırlık damgası gibi ortasında */}
-        <AnimatePresence mode="popLayout">
-          <motion.span
-            key={balance}
-            initial={{ scale: 0.5, rotate: -30, opacity: 0 }}
-            animate={{ scale: 1, rotate: 0, opacity: 1 }}
-            transition={{ type: 'spring', stiffness: 320, damping: 18 }}
-            style={{ display: 'inline-flex', filter: 'drop-shadow(0 4px 10px rgba(0,0,0,0.55))' }}
-            title={`${balance} ${CURRENCY}`}
-          >
-            <PlateIcon size={52} value={balance} />
-          </motion.span>
-        </AnimatePresence>
+        {/* kasa — oyun HUD'u bakiye sayacı */}
+        <PlateBalance value={balance} />
       </div>
 
       {/* butik tabelası */}
@@ -276,8 +230,8 @@ export default function Store() {
         </div>
       </motion.div>
 
-      {/* sergi kasaları */}
-      <div className="space-y-3">
+      {/* shop rafları — kompakt karolar (yeni ürünlere yer var) */}
+      <div className="grid grid-cols-2 gap-3">
         {STORE_ITEMS.map((item, idx) => {
           const owned = ownsItem(preferences, item.id)
           const denied = deniedId === item.id
@@ -294,16 +248,14 @@ export default function Store() {
               key={item.id}
               initial={{ opacity: 0, y: 18 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 + idx * 0.1, duration: 0.45, ease: 'easeOut' }}
-              className="relative overflow-hidden rounded-2xl p-3"
+              transition={{ delay: 0.1 + idx * 0.08, duration: 0.4, ease: 'easeOut' }}
+              className="relative flex flex-col items-center overflow-hidden rounded-2xl p-3 pb-3.5 text-center"
               style={{
                 background: CASE_BG,
-                border: '1px solid rgba(232,193,90,0.18)',
-                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.05), 0 12px 28px rgba(0,0,0,0.45)',
+                border: `1px solid ${owned ? `${a}30` : 'rgba(232,193,90,0.18)'}`,
+                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.05), 0 10px 24px rgba(0,0,0,0.4)',
               }}
             >
-              <Corners />
-
               {/* camda süzülen ışık */}
               <span
                 className="medal-sheen pointer-events-none absolute inset-0"
@@ -327,151 +279,181 @@ export default function Store() {
                 )}
               </AnimatePresence>
 
-              <div className="flex items-center gap-3.5">
-                {/* fanus + kaide */}
-                <div className="relative flex h-[68px] w-[68px] shrink-0 items-center justify-center">
-                  <span
-                    className="absolute inset-1 rounded-full"
-                    style={{ background: `radial-gradient(circle at 50% 42%, ${a}26, transparent 70%)` }}
-                  />
-                  <span
-                    className="absolute inset-0 rounded-full"
-                    style={{
-                      border: `1px solid ${a}30`,
-                      background: 'linear-gradient(170deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01) 55%)',
-                      boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.1)',
-                    }}
-                  />
-                  <motion.span
-                    className="relative flex items-center justify-center"
-                    animate={{ y: [0, -2.5, 0] }}
-                    transition={{ duration: 3.4, repeat: Infinity, ease: 'easeInOut', delay: idx * 0.5 }}
-                  >
-                    <ItemPreview item={item} firstName={firstName} />
-                  </motion.span>
-                  {/* kaide gölgesi */}
-                  <span
-                    className="absolute -bottom-0.5 h-1 w-8 rounded-full"
-                    style={{ background: `${a}40`, filter: 'blur(2px)' }}
-                  />
-                </div>
+              {/* fırsat etiketi — indirim mührü */}
+              {item.deal && !owned && (
+                <motion.span
+                  initial={{ scale: 0, rotate: -18 }}
+                  animate={{ scale: 1, rotate: -10 }}
+                  transition={{ delay: 0.35 + idx * 0.08, type: 'spring', stiffness: 380, damping: 14 }}
+                  className="absolute left-2 top-2 rounded-[4px] px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-[0.12em]"
+                  style={{
+                    background: 'linear-gradient(180deg, #8FD95C, #5CA834)',
+                    color: '#12240a',
+                    border: '1px solid rgba(0,0,0,0.35)',
+                    boxShadow: '0 2px 8px rgba(124,189,75,0.4), inset 0 1px 0 rgba(255,255,255,0.4)',
+                  }}
+                >
+                  Fırsat
+                </motion.span>
+              )}
 
-                <div className="min-w-0 flex-1">
-                  <div className="text-[8px] font-bold uppercase tracking-[0.26em]" style={{ color: `${a}CC` }}>
-                    {item.category}
-                  </div>
-                  <h2 className="mt-0.5 text-[13.5px] font-semibold leading-snug" style={{ color: IVORY }}>
-                    {item.title}
-                  </h2>
-                  <p className="mt-0.5 text-[10.5px] leading-relaxed" style={{ color: MUTED }}>
-                    {item.description}
-                  </p>
-                </div>
+              {/* sahiplik mührü */}
+              {owned && (
+                <span
+                  className="absolute right-2 top-2 flex h-6 w-6 items-center justify-center rounded-full text-[10px]"
+                  style={{ border: `1.2px dashed ${HAIRLINE}`, color: GOLD, transform: 'rotate(-10deg)' }}
+                  title="Koleksiyonunda"
+                >
+                  ✓
+                </span>
+              )}
 
-                {/* etiket + aksiyon */}
-                <div className="flex shrink-0 flex-col items-end gap-1.5">
-                  {owned ? (
-                    <span
-                      className="flex h-8 w-8 items-center justify-center rounded-full text-[13px]"
-                      style={{
-                        border: `1.4px dashed ${HAIRLINE}`,
-                        color: GOLD,
-                        transform: 'rotate(-10deg)',
-                      }}
-                      title="Koleksiyonunda"
-                    >
-                      ✓
-                    </span>
-                  ) : (
-                    <span
-                      className="flex items-center gap-1 rounded-md px-2 py-1"
-                      style={{
-                        border: `1px solid ${HAIRLINE}`,
-                        background: 'linear-gradient(135deg, rgba(232,193,90,0.14), rgba(232,193,90,0.03))',
-                      }}
-                    >
-                      <PlateIcon size={14} />
-                      <span className="text-[11.5px] font-bold tabular-nums" style={{ color: GOLD }}>
-                        {item.price}
-                      </span>
-                    </span>
-                  )}
-
-                  {owned ? (
-                    !item.variants && (
-                      <ApplyButton applied={equipped} disabled={saving} onClick={() => toggleEquip(item)} />
-                    )
-                  ) : (
-                    <motion.button
-                      type="button"
-                      disabled={saving}
-                      onClick={() => buy(item)}
-                      animate={denied ? { x: [0, -7, 7, -5, 5, 0] } : { x: 0 }}
-                      transition={{ duration: 0.45 }}
-                      whileTap={{ scale: 0.94 }}
-                      className="btn-primary rounded-lg px-3 py-1.5 text-[9.5px] font-bold uppercase tracking-[0.14em] disabled:opacity-50"
-                      style={
-                        denied
-                          ? { background: 'rgba(239,68,68,0.15)', border: '1px solid rgba(239,68,68,0.55)', color: '#EF6060' }
-                          : confirming
-                            ? {
-                                background: `linear-gradient(135deg, ${GOLD}, ${GOLD_DEEP})`,
-                                color: '#14100a',
-                                boxShadow: `0 5px 16px ${GOLD}40`,
-                              }
-                            : { border: `1px solid ${HAIRLINE}`, color: GOLD, background: 'rgba(232,193,90,0.05)' }
-                      }
-                    >
-                      {denied ? 'Yetersiz' : confirming ? `Onayla · ${item.price}` : 'Satın Al'}
-                    </motion.button>
-                  )}
-                </div>
+              {/* fanus */}
+              <div className="relative flex h-[62px] w-[62px] items-center justify-center">
+                <span
+                  className="absolute inset-1 rounded-full"
+                  style={{ background: `radial-gradient(circle at 50% 42%, ${a}26, transparent 70%)` }}
+                />
+                <span
+                  className="absolute inset-0 rounded-full"
+                  style={{
+                    border: `1px solid ${a}30`,
+                    background: 'linear-gradient(170deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01) 55%)',
+                    boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.1)',
+                  }}
+                />
+                <motion.span
+                  className="relative flex items-center justify-center"
+                  animate={{ y: [0, -2, 0] }}
+                  transition={{ duration: 3.4, repeat: Infinity, ease: 'easeInOut', delay: idx * 0.5 }}
+                >
+                  <ItemPreview item={item} firstName={firstName} />
+                </motion.span>
               </div>
 
-              {/* renk paketi: sahiplikte renk seçici raf */}
-              {owned && item.variants && (
-                <div
-                  className="mt-3 flex items-center gap-2.5 border-t pt-3"
-                  style={{ borderColor: 'rgba(232,193,90,0.12)' }}
-                >
-                  {item.variants.map((v) => {
-                    const on = equippedValue === v.value
-                    return (
-                      <button
-                        key={v.value}
-                        type="button"
-                        disabled={saving}
-                        onClick={() => toggleEquip(item, v.value)}
-                        className="btn-chip flex flex-col items-center gap-1 disabled:opacity-50"
-                        title={v.label}
-                      >
-                        <span
-                          className="flex h-7 w-7 items-center justify-center rounded-lg text-[10px]"
+              <div className="mt-1.5 text-[7.5px] font-bold uppercase tracking-[0.24em]" style={{ color: `${a}CC` }}>
+                {item.category}
+              </div>
+              <h2 className="mt-0.5 min-h-[30px] text-[12px] font-semibold leading-tight" style={{ color: IVORY }}>
+                {item.title}
+              </h2>
+
+              {/* fiyat — her karoda altta */}
+              <div className="mt-1 flex items-center gap-1">
+                <PlateIcon size={14} />
+                <span className="text-[13px] font-bold tabular-nums" style={{ color: GOLD }}>
+                  {item.price}
+                </span>
+                <span className="text-[8px] uppercase tracking-wide" style={{ color: MUTED }}>
+                  Plaka
+                </span>
+              </div>
+
+              {/* aksiyon */}
+              <div className="mt-2 w-full">
+                {owned ? (
+                  justBought === item.id ? (
+                    /* yeni alındı — tek seferlik seçim: hemen uygula ya da envantere */
+                    <div className="space-y-1.5">
+                      {item.variants ? (
+                        <div className="flex items-center justify-center gap-1.5">
+                          {item.variants.map((v) => (
+                            <button
+                              key={v.value}
+                              type="button"
+                              disabled={saving}
+                              onClick={async () => {
+                                await toggleEquip(item, v.value)
+                                setJustBought(null)
+                              }}
+                              className="btn-chip h-6 w-6 rounded-md disabled:opacity-50"
+                              title={`${v.label} — hemen uygula`}
+                              style={{
+                                backgroundColor: v.value,
+                                border: `1px solid ${HAIRLINE}`,
+                                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08)',
+                              }}
+                            />
+                          ))}
+                        </div>
+                      ) : (
+                        <button
+                          type="button"
+                          disabled={saving}
+                          onClick={async () => {
+                            await toggleEquip(item)
+                            setJustBought(null)
+                          }}
+                          className="btn-primary w-full rounded-lg px-3 py-1.5 text-[9.5px] font-bold uppercase tracking-[0.14em] disabled:opacity-50"
                           style={{
-                            backgroundColor: v.value,
-                            border: on ? `1.5px solid ${GOLD}` : '1px solid rgba(255,255,255,0.16)',
-                            boxShadow: on ? `0 0 9px ${GOLD}59` : 'inset 0 1px 0 rgba(255,255,255,0.08)',
-                            color: GOLD,
+                            background: `linear-gradient(135deg, ${GOLD}, ${GOLD_DEEP})`,
+                            color: '#14100a',
+                            boxShadow: `0 5px 16px ${GOLD}40`,
                           }}
                         >
-                          {on ? '✓' : ''}
-                        </span>
-                        <span className="text-[8px] tracking-wide" style={{ color: on ? GOLD : MUTED }}>
-                          {v.label}
-                        </span>
+                          ⚡ Hemen Uygula
+                        </button>
+                      )}
+                      <button
+                        type="button"
+                        onClick={() => setJustBought(null)}
+                        className="btn-chip w-full rounded-lg px-3 py-1.5 text-[9px] font-semibold uppercase tracking-[0.12em]"
+                        style={{ border: `1px solid ${HAIRLINE}`, color: MUTED }}
+                      >
+                        🎒 Envantere Gönder
                       </button>
-                    )
-                  })}
-                </div>
-              )}
+                    </div>
+                  ) : (
+                    /* alınmış — kuşanma Envanter'den */
+                    <Link
+                      to="/envanter"
+                      className="btn-chip block w-full rounded-lg px-3 py-1.5 text-center text-[9px] font-bold uppercase tracking-[0.14em]"
+                      style={{
+                        border: `1px dashed ${HAIRLINE}`,
+                        color: equipped ? GOLD : MUTED,
+                        background: 'rgba(232,193,90,0.04)',
+                      }}
+                    >
+                      {equipped ? '✓ Kuşanılı · Envanterde' : '🎒 Envanterde'}
+                    </Link>
+                  )
+                ) : (
+                  <motion.button
+                    type="button"
+                    disabled={saving}
+                    onClick={() => buy(item)}
+                    animate={denied ? { x: [0, -7, 7, -5, 5, 0] } : { x: 0 }}
+                    transition={{ duration: 0.45 }}
+                    whileTap={{ scale: 0.94 }}
+                    className="btn-primary w-full rounded-lg px-3 py-1.5 text-[9.5px] font-bold uppercase tracking-[0.14em] disabled:opacity-50"
+                    style={
+                      denied
+                        ? { background: 'rgba(239,68,68,0.15)', border: '1px solid rgba(239,68,68,0.55)', color: '#EF6060' }
+                        : confirming
+                          ? {
+                              background: `linear-gradient(135deg, ${GOLD}, ${GOLD_DEEP})`,
+                              color: '#14100a',
+                              boxShadow: `0 5px 16px ${GOLD}40`,
+                            }
+                          : { border: `1px solid ${HAIRLINE}`, color: GOLD, background: 'rgba(232,193,90,0.05)' }
+                    }
+                  >
+                    {denied ? 'Yetersiz' : confirming ? `Onayla · ${item.price}` : 'Satın Al'}
+                  </motion.button>
+                )}
+              </div>
             </motion.div>
           )
         })}
       </div>
 
-      <p className="px-1 pt-1 text-center text-[10px] tracking-[0.14em]" style={{ color: MUTED }}>
-        YENİ PARÇALAR YOLDA — {CURRENCY.toUpperCase()} KAZANMA YOLLARI ÇOK YAKINDA 🏋️
-      </p>
+      <Link
+        to="/gorevler"
+        className="btn-chip block px-1 pt-1 text-center text-[10px] tracking-[0.14em]"
+        style={{ color: GOLD }}
+      >
+        {CURRENCY.toUpperCase()} KAZANMAK İÇİN GÖREVLER'E UĞRA 📜
+      </Link>
     </div>
   )
 }

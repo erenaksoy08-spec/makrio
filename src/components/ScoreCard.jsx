@@ -57,7 +57,7 @@ export default function ScoreCard({ score }) {
             const full = earned >= b.max - 0.001
             return (
               <div key={b.key} className="flex flex-col items-center gap-1">
-                <div className="bar-track h-1 w-full overflow-hidden rounded-full bg-track">
+                <div className="bar-track h-1.5 w-full overflow-hidden rounded-full bg-track">
                   <div
                     className="bar-fill h-full rounded-full"
                     style={{

@@ -1,0 +1,194 @@
+// Envanter — kullanıcının kazandığı/satın aldığı tüm kozmetiklerin tek kütüğü.
+// Seri ödülleri (Şeref Salonu) + Vitrin ürünleri, eşya tarzına göre gruplanır.
+import { isUnlocked } from './rewards'
+
+export const PIXEL_VARIANTS = [
+  { value: 'pixel', label: 'Aydınlık', swatch: '#e9e4d8' },
+  { value: 'pixel-dark', label: 'Koyu', swatch: '#17161c' },
+  { value: 'pixel-color', label: 'Retro', swatch: '#d8e2c9' },
+]
+
+export const BG_VARIANTS = [
+  { value: '#0E1526', label: 'Gece Mavisi' },
+  { value: '#150F23', label: 'Mor Sis' },
+  { value: '#0C1712', label: 'Orman' },
+  { value: '#1A1109', label: 'Espresso' },
+]
+
+export const CATEGORY_ORDER = ['Tema', 'Halka', 'Su', 'Zemin', 'Arayüz', 'Prestij', 'Rozet']
+
+function equippedOf(item, preferences) {
+  if (item.special === 'badge') return preferences.badge !== false
+  if (item.variants) return item.variants.some((v) => preferences[item.prefKey] === v.value)
+  return preferences[item.prefKey] === item.value
+}
+
+export function buildInventory(preferences = {}, unlockStreak = 0) {
+  const ownedIds = preferences.ownedItems ?? []
+  const items = [
+    {
+      id: 'gym-theme',
+      cat: 'Tema',
+      name: 'Demir Çağı',
+      icon: '🏋️',
+      accent: '#C0392B',
+      desc: 'Eski okul demir salonu teması — pas, demir ve ter.',
+      source: 'salon',
+      claimId: 'gym-theme',
+      days: 1,
+      prefKey: 'theme',
+      value: 'gym',
+    },
+    {
+      id: 'light-theme',
+      cat: 'Tema',
+      name: 'Aydınlık Tema',
+      icon: '☀️',
+      accent: '#F2C94C',
+      desc: 'Uygulamayı ferah, aydınlık temada kullan.',
+      source: 'salon',
+      claimId: 'light-theme',
+      days: 3,
+      prefKey: 'theme',
+      value: 'light',
+    },
+    {
+      id: 'pixel-theme',
+      cat: 'Tema',
+      name: 'Piksel Tema',
+      icon: '🧠',
+      accent: '#5FA8E8',
+      desc: 'Sevimli bir 8-bit oyunu: piksel font, pastel renkler ve piksel beyin.',
+      source: 'salon',
+      claimId: 'pixel-theme',
+      days: 10,
+      prefKey: 'theme',
+      variants: PIXEL_VARIANTS,
+    },
+    {
+      id: 'blok-theme',
+      cat: 'Tema',
+      name: 'Blok Diyarı',
+      kind: 'grass-block',
+      accent: '#7CBD4B',
+      desc: 'Kare kare maden dünyası: toprak zemin, taş butonlar, XP yeşili barlar.',
+      source: 'vitrin',
+      price: 10,
+      prefKey: 'theme',
+      value: 'blok',
+    },
+    {
+      id: 'turquoise-ring',
+      cat: 'Halka',
+      name: 'Turkuaz Halka',
+      kind: 'ring-color',
+      accent: '#22D3EE',
+      desc: 'Kalori halkası parlak turkuaz renkte yanar.',
+      source: 'salon',
+      claimId: 'turquoise-ring',
+      days: 14,
+      prefKey: 'ringColor',
+      value: '#22D3EE',
+    },
+    {
+      id: 'square-ring',
+      cat: 'Halka',
+      name: 'Kare Halka',
+      kind: 'ring-square',
+      accent: '#4FC3F7',
+      desc: 'Kalori halkası yumuşak köşeli, keskin duruşlu bir kareye dönüşür.',
+      source: 'vitrin',
+      price: 30,
+      prefKey: 'ringShape',
+      value: 'square',
+    },
+    {
+      id: 'smiley-water',
+      cat: 'Su',
+      name: 'Su Dostu',
+      icon: '🙂',
+      accent: '#29B6F6',
+      desc: 'Su içtikçe dolan, hedefe ulaşınca gülen cam küre.',
+      source: 'salon',
+      claimId: 'gym-theme',
+      days: 1,
+      prefKey: 'waterStyle',
+      value: 'smiley',
+    },
+    {
+      id: 'realistic-water',
+      cat: 'Su',
+      name: 'Gerçekçi Dolum',
+      icon: '💧',
+      accent: '#3DA5FF',
+      desc: 'Bardaklar dalgalı, gerçekçi bir animasyonla dolar.',
+      source: 'salon',
+      claimId: 'realistic-water',
+      days: 7,
+      prefKey: 'waterAnim',
+      value: 'realistic',
+    },
+    {
+      id: 'bg-pack',
+      cat: 'Zemin',
+      name: 'Özel Zeminler',
+      kind: 'swatches',
+      accent: '#A78BFA',
+      desc: 'Uygulamanın zeminini dört derin tondan biriyle boya.',
+      note: 'Temalarla birlikte kullanılamaz — bir tema aktifken temanın kendi zemini geçerlidir.',
+      source: 'vitrin',
+      price: 50,
+      prefKey: 'bgColor',
+      variants: BG_VARIANTS,
+    },
+    {
+      id: 'premium-nav',
+      cat: 'Arayüz',
+      name: 'Premium Alt Menü',
+      icon: '👑',
+      accent: '#C084FC',
+      desc: 'Alt menü altın ışık hattı ve mücevher kenarlı camla parlar.',
+      source: 'salon',
+      claimId: 'premium-nav',
+      days: 20,
+      prefKey: 'navStyle',
+      value: 'premium',
+    },
+    {
+      id: 'gold-name',
+      cat: 'Prestij',
+      name: 'Altın Kullanıcı Adı',
+      kind: 'gold-name',
+      accent: '#F2C94C',
+      desc: "Adın Arkadaş Ligi'nde altın parıltısıyla yazılır — herkes görür.",
+      source: 'vitrin',
+      price: 100,
+      prefKey: 'nameColor',
+      value: 'gold',
+    },
+    {
+      id: 'bronze-badge',
+      cat: 'Rozet',
+      name: 'Bronz Rozet',
+      icon: '🥉',
+      accent: '#E0A34E',
+      desc: "Streak'inin yanında taşınan kalıcı bronz nişan.",
+      source: 'salon',
+      claimId: 'bronze-badge',
+      days: 30,
+      special: 'badge',
+    },
+  ]
+
+  return items.map((it) => ({
+    ...it,
+    owned: it.source === 'salon' ? isUnlocked(unlockStreak, it.days) : ownedIds.includes(it.id),
+    equipped: equippedOf(it, preferences),
+    activeVariant: it.variants ? (preferences[it.prefKey] ?? null) : null,
+  }))
+}
+
+export function inventoryCounts(preferences, unlockStreak) {
+  const items = buildInventory(preferences, unlockStreak)
+  return { owned: items.filter((i) => i.owned).length, total: items.length }
+}
