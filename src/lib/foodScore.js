@@ -117,6 +117,27 @@ function scorePureFat(name) {
 // Besin sınıfları — isim + makro guard'ı. floor önce, cap sonra uygulanır.
 const FOOD_CLASSES = [
   {
+    id: 'potato',
+    match: ['patates', 'tatli patates'],
+    exclude: ['kizartma', 'kizarmis', 'cips', 'soslu', 'gratén', 'graten'],
+    guard: (m) => m.fatPct < 0.2,
+    skipEnergyPenalty: true,
+    skipRefinedPenalty: true,
+    floor: 4.2,
+    tag: 'Doğal + doyurucu',
+    reason: { text: 'Doygunluk endeksinin zirvesi — potasyum ve C vitamini kaynağı', good: true },
+  },
+  {
+    id: 'vegetable',
+    match: ['domates', 'salatalik', '^biber', 'kabak', 'patlican', 'ispanak', 'brokoli', 'karnabahar', 'lahana', 'marul', 'havuc', 'sogan', 'pirasa', 'taze fasulye', 'enginar', 'kereviz', 'pancar', '^turp', 'mantar', 'roka', 'maydanoz', 'semizotu', 'pazi', 'kuskonmaz'],
+    exclude: ['kizartma', 'kizarmis', 'cips', 'soslu', 'salcasi', 'ketcap', 'kek'],
+    guard: (m) => m.kcal <= 80 && m.fatPct < 0.3,
+    bonus: 0.5,
+    floor: 3.8,
+    tag: 'Sebze',
+    reason: { text: 'Sebze — vitamin, mineral ve lif; kalorisi çok düşük', good: true },
+  },
+  {
     id: 'staple',
     match: ['pirinc', 'makarna', 'eriste', 'sehriye', 'irmik', 'kuskus', 'ekmek', 'lavas', 'yufka', 'bazlama', '^simit', 'patates', 'patlamis misir', 'galeta'],
     exclude: ['kizartma', 'kizarmis', 'cips', 'tatli', 'kek'],
@@ -130,10 +151,10 @@ const FOOD_CLASSES = [
   {
     id: 'fruit',
     match: ['^elma', '^muz', 'portakal', 'mandalina', 'cilek', '^uzum', 'karpuz', 'kavun', 'seftali', 'kayisi', 'armut', 'kiraz', 'visne', '^nar', 'incir', 'kivi', 'ananas', 'mango', '^erik', 'greyfurt', 'ahududu', 'yaban mersini', 'bogurtlen'],
-    exclude: ['suyu', 'nektar', 'kuru', 'aromali', 'soslu', 'receli', 'sut', 'yogurt', 'icecek', 'gevrek'],
+    exclude: ['suyu', 'nektar', 'kuru', 'aromali', 'soslu', 'receli', 'sut', 'yogurt', 'icecek', 'gevrek', 'fanta', 'gazoz', 'soda', 'kola', 'sakiz', 'puding', 'kefir', 'sekeri', 'gofret', 'biskuvi'],
     guard: (m) => m.kcal >= 20 && m.kcal <= 120 && m.fatPct < 0.3 && m.p < 3,
     bonus: 0.5,
-    floor: 3.2,
+    floor: 3.5,
     tag: 'Meyve',
     reason: { text: 'Vitamin, mineral ve antioksidan kaynağı', good: true },
   },
