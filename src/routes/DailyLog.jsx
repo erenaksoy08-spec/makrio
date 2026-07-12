@@ -1761,7 +1761,30 @@ export default function DailyLog() {
           )}
 
           {!showSkeleton &&
-            results.map((food, i) => {
+            (() => {
+              // MacroFactor tarzı: özgün yemekler üstte, markalı ürünler ayrı bölümde.
+              const sections = searching
+                ? [
+                    { key: 'generic', label: 'Yemekler', items: results.filter((f) => !f.brand) },
+                    { key: 'branded', label: 'Markalı Ürünler', items: results.filter((f) => f.brand) },
+                  ].filter((s) => s.items.length > 0)
+                : [{ key: 'all', label: null, items: results }]
+              const showHeaders = searching && sections.some((s) => s.key === 'branded')
+              let rowIndex = -1
+              return sections.map((section) => (
+                <div key={section.key} className="space-y-2">
+                  {showHeaders && (
+                    <div className="flex items-center gap-2.5 px-1 pt-1.5">
+                      <span className="text-[10.5px] font-semibold uppercase tracking-[0.14em] text-text-muted">
+                        {section.label}
+                      </span>
+                      <span className="h-px flex-1 bg-white/[0.07]" />
+                      <span className="text-[10px] tabular-nums text-text-muted opacity-70">{section.items.length}</span>
+                    </div>
+                  )}
+                  {section.items.map((food) => {
+              rowIndex += 1
+              const i = rowIndex
               const isFav = favoriteIds.has(food.id)
               const karne = searching ? scoreFood(food) : null
               return (
@@ -1856,7 +1879,10 @@ export default function DailyLog() {
                   <QuickAddButton state={quickState[food.id]} onClick={() => quickAdd(food)} />
                 </motion.div>
               )
-            })}
+                  })}
+                </div>
+              ))
+            })()}
         </div>
 
         {!showSkeleton && results.length > 0 && (
