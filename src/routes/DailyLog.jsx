@@ -22,6 +22,7 @@ import ScanResult from '../components/ScanResult'
 import { isGold, FREE_LOG_LIMIT } from '../lib/gold'
 import { scoreFood } from '../lib/foodScore'
 import FoodReportCard from '../components/FoodReportCard'
+import KarneSheet from '../components/KarneSheet'
 
 // Aktif ("Şimdi") öğün ikonu için gün zamanına özel renk.
 const NOW_COLORS = {
@@ -203,6 +204,7 @@ export default function DailyLog() {
   // Barkod tarama: DB → Open Food Facts → manuel form (barkod ekli).
   const [scanning, setScanning] = useState(false)
   const [scanResult, setScanResult] = useState(null) // { phase, code, food? }
+  const [karneFood, setKarneFood] = useState(null) // ⓘ ile açılan Besin Karnesi sayfası
   const [customBarcode, setCustomBarcode] = useState(null)
   const [customBrand, setCustomBrand] = useState('')
 
@@ -766,6 +768,9 @@ export default function DailyLog() {
             onClose={() => setScanResult(null)}
           />
         )}
+      </AnimatePresence>
+      <AnimatePresence>
+        {karneFood && <KarneSheet food={karneFood} onClose={() => setKarneFood(null)} />}
       </AnimatePresence>
     </>
   )
@@ -1811,13 +1816,29 @@ export default function DailyLog() {
                         <span>/ {food.default_serving_g || 100}g</span>
                       </span>
                       {karne && (
-                        <span className="mt-1 flex items-center gap-1 text-[10.5px] leading-none">
+                        <span
+                          role="button"
+                          tabIndex={0}
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            setKarneFood(food)
+                          }}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                              e.stopPropagation()
+                              setKarneFood(food)
+                            }
+                          }}
+                          className="mt-1 inline-flex items-center gap-1 text-[10.5px] leading-none"
+                          aria-label="Besin Karnesi ayrıntısı"
+                        >
                           <span className="font-bold tabular-nums" style={{ color: karne.color }}>
                             {karne.display}
                           </span>
                           <span className="font-medium text-text-muted opacity-60">/5</span>
-                          <span className="mx-0.5 text-text-muted opacity-40">·</span>
-                          <span className="truncate text-text-muted opacity-80">{karne.tags.join(' · ')}</span>
+                          <span className="ml-0.5 flex h-[15px] w-[15px] items-center justify-center rounded-full border border-white/[0.14] font-serif text-[9.5px] italic text-text-muted">
+                            i
+                          </span>
                         </span>
                       )}
                     </span>
