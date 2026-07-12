@@ -20,6 +20,8 @@ import GoldGate from '../components/GoldGate'
 import BarcodeScanner from '../components/BarcodeScanner'
 import ScanResult from '../components/ScanResult'
 import { isGold, FREE_LOG_LIMIT } from '../lib/gold'
+import { scoreFood } from '../lib/foodScore'
+import FoodReportCard from '../components/FoodReportCard'
 
 // Aktif ("Şimdi") öğün ikonu için gün zamanına özel renk.
 const NOW_COLORS = {
@@ -1024,6 +1026,9 @@ export default function DailyLog() {
           </span>
         </div>
 
+        {/* besin karnesi — puan + bilgilendirme */}
+        <FoodReportCard food={selectedFood} />
+
         {/* sonuç — canlı besin değerleri */}
         {preview && <NutritionPreview preview={preview} macroFields={macroFields} amount={amountNum} />}
 
@@ -1208,6 +1213,12 @@ export default function DailyLog() {
                     <span className="text-xs tabular-nums text-text-muted">
                       {Math.round(food.protein_per_100g ?? 0)}P {Math.round(food.fat_per_100g ?? 0)}Y{' '}
                       {Math.round(food.carbs_per_100g ?? 0)}K / 100g
+                      {searching && (
+                        <span className="ml-2 font-bold" style={{ color: scoreFood(food).color }}>
+                          {scoreFood(food).display}
+                          <span className="font-medium text-text-muted opacity-60">/5</span>
+                        </span>
+                      )}
                     </span>
                   </span>
                   <span className="shrink-0 text-lg text-text-muted">+</span>
@@ -1747,6 +1758,7 @@ export default function DailyLog() {
           {!showSkeleton &&
             results.map((food, i) => {
               const isFav = favoriteIds.has(food.id)
+              const karne = searching ? scoreFood(food) : null
               return (
                 <motion.div
                   key={food.id}
@@ -1798,6 +1810,16 @@ export default function DailyLog() {
                         ))}
                         <span>/ {food.default_serving_g || 100}g</span>
                       </span>
+                      {karne && (
+                        <span className="mt-1 flex items-center gap-1 text-[10.5px] leading-none">
+                          <span className="font-bold tabular-nums" style={{ color: karne.color }}>
+                            {karne.display}
+                          </span>
+                          <span className="font-medium text-text-muted opacity-60">/5</span>
+                          <span className="mx-0.5 text-text-muted opacity-40">·</span>
+                          <span className="truncate text-text-muted opacity-80">{karne.tags.join(' · ')}</span>
+                        </span>
+                      )}
                     </span>
                   </button>
 
