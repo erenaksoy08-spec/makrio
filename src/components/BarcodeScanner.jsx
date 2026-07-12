@@ -1,22 +1,99 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 
-// Barkod tarayıcı — tam ekran kamera + hedef çerçevesi.
-// ZXing dinamik yüklenir (bundle şişmez); arka kamera tercih edilir.
+// Barkod tarayıcı — hız öncelikli:
+//  * Destekleyen cihazlarda native BarcodeDetector (donanım hızında, anında okur)
+//  * Yoksa ZXing (TRY_HARDER + 60ms deneme aralığı)
+//  * 1080p arka kamera + sürekli odak — bulanık/kalitesiz görüntü sorunu biter.
+// Vizör: çevresi karartılmış pencere, zarif köşe braketleri, nefes alan çerçeve.
+const FORMATS = ['ean_13', 'ean_8', 'upc_a', 'upc_e', 'code_128']
+
+const VIDEO_CONSTRAINTS = {
+  facingMode: { ideal: 'environment' },
+  width: { ideal: 1920 },
+  height: { ideal: 1080 },
+}
+
 export default function BarcodeScanner({ onDetect, onClose }) {
   const videoRef = useRef(null)
+  const torchRef = useRef(null)
   const [error, setError] = useState('')
-  const [starting, setStarting] = useState(true)
+  const [ready, setReady] = useState(false)
+  const [torchAvailable, setTorchAvailable] = useState(false)
+  const [torchOn, setTorchOn] = useState(false)
 
   useEffect(() => {
-    let controls = null
-    let cancelled = false
+    let stopped = false
+    let stream = null
+    let zxingControls = null
+    let timer = null
+
+    const cleanup = () => {
+      clearInterval(timer)
+      try {
+        zxingControls?.stop()
+      } catch {
+        /* zaten durmuş */
+      }
+      stream?.getTracks().forEach((t) => t.stop())
+    }
+
+    const finish = (text) => {
+      if (stopped || !text) return
+      stopped = true
+      cleanup()
+      navigator.vibrate?.([16, 30, 16])
+      onDetect(text)
+    }
 
     async function start() {
       try {
+        // 1) Native BarcodeDetector — Android Chrome'da donanım hızında.
+        if ('BarcodeDetector' in window) {
+          try {
+            const supported = await window.BarcodeDetector.getSupportedFormats()
+            const fmts = FORMATS.filter((f) => supported.includes(f))
+            if (fmts.length > 0) {
+              stream = await navigator.mediaDevices.getUserMedia({ video: VIDEO_CONSTRAINTS, audio: false })
+              if (stopped) return cleanup()
+              const video = videoRef.current
+              video.srcObject = stream
+              await video.play()
+              setReady(true)
+
+              const track = stream.getVideoTracks()[0]
+              try {
+                await track.applyConstraints({ advanced: [{ focusMode: 'continuous' }] })
+              } catch {
+                /* odak desteği yoksa sorun değil */
+              }
+              const caps = track.getCapabilities?.()
+              if (caps?.torch) {
+                setTorchAvailable(true)
+                torchRef.current = (on) => track.applyConstraints({ advanced: [{ torch: on }] })
+              }
+
+              const detector = new window.BarcodeDetector({ formats: fmts })
+              timer = setInterval(async () => {
+                if (stopped || !video || video.readyState < 2) return
+                try {
+                  const codes = await detector.detect(video)
+                  if (codes?.[0]?.rawValue) finish(codes[0].rawValue)
+                } catch {
+                  /* tek kare hatası — sıradaki karede devam */
+                }
+              }, 70)
+              return
+            }
+          } catch {
+            /* native yol başarısız — ZXing'e düş */
+          }
+        }
+
+        // 2) ZXing fallback — iOS Safari ve diğerleri.
         const { BrowserMultiFormatReader } = await import('@zxing/browser')
         const { BarcodeFormat, DecodeHintType } = await import('@zxing/library')
-        if (cancelled) return
+        if (stopped) return
 
         const hints = new Map()
         hints.set(DecodeHintType.POSSIBLE_FORMATS, [
@@ -26,24 +103,24 @@ export default function BarcodeScanner({ onDetect, onClose }) {
           BarcodeFormat.UPC_E,
           BarcodeFormat.CODE_128,
         ])
-        const reader = new BrowserMultiFormatReader(hints)
+        hints.set(DecodeHintType.TRY_HARDER, true)
+        const reader = new BrowserMultiFormatReader(hints, { delayBetweenScanAttempts: 60 })
 
-        controls = await reader.decodeFromVideoDevice(
-          undefined, // varsayılan: environment (arka) kamera
+        zxingControls = await reader.decodeFromConstraints(
+          { video: VIDEO_CONSTRAINTS, audio: false },
           videoRef.current,
           (result) => {
-            if (result && !cancelled) {
-              cancelled = true
-              navigator.vibrate?.([18, 40, 18])
-              controls?.stop()
-              onDetect(result.getText())
-            }
+            if (result) finish(result.getText())
           },
         )
-        if (!cancelled) setStarting(false)
+        if (stopped) return cleanup()
+        setReady(true)
+        if (typeof zxingControls?.switchTorch === 'function') {
+          setTorchAvailable(true)
+          torchRef.current = (on) => zxingControls.switchTorch(on)
+        }
       } catch (e) {
-        if (!cancelled) {
-          setStarting(false)
+        if (!stopped) {
           setError(
             e?.name === 'NotAllowedError'
               ? 'Kamera izni gerekli — tarayıcı ayarlarından izin ver.'
@@ -55,66 +132,105 @@ export default function BarcodeScanner({ onDetect, onClose }) {
     start()
 
     return () => {
-      cancelled = true
-      controls?.stop()
+      stopped = true
+      cleanup()
     }
   }, [onDetect])
 
+  async function toggleTorch() {
+    try {
+      await torchRef.current?.(!torchOn)
+      setTorchOn((v) => !v)
+    } catch {
+      /* desteklenmiyorsa sessizce geç */
+    }
+  }
+
   return (
     <motion.div
-      className="fixed inset-0 z-50 flex flex-col bg-black"
+      className="fixed inset-0 z-50 bg-black"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
     >
       <video ref={videoRef} className="h-full w-full object-cover" muted playsInline />
 
-      {/* hedef çerçevesi */}
+      {/* vizör penceresi — çevresi karartılır, içi berrak kalır */}
       <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-        <div className="relative h-40 w-72 max-w-[80vw]">
+        <motion.div
+          className="relative h-[180px] w-[320px] max-w-[82vw] rounded-2xl"
+          style={{ boxShadow: '0 0 0 200vmax rgba(4,6,10,0.62)' }}
+          animate={{ scale: ready ? 1 : 0.97 }}
+          transition={{ duration: 0.4, ease: 'easeOut' }}
+        >
+          {/* nefes alan ince çerçeve */}
+          <motion.span
+            className="absolute inset-0 rounded-2xl"
+            animate={{ borderColor: ['rgba(255,255,255,0.18)', 'rgba(255,255,255,0.55)', 'rgba(255,255,255,0.18)'] }}
+            transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut' }}
+            style={{ border: '1.5px solid rgba(255,255,255,0.3)' }}
+          />
+          {/* köşe braketleri */}
           {[
-            'left-0 top-0 border-l-[3px] border-t-[3px] rounded-tl-lg',
-            'right-0 top-0 border-r-[3px] border-t-[3px] rounded-tr-lg',
-            'bottom-0 left-0 border-b-[3px] border-l-[3px] rounded-bl-lg',
-            'bottom-0 right-0 border-b-[3px] border-r-[3px] rounded-br-lg',
+            '-left-[3px] -top-[3px] border-l-[3.5px] border-t-[3.5px] rounded-tl-[18px]',
+            '-right-[3px] -top-[3px] border-r-[3.5px] border-t-[3.5px] rounded-tr-[18px]',
+            '-bottom-[3px] -left-[3px] border-b-[3.5px] border-l-[3.5px] rounded-bl-[18px]',
+            '-bottom-[3px] -right-[3px] border-b-[3.5px] border-r-[3.5px] rounded-br-[18px]',
           ].map((pos) => (
-            <span key={pos} className={`absolute h-7 w-7 border-white/90 ${pos}`} />
+            <span key={pos} className={`absolute h-9 w-9 border-white ${pos}`} style={{ filter: 'drop-shadow(0 1px 4px rgba(0,0,0,0.5))' }} />
           ))}
-          {/* tarama çizgisi */}
-          {!error && (
-            <motion.span
-              className="absolute inset-x-3 h-[2px] rounded-full"
-              style={{ background: 'linear-gradient(90deg, transparent, #6FCF97, transparent)', boxShadow: '0 0 12px #6FCF97' }}
-              animate={{ top: ['12%', '85%', '12%'] }}
-              transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut' }}
-            />
-          )}
-        </div>
+        </motion.div>
       </div>
 
       {/* üst bar */}
-      <div className="absolute inset-x-0 top-0 flex items-center justify-between p-4 pt-6">
-        <span className="rounded-full bg-black/50 px-3 py-1.5 text-sm font-medium text-white backdrop-blur">
-          Barkodu çerçeveye hizala
-        </span>
+      <div className="absolute inset-x-0 top-0 flex items-center justify-between p-5 pt-7">
         <button
           type="button"
           onClick={onClose}
-          className="btn-icon flex h-10 w-10 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur"
+          className="btn-icon flex h-10 w-10 items-center justify-center rounded-full text-white"
+          style={{ background: 'rgba(10,12,16,0.55)', backdropFilter: 'blur(12px)' }}
           aria-label="Kapat"
         >
-          ✕
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
+          </svg>
         </button>
+        <span
+          className="rounded-full px-4 py-2 text-[13px] font-semibold text-white"
+          style={{ background: 'rgba(10,12,16,0.55)', backdropFilter: 'blur(12px)' }}
+        >
+          Barkod Tara
+        </span>
+        {torchAvailable ? (
+          <button
+            type="button"
+            onClick={toggleTorch}
+            className="btn-icon flex h-10 w-10 items-center justify-center rounded-full"
+            style={{
+              background: torchOn ? '#F2C94C' : 'rgba(10,12,16,0.55)',
+              color: torchOn ? '#1b1206' : '#fff',
+              backdropFilter: 'blur(12px)',
+            }}
+            aria-label="Fener"
+          >
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
+              <path d="M13 2 5 13h5l-1 9 8-11h-5l1-9z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" fill={torchOn ? 'currentColor' : 'none'} />
+            </svg>
+          </button>
+        ) : (
+          <span className="h-10 w-10" />
+        )}
       </div>
 
-      {/* durum */}
-      {(starting || error) && (
-        <div className="absolute inset-x-0 bottom-16 flex justify-center px-6">
-          <span className="rounded-2xl bg-black/60 px-4 py-2.5 text-center text-sm text-white backdrop-blur">
-            {error || 'Kamera açılıyor...'}
-          </span>
-        </div>
-      )}
+      {/* alt yönerge */}
+      <div className="absolute inset-x-0 bottom-14 flex flex-col items-center gap-2 px-6">
+        <span
+          className="rounded-full px-4 py-2 text-center text-[13px] text-white/85"
+          style={{ background: 'rgba(10,12,16,0.55)', backdropFilter: 'blur(12px)' }}
+        >
+          {error || (ready ? 'Barkodu pencereye getir — otomatik okunur' : 'Kamera açılıyor...')}
+        </span>
+      </div>
     </motion.div>
   )
 }

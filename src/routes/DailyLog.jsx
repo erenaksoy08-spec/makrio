@@ -18,6 +18,7 @@ import SupplementTracker from '../components/SupplementTracker'
 import { useSmoothNumber } from '../hooks/useSmoothNumber'
 import GoldGate from '../components/GoldGate'
 import BarcodeScanner from '../components/BarcodeScanner'
+import ScanResult from '../components/ScanResult'
 import { isGold, FREE_LOG_LIMIT } from '../lib/gold'
 
 // Aktif ("Şimdi") öğün ikonu için gün zamanına özel renk.
@@ -199,7 +200,7 @@ export default function DailyLog() {
 
   // Barkod tarama: DB → Open Food Facts → manuel form (barkod ekli).
   const [scanning, setScanning] = useState(false)
-  const [scanBusy, setScanBusy] = useState(false)
+  const [scanResult, setScanResult] = useState(null) // { phase, code, food? }
   const [customBarcode, setCustomBarcode] = useState(null)
   const [customBrand, setCustomBrand] = useState('')
 
@@ -369,18 +370,17 @@ export default function DailyLog() {
   }
 
   // Okunan barkodu çözümle: önce kendi veritabanı, sonra Open Food Facts,
-  // o da yoksa barkod ekli özel yemek formu (topluluk katkısı).
+  // o da yoksa premium "ilk sen tanımla" kartı. Bulunanlar onay
+  // animasyonuyla (ScanResult) gram ekranına akar.
   async function handleBarcode(code) {
     setScanning(false)
-    setScanBusy(true)
+    setScanResult({ phase: 'lookup', code })
     setSearchError('')
 
     // 1) Kendi veritabanımız
     const { data: own } = await supabase.from('foods').select('*').eq('barcode', code).limit(1)
     if (own?.[0]) {
-      setScanBusy(false)
-      navigator.vibrate?.(12)
-      selectFood(own[0])
+      setScanResult({ phase: 'found', code, food: own[0] })
       return
     }
 
@@ -419,16 +419,20 @@ export default function DailyLog() {
         })
         .select()
         .single()
-      setScanBusy(false)
       if (!error && created) {
         navigator.vibrate?.([12, 30, 16])
-        selectFood(created)
+        setScanResult({ phase: 'found', code, food: created })
         return
       }
     }
 
-    // 3) Bulunamadı: barkod ekli manuel form
-    setScanBusy(false)
+    // 3) Bulunamadı: premium kart — oradan barkod ekli manuel forma geçilir.
+    setScanResult({ phase: 'notfound', code })
+  }
+
+  // "Etiketten Tanımla": barkod ekli özel yemek formunu aç.
+  function defineFromBarcode(code) {
+    setScanResult(null)
     setCustomForm({ name_tr: '', calories_per_100g: '', protein_per_100g: '', carbs_per_100g: '', fat_per_100g: '' })
     setCustomBarcode(code)
     setCustomBrand('')
@@ -742,6 +746,24 @@ export default function DailyLog() {
       <AnimatePresence>{goldGate && <GoldGate onClose={() => setGoldGate(false)} />}</AnimatePresence>
       <AnimatePresence>
         {scanning && <BarcodeScanner onDetect={handleBarcode} onClose={() => setScanning(false)} />}
+      </AnimatePresence>
+      <AnimatePresence>
+        {scanResult && (
+          <ScanResult
+            result={scanResult}
+            onUse={(food) => {
+              setScanResult(null)
+              navigator.vibrate?.(10)
+              selectFood(food)
+            }}
+            onDefine={() => defineFromBarcode(scanResult.code)}
+            onRescan={() => {
+              setScanResult(null)
+              setScanning(true)
+            }}
+            onClose={() => setScanResult(null)}
+          />
+        )}
       </AnimatePresence>
     </>
   )
@@ -1488,17 +1510,12 @@ export default function DailyLog() {
               type="button"
               onClick={() => setScanning(true)}
               aria-label="Barkod tara"
-              disabled={scanBusy}
-              className="btn-icon -mr-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-text-muted transition-colors hover:text-text disabled:opacity-50"
+              className="btn-icon -mr-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-text-muted transition-colors hover:text-text"
             >
-              {scanBusy ? (
-                <span className="h-4 w-4 animate-spin rounded-full border-[1.8px] border-white/15 border-t-white/60" />
-              ) : (
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                  <path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-                  <path d="M7 8v8M10.5 8v8M13.5 8v8M17 8v8" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-                </svg>
-              )}
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                <path d="M7 8v8M10.5 8v8M13.5 8v8M17 8v8" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+              </svg>
             </button>
           </div>
         )}
