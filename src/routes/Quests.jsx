@@ -81,23 +81,67 @@ function CollectBurst({ amount }) {
   )
 }
 
-// TOPLA — mücevher düğme (tıklama konumu uçuş animasyonu için iletilir)
+// TOPLA — basılınca plaka döner, şok dalgası yayılır; üstünde ışık süpürmesi gezer.
 function CollectButton({ disabled, onClick, small = false }) {
+  const [pressStamp, setPressStamp] = useState(0)
+
   return (
     <motion.button
       type="button"
       disabled={disabled}
-      onClick={(e) => onClick(e)}
-      whileTap={{ scale: 0.9 }}
-      animate={{ boxShadow: [`0 0 0px ${GOLD}00`, `0 0 16px ${GOLD}66`, `0 0 0px ${GOLD}00`] }}
-      transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
-      className={`btn-primary relative overflow-hidden rounded-full font-bold uppercase tracking-[0.16em] disabled:opacity-50 ${
-        small ? 'px-3 py-1 text-[9px]' : 'px-4 py-1.5 text-[10px]'
+      onClick={(e) => {
+        setPressStamp(Date.now())
+        onClick(e)
+      }}
+      whileTap={{ scale: 0.86 }}
+      animate={{ boxShadow: [`0 0 0px ${GOLD}00`, `0 0 18px ${GOLD}59`, `0 0 0px ${GOLD}00`] }}
+      transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut' }}
+      className={`btn-primary relative overflow-hidden rounded-full font-bold uppercase tracking-[0.14em] disabled:opacity-50 ${
+        small ? 'py-1 pl-1.5 pr-3 text-[9px]' : 'py-1.5 pl-2 pr-3.5 text-[10px]'
       }`}
-      style={{ background: `linear-gradient(135deg, #FBE38A, ${GOLD} 55%, #C9962E)`, color: '#1b1206' }}
+      style={{
+        background: `linear-gradient(135deg, #FBE38A, ${GOLD} 55%, #C9962E)`,
+        color: '#1b1206',
+        boxShadow: `inset 0 1px 0 rgba(255,255,255,0.5), inset 0 -2px 3px rgba(0,0,0,0.25)`,
+      }}
     >
-      <span className="pointer-events-none absolute inset-[2.5px] rounded-full" style={{ border: '1px solid rgba(0,0,0,0.25)' }} />
-      <span className="relative">Topla ✦</span>
+      {/* iç çerçeve + sürekli gezen ışık süpürmesi */}
+      <span className="pointer-events-none absolute inset-[2.5px] rounded-full" style={{ border: '1px solid rgba(0,0,0,0.22)' }} />
+      <motion.span
+        className="pointer-events-none absolute inset-0"
+        style={{ background: 'linear-gradient(115deg, transparent 38%, rgba(255,255,255,0.6) 50%, transparent 62%)' }}
+        animate={{ x: ['-110%', '110%'] }}
+        transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut', repeatDelay: 0.6 }}
+      />
+
+      {/* basınca yayılan şok dalgası */}
+      <AnimatePresence>
+        {pressStamp > 0 && (
+          <motion.span
+            key={pressStamp}
+            className="pointer-events-none absolute inset-0 rounded-full"
+            style={{ border: `2px solid ${GOLD}` }}
+            initial={{ scale: 0.75, opacity: 0.9 }}
+            animate={{ scale: 2.1, opacity: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.55, ease: 'easeOut' }}
+          />
+        )}
+      </AnimatePresence>
+
+      <span className="relative flex items-center gap-1.5">
+        {/* mini plaka — basınca tam tur döner */}
+        <motion.span
+          key={pressStamp}
+          className="flex items-center"
+          initial={pressStamp > 0 ? { rotate: 0 } : false}
+          animate={pressStamp > 0 ? { rotate: 360 } : {}}
+          transition={{ duration: 0.55, ease: [0.34, 1.3, 0.64, 1] }}
+        >
+          <PlateIcon size={small ? 13 : 16} />
+        </motion.span>
+        Topla
+      </span>
     </motion.button>
   )
 }

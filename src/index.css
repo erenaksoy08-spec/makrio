@@ -361,10 +361,12 @@
   --icon-muted: rgba(236, 234, 228, 0.55);
 }
 
-/* Zemin: tek renk antrasit, tepeden çok hafif premium ışık — doku yok */
+/* Zemin: antrasit + çok hafif baklava sacı dokusu (spor salonu zemini) */
 [data-theme='gym'] body {
   background-color: #17191c;
-  background-image: radial-gradient(130% 85% at 50% -20%, rgba(255, 255, 255, 0.038), transparent 55%);
+  background-image: radial-gradient(130% 85% at 50% -20%, rgba(255, 255, 255, 0.038), transparent 55%),
+    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.014) 0 2px, transparent 2px 16px),
+    repeating-linear-gradient(-45deg, rgba(255, 255, 255, 0.014) 0 2px, transparent 2px 16px);
   background-attachment: fixed;
 }
 
@@ -440,6 +442,48 @@
 [data-theme='gym'] .skeleton {
   background: linear-gradient(90deg, #24282b 25%, #30353a 50%, #24282b 75%);
   background-size: 800px 100%;
+}
+
+/* Çipler (porsiyon hazırları vb.): dökme demir plaka kenarı hissi */
+[data-theme='gym'] .btn-chip {
+  border-radius: 7px !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), inset 0 -1px 2px rgba(0, 0, 0, 0.4);
+}
+
+/* ── Gramaj kaydırıcısı: bar = tırtıllı çelik halter barı, daire yerine
+   thumb = kırmızı vinil ağırlık plakası. Sürüklerken plaka büyür. ── */
+[data-theme='gym'] .gram-slider {
+  height: 8px;
+  border-radius: 4px;
+  background: repeating-linear-gradient(90deg, transparent 0 7px, rgba(0, 0, 0, 0.22) 7px 8px),
+    linear-gradient(180deg, #5a5f65, #3a3f44 55%, #292d31) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28), inset 0 -1px 2px rgba(0, 0, 0, 0.65);
+}
+
+[data-theme='gym'] .gram-slider::-webkit-slider-thumb {
+  appearance: none;
+  width: 30px;
+  height: 30px;
+  border: none;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Ccircle cx='15' cy='15' r='14' fill='%237e2118'/%3E%3Ccircle cx='15' cy='15' r='12.6' fill='%23c0392b'/%3E%3Ccircle cx='15' cy='15' r='9' fill='none' stroke='%238f261c' stroke-width='1.1'/%3E%3Ccircle cx='15' cy='15' r='5.4' fill='%2323262a'/%3E%3Ccircle cx='15' cy='15' r='2.5' fill='%23101214'/%3E%3Ccircle cx='15' cy='15' r='2.5' fill='none' stroke='%23aeb4ba' stroke-width='0.8' stroke-dasharray='2.4 5'/%3E%3Cellipse cx='11' cy='8.2' rx='5' ry='2.2' fill='rgba(255,255,255,0.16)' transform='rotate(-24 11 8.2)'/%3E%3C/svg%3E")
+    center / contain no-repeat;
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.55));
+  cursor: grab;
+  transition: transform 0.18s ease;
+}
+
+[data-theme='gym'] .gram-slider:active::-webkit-slider-thumb {
+  transform: scale(1.22) rotate(8deg);
+  cursor: grabbing;
+}
+
+[data-theme='gym'] .gram-slider::-moz-range-thumb {
+  width: 30px;
+  height: 30px;
+  border: none;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Ccircle cx='15' cy='15' r='14' fill='%237e2118'/%3E%3Ccircle cx='15' cy='15' r='12.6' fill='%23c0392b'/%3E%3Ccircle cx='15' cy='15' r='9' fill='none' stroke='%238f261c' stroke-width='1.1'/%3E%3Ccircle cx='15' cy='15' r='5.4' fill='%2323262a'/%3E%3Ccircle cx='15' cy='15' r='2.5' fill='%23101214'/%3E%3Ccircle cx='15' cy='15' r='2.5' fill='none' stroke='%23aeb4ba' stroke-width='0.8' stroke-dasharray='2.4 5'/%3E%3Cellipse cx='11' cy='8.2' rx='5' ry='2.2' fill='rgba(255,255,255,0.16)' transform='rotate(-24 11 8.2)'/%3E%3C/svg%3E")
+    center / contain no-repeat;
+  cursor: grab;
 }
 
 /* ──────────────────────────────────────────────────────────────

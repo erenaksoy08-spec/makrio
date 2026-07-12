@@ -1765,7 +1765,7 @@ export default function DailyLog() {
               // MacroFactor tarzı: özgün yemekler üstte, markalı ürünler ayrı bölümde.
               const sections = searching
                 ? [
-                    { key: 'generic', label: 'Yemekler', items: results.filter((f) => !f.brand) },
+                    { key: 'generic', label: 'Temel Besinler', items: results.filter((f) => !f.brand) },
                     { key: 'branded', label: 'Markalı Ürünler', items: results.filter((f) => f.brand) },
                   ].filter((s) => s.items.length > 0)
                 : [{ key: 'all', label: null, items: results }]
