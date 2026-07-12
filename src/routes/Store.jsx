@@ -165,7 +165,7 @@ export default function Store() {
   }
 
   return (
-    <div className="relative mx-auto max-w-md space-y-5 px-4 py-6">
+    <div className="isolate relative mx-auto max-w-md space-y-5 px-4 py-6">
       {/* butik salonu — sayfaya özel gece zemini + altın toz */}
       <div
         className="pointer-events-none fixed inset-0 -z-10"

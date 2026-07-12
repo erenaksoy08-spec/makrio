@@ -369,7 +369,7 @@ export default function Progress() {
                 </motion.span>
               )}
             </span>
-            <span className="mt-0.5 block truncate text-[10px] font-medium uppercase tracking-[0.16em] text-text-muted">
+            <span className="mt-0.5 block truncate text-[10px] font-medium uppercase tracking-[0.16em]" style={{ color: '#A08A5F' }}>
               Seri Ödülleri Koleksiyonu
             </span>
           </span>
@@ -462,7 +462,7 @@ export default function Progress() {
                 Yeni
               </span>
             </span>
-            <span className="block truncate text-xs text-text-muted">Halkalar, zeminler, prestij — Plaka'yla kuşan</span>
+            <span className="block truncate text-xs" style={{ color: '#97907F' }}>Halkalar, zeminler, prestij — Plaka'yla kuşan</span>
           </span>
           <span className="shrink-0">
             <PlateBalance value={scoopBalance(preferences)} size="sm" />

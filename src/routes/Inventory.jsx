@@ -161,7 +161,7 @@ export default function Inventory() {
   }
 
   return (
-    <div className="relative mx-auto max-w-md space-y-5 px-4 py-6 pb-44">
+    <div className="isolate relative mx-auto max-w-md space-y-5 px-4 py-6 pb-44">
       {/* çanta içi — koyu deri, çapraz dokuma, vinyet */}
       <div
         className="pointer-events-none fixed inset-0 -z-10"
@@ -208,7 +208,7 @@ export default function Inventory() {
           </h1>
           <span className="h-0 flex-1" style={{ borderTop: `2px dashed ${BRASS_SOFT}0.4)` }} />
         </div>
-        <p className="mt-2 text-[10px] tracking-[0.22em] text-text-muted">KAZANDIĞIN HER ŞEY TEK ÇANTADA</p>
+        <p className="mt-2 text-[10px] tracking-[0.22em]" style={{ color: '#A79B85' }}>KAZANDIĞIN HER ŞEY TEK ÇANTADA</p>
         <div
           className="mx-auto mt-3 flex w-fit items-center gap-1.5 rounded-full border px-3 py-1 text-[10px] font-bold tabular-nums"
           style={{ borderColor: `${BRASS_SOFT}0.4)`, backgroundColor: `${BRASS_SOFT}0.08)`, color: BRASS }}
@@ -263,7 +263,7 @@ export default function Inventory() {
         </motion.div>
       ))}
 
-      <p className="px-1 pt-1 text-center text-[11px] leading-relaxed text-text-muted">
+      <p className="px-1 pt-1 text-center text-[11px] leading-relaxed" style={{ color: '#A79B85' }}>
         Yeni eşyalar <Link to="/salon" className="font-semibold" style={{ color: BRASS }}>Şeref Salonu</Link>
         {"'nda seriyle açılır, "}
         <Link to="/vitrin" className="font-semibold" style={{ color: BRASS }}>Vitrin</Link>
@@ -300,7 +300,7 @@ export default function Inventory() {
                 </span>
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
-                    <span className="truncate text-sm font-bold text-text">{selected.name}</span>
+                    <span className="truncate text-sm font-bold" style={{ color: '#F0EADC' }}>{selected.name}</span>
                     {selected.owned && selected.equipped && (
                       <span
                         className="shrink-0 rounded-full px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-wider text-black"
@@ -313,7 +313,7 @@ export default function Inventory() {
                   <div className="mt-0.5 text-[9px] font-semibold uppercase tracking-[0.16em]" style={{ color: `${BRASS_SOFT}0.8)` }}>
                     {selected.source === 'salon' ? `Şeref Salonu · ${selected.days} gün serisi` : `Vitrin · ${selected.price} Plaka`}
                   </div>
-                  <p className="mt-1.5 text-[11px] leading-relaxed text-text-muted">{selected.desc}</p>
+                  <p className="mt-1.5 text-[11px] leading-relaxed" style={{ color: '#A79B85' }}>{selected.desc}</p>
                   {selected.note && (
                     <p className="mt-1 text-[10px] italic leading-relaxed" style={{ color: `${BRASS_SOFT}0.65)` }}>
                       {selected.note}
@@ -323,7 +323,7 @@ export default function Inventory() {
                 <button
                   type="button"
                   onClick={() => setSelId(null)}
-                  className="shrink-0 text-sm text-text-muted"
+                  className="shrink-0 text-sm" style={{ color: '#A79B85' }}
                   aria-label="Kapat"
                 >
                   ✕
@@ -353,7 +353,7 @@ export default function Inventory() {
                         style={{
                           borderColor: active ? BRASS : `${BRASS_SOFT}0.25)`,
                           backgroundColor: active ? `${BRASS_SOFT}0.16)` : 'rgba(0,0,0,0.25)',
-                          color: active ? '#EFD9A8' : 'var(--color-text-muted)',
+                          color: active ? '#EFD9A8' : '#A79B85',
                           boxShadow: active ? `0 0 10px ${BRASS_SOFT}0.3)` : 'none',
                         }}
                       >
@@ -372,7 +372,7 @@ export default function Inventory() {
                   className="mt-3 w-full rounded-xl border py-2.5 text-[11px] font-bold uppercase tracking-[0.18em] disabled:opacity-50"
                   style={
                     selected.equipped
-                      ? { borderColor: 'rgba(255,255,255,0.14)', color: 'var(--color-text-muted)', backgroundColor: 'rgba(0,0,0,0.25)' }
+                      ? { borderColor: 'rgba(255,255,255,0.14)', color: '#A79B85', backgroundColor: 'rgba(0,0,0,0.25)' }
                       : {
                           border: '1px solid rgba(0,0,0,0.4)',
                           background: `linear-gradient(180deg, #EFD9A8, ${BRASS} 60%, #8A6528)`,

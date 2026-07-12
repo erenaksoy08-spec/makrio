@@ -833,8 +833,10 @@ body {
    Tente: indigo-altın çizgili saçak + fisto (yarım daire) kenar. */
 .vitrin-frame {
   border: 1px solid transparent;
+  /* İç zemin sabit gece tonu: butik kimliği tema değişse de korunur
+     (açık temalarda fildişi yazılar kaybolmasın). */
   background:
-    linear-gradient(var(--color-surface), var(--color-surface)) padding-box,
+    linear-gradient(#151021, #151021) padding-box,
     conic-gradient(
         from var(--lux-angle),
         rgba(242, 201, 76, 0.85),

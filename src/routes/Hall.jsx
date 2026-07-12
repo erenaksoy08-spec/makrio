@@ -29,10 +29,10 @@ function RewardTile({ reward, state, index, active, progress, onClick }) {
       style={{
         borderColor: open ? `${a}40` : sealed ? '#F2A93B4D' : 'rgba(255,255,255,0.06)',
         background: open
-          ? `radial-gradient(90% 70% at 50% 0%, ${a}1c, var(--color-surface) 78%)`
+          ? `radial-gradient(90% 70% at 50% 0%, ${a}1c, #191309 78%)`
           : sealed
-            ? 'radial-gradient(90% 70% at 50% 0%, rgba(242,169,59,0.14), var(--color-surface) 78%)'
-            : 'var(--color-surface)',
+            ? 'radial-gradient(90% 70% at 50% 0%, rgba(242,169,59,0.14), #191309 78%)'
+            : '#161009',
         boxShadow: open || sealed ? 'inset 0 1px 0 rgba(255,255,255,0.07)' : 'none',
       }}
     >
@@ -53,7 +53,7 @@ function RewardTile({ reward, state, index, active, progress, onClick }) {
         {active && (
           <span
             className="absolute -bottom-0.5 -right-0.5 flex items-center justify-center rounded-full text-[9px] font-bold text-black"
-            style={{ backgroundColor: a, border: '2px solid var(--color-surface)', width: 18, height: 18 }}
+            style={{ backgroundColor: a, border: '2px solid #161009', width: 18, height: 18 }}
           >
             ✓
           </span>
@@ -62,7 +62,7 @@ function RewardTile({ reward, state, index, active, progress, onClick }) {
 
       <span
         className="text-[11px] font-semibold tabular-nums"
-        style={{ color: open ? a : sealed ? '#F2A93B' : 'var(--color-text-muted)' }}
+        style={{ color: open ? a : sealed ? '#F2A93B' : '#9C8E76' }}
       >
         {sealed ? 'Aç!' : `${reward.days} gün`}
       </span>
@@ -138,7 +138,7 @@ export default function Hall() {
   }
 
   return (
-    <div className="relative mx-auto max-w-md space-y-5 px-4 py-6">
+    <div className="isolate relative mx-auto max-w-md space-y-5 px-4 py-6">
       {/* salon zemini — tepeden vuran onur ışığı, bronz karanlık */}
       <div
         className="pointer-events-none fixed inset-0 -z-10"
@@ -181,7 +181,7 @@ export default function Hall() {
             >
               Şeref Salonu
             </h1>
-            <p className="mt-1.5 text-[10px] tracking-[0.22em] text-text-muted">SERİ ÖDÜLLERİ KOLEKSİYONU</p>
+            <p className="mt-1.5 text-[10px] tracking-[0.22em]" style={{ color: '#9C8E76' }}>SERİ ÖDÜLLERİ KOLEKSİYONU</p>
           </div>
           <Laurel size={34} flip />
         </div>
@@ -215,10 +215,10 @@ export default function Hall() {
         className="mt-1 rounded-2xl border px-4 py-3 text-center"
         style={{ borderColor: `${GOLD}26`, background: `${GOLD}0a` }}
       >
-        <p className="text-xs leading-relaxed text-text">
+        <p className="text-xs leading-relaxed" style={{ color: '#F0E9DB' }}>
           Her madalyon bir <span className="font-semibold" style={{ color: GOLD }}>seri ödülü</span>.
         </p>
-        <p className="mt-1 text-[11px] leading-relaxed text-text-muted">
+        <p className="mt-1 text-[11px] leading-relaxed" style={{ color: '#9C8E76' }}>
           Üst üste kayıt tuttukça serin uzar, yeni günlük eşiklerinde madalyonlar açılır. Her birine dokunup temanı,
           rengini ya da rozetini kuşan.
         </p>

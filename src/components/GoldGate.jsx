@@ -73,8 +73,8 @@ export default function GoldGate({ onClose }) {
           Makrio Gold
         </h2>
 
-        <p className="mt-2 text-sm font-semibold text-text">Bugünün ücretsiz kayıtları doldu</p>
-        <p className="mt-1 text-xs leading-relaxed text-text-muted">
+        <p className="mt-2 text-sm font-semibold" style={{ color: '#F5F1E4' }}>Bugünün ücretsiz kayıtları doldu</p>
+        <p className="mt-1 text-xs leading-relaxed" style={{ color: '#B7AC93' }}>
           Günde 3 kayıt ücretsiz. Gold ile sınır yok — takibin hiç durmasın.
         </p>
 
@@ -85,7 +85,7 @@ export default function GoldGate({ onClose }) {
               initial={{ opacity: 0, x: -8 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.15 + i * 0.06 }}
-              className="flex items-center gap-2.5 text-[13px] text-text"
+              className="flex items-center gap-2.5 text-[13px]" style={{ color: '#F0EADA' }}
             >
               <span
                 className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs"
@@ -99,8 +99,8 @@ export default function GoldGate({ onClose }) {
         </ul>
 
         <div className="mt-4 flex items-baseline justify-center gap-1">
-          <span className="text-xl font-bold text-text">₺79,99</span>
-          <span className="text-xs text-text-muted">/ ay</span>
+          <span className="text-xl font-bold" style={{ color: '#F5F1E4' }}>₺79,99</span>
+          <span className="text-xs" style={{ color: '#B7AC93' }}>/ ay</span>
         </div>
 
         <Link
@@ -120,7 +120,7 @@ export default function GoldGate({ onClose }) {
           <span className="relative">👑 Gold'a Yükselt</span>
         </Link>
 
-        <button type="button" onClick={onClose} className="btn-chip mt-2.5 px-4 py-1.5 text-xs text-text-muted">
+        <button type="button" onClick={onClose} className="btn-chip mt-2.5 px-4 py-1.5 text-xs" style={{ color: '#B7AC93' }}>
           Şimdi değil
         </button>
       </motion.div>

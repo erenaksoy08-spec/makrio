@@ -403,7 +403,7 @@ export default function Quests() {
   }
 
   return (
-    <div className="relative mx-auto max-w-md space-y-4 px-4 py-6">
+    <div className="isolate relative mx-auto max-w-md space-y-4 px-4 py-6">
       {/* gece göğü — menekşe bulutsu + yıldızlar */}
       <div
         className="pointer-events-none fixed inset-0 -z-10"

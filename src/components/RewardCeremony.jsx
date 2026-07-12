@@ -290,7 +290,7 @@ export default function RewardCeremony({
             >
               {reward.title}
             </h2>
-            <p className="mt-1.5 text-sm leading-relaxed text-text-muted">{reward.description}</p>
+            <p className="mt-1.5 text-sm leading-relaxed" style={{ color: '#B3ACA1' }}>{reward.description}</p>
 
             {reward.duo && mode !== 'locked' && manageable ? (
               <div className="mt-5 w-full">
@@ -325,11 +325,11 @@ export default function RewardCeremony({
                         </span>
                         <span
                           className="text-[12px] font-semibold"
-                          style={{ color: on ? item.accent : 'var(--color-text)' }}
+                          style={{ color: on ? item.accent : '#F2EFE6' }}
                         >
                           {item.label}
                         </span>
-                        <span className="text-[10px] leading-tight text-text-muted">{item.desc}</span>
+                        <span className="text-[10px] leading-tight" style={{ color: '#B3ACA1' }}>{item.desc}</span>
                         {on && (
                           <motion.span
                             initial={{ scale: 0 }}
@@ -387,7 +387,7 @@ export default function RewardCeremony({
                         </span>
                         <span
                           className="text-[11px] font-medium"
-                          style={{ color: on ? a : 'var(--color-text-muted)' }}
+                          style={{ color: on ? a : '#B3ACA1' }}
                         >
                           {v.label}
                         </span>
@@ -417,14 +417,14 @@ export default function RewardCeremony({
             ) : mode === 'locked' ? (
               <div className="mt-5 w-full">
                 <div className="mb-1.5 flex items-center justify-between text-xs">
-                  <span className="text-text-muted">
+                  <span style={{ color: '#B3ACA1' }}>
                     {streak}/{reward.days} gün
                   </span>
                   <span className="font-semibold" style={{ color: a }}>
                     {reward.days - streak} gün kaldı
                   </span>
                 </div>
-                <div className="h-2 w-full overflow-hidden rounded-full bg-white/10">
+                <div className="h-2 w-full overflow-hidden rounded-full" style={{ backgroundColor: 'rgba(255,255,255,0.1)' }}>
                   <motion.div
                     className="h-full rounded-full"
                     style={{ backgroundColor: a }}
@@ -433,7 +433,7 @@ export default function RewardCeremony({
                     transition={{ duration: 0.8, ease: [0.34, 1.1, 0.64, 1] }}
                   />
                 </div>
-                <p className="mt-3 text-xs text-text-muted">Serini sürdür, bu madalyon seni bekliyor.</p>
+                <p className="mt-3 text-xs" style={{ color: '#B3ACA1' }}>Serini sürdür, bu madalyon seni bekliyor.</p>
               </div>
             ) : !manageable ? (
               /* alınmış ödül — kuşanma Envanter'den yapılır */
@@ -509,7 +509,7 @@ export default function RewardCeremony({
               </motion.button>
             )}
 
-            <button type="button" onClick={onClose} className="btn-chip mt-3 px-4 py-1.5 text-sm text-text-muted">
+            <button type="button" onClick={onClose} className="btn-chip mt-3 px-4 py-1.5 text-sm" style={{ color: '#B3ACA1' }}>
               {manageable && mode !== 'locked' ? '🎒 Envantere Gönder' : 'Kapat'}
             </button>
           </motion.div>

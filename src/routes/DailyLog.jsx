@@ -17,6 +17,7 @@ import SwipeableLogRow from '../components/SwipeableLogRow'
 import SupplementTracker from '../components/SupplementTracker'
 import { useSmoothNumber } from '../hooks/useSmoothNumber'
 import GoldGate from '../components/GoldGate'
+import BarcodeScanner from '../components/BarcodeScanner'
 import { isGold, FREE_LOG_LIMIT } from '../lib/gold'
 
 // Aktif ("Şimdi") öğün ikonu için gün zamanına özel renk.
@@ -196,6 +197,12 @@ export default function DailyLog() {
   const [goldGate, setGoldGate] = useState(false)
   const gold = isGold(profile)
 
+  // Barkod tarama: DB → Open Food Facts → manuel form (barkod ekli).
+  const [scanning, setScanning] = useState(false)
+  const [scanBusy, setScanBusy] = useState(false)
+  const [customBarcode, setCustomBarcode] = useState(null)
+  const [customBrand, setCustomBrand] = useState('')
+
   // Seriyi güncelle; bugünün İLK kaydıysa kutlama animasyonunu tetikle.
   async function bumpStreak() {
     const wasFirstToday = (profile?.last_log_date ?? null) !== today
@@ -355,6 +362,76 @@ export default function DailyLog() {
   // Boş arama sonucunda aranan adla önceden doldurulmuş özel yemek formu aç.
   function openCustomFood() {
     setCustomForm((f) => ({ ...f, name_tr: query.trim() }))
+    setCustomBarcode(null)
+    setCustomBrand('')
+    setCustomError('')
+    setCreatingCustom(true)
+  }
+
+  // Okunan barkodu çözümle: önce kendi veritabanı, sonra Open Food Facts,
+  // o da yoksa barkod ekli özel yemek formu (topluluk katkısı).
+  async function handleBarcode(code) {
+    setScanning(false)
+    setScanBusy(true)
+    setSearchError('')
+
+    // 1) Kendi veritabanımız
+    const { data: own } = await supabase.from('foods').select('*').eq('barcode', code).limit(1)
+    if (own?.[0]) {
+      setScanBusy(false)
+      navigator.vibrate?.(12)
+      selectFood(own[0])
+      return
+    }
+
+    // 2) Open Food Facts (açık gıda veritabanı)
+    let product = null
+    try {
+      const res = await fetch(
+        `https://world.openfoodfacts.org/api/v2/product/${encodeURIComponent(code)}.json?fields=product_name,product_name_tr,brands,nutriments,serving_quantity`,
+      )
+      const json = await res.json()
+      if (json?.status === 1) product = json.product
+    } catch {
+      /* ağ hatası — manuel forma düş */
+    }
+
+    const n = product?.nutriments
+    if (product && n && n['energy-kcal_100g'] != null) {
+      // Bulundu: ürünü barkoduyla kaydet, doğrudan gram ekranını aç.
+      const name = (product.product_name_tr || product.product_name || '').trim().slice(0, 80) || `Ürün ${code}`
+      const brand = (product.brands || '').split(',')[0].trim() || null
+      const { data: nameSearch } = await supabase.rpc('normalize_tr', { input: name })
+      const { data: created, error } = await supabase
+        .from('foods')
+        .insert({
+          name_tr: name,
+          name_search: nameSearch ?? name.toLowerCase(),
+          brand,
+          barcode: code,
+          calories_per_100g: Math.round(n['energy-kcal_100g']) || 0,
+          protein_per_100g: Math.round((n.proteins_100g ?? 0) * 10) / 10,
+          carbs_per_100g: Math.round((n.carbohydrates_100g ?? 0) * 10) / 10,
+          fat_per_100g: Math.round((n.fat_100g ?? 0) * 10) / 10,
+          default_serving_g: Math.round(Number(product.serving_quantity)) || null,
+          created_by: user.id,
+          is_verified: false,
+        })
+        .select()
+        .single()
+      setScanBusy(false)
+      if (!error && created) {
+        navigator.vibrate?.([12, 30, 16])
+        selectFood(created)
+        return
+      }
+    }
+
+    // 3) Bulunamadı: barkod ekli manuel form
+    setScanBusy(false)
+    setCustomForm({ name_tr: '', calories_per_100g: '', protein_per_100g: '', carbs_per_100g: '', fat_per_100g: '' })
+    setCustomBarcode(code)
+    setCustomBrand('')
     setCustomError('')
     setCreatingCustom(true)
   }
@@ -626,6 +703,8 @@ export default function DailyLog() {
       .insert({
         name_tr,
         name_search: nameSearch ?? name_tr.toLowerCase(),
+        barcode: customBarcode,
+        brand: customBrand.trim() || null,
         calories_per_100g: Number(calories_per_100g) || 0,
         protein_per_100g: Number(protein_per_100g) || 0,
         carbs_per_100g: Number(carbs_per_100g) || 0,
@@ -644,6 +723,8 @@ export default function DailyLog() {
 
     setCreatingCustom(false)
     setCustomForm({ name_tr: '', calories_per_100g: '', protein_per_100g: '', carbs_per_100g: '', fat_per_100g: '' })
+    setCustomBarcode(null)
+    setCustomBrand('')
     selectFood(created)
   }
 
@@ -659,6 +740,9 @@ export default function DailyLog() {
         )}
       </AnimatePresence>
       <AnimatePresence>{goldGate && <GoldGate onClose={() => setGoldGate(false)} />}</AnimatePresence>
+      <AnimatePresence>
+        {scanning && <BarcodeScanner onDetect={handleBarcode} onClose={() => setScanning(false)} />}
+      </AnimatePresence>
     </>
   )
 
@@ -692,8 +776,22 @@ export default function DailyLog() {
         </div>
 
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-text">Özel Yemek Ekle</h1>
-          <p className="mt-1 text-sm text-text-muted">Bir kez kaydet, sonra aramadan tek dokunuşla ekle.</p>
+          <h1 className="text-2xl font-semibold tracking-tight text-text">
+            {customBarcode ? 'Yeni Ürün Tanımla' : 'Özel Yemek Ekle'}
+          </h1>
+          <p className="mt-1 text-sm text-text-muted">
+            {customBarcode
+              ? 'Bu barkod hiçbir veritabanında yok — etiketteki değerleri gir, ilk sen tanımla. 🎉'
+              : 'Bir kez kaydet, sonra aramadan tek dokunuşla ekle.'}
+          </p>
+          {customBarcode && (
+            <span className="mt-2 inline-flex items-center gap-1.5 rounded-full border border-white/[0.1] bg-white/[0.04] px-2.5 py-1 text-xs tabular-nums text-text-muted">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
+                <path d="M7 8v8M10.5 8v8M13.5 8v8M17 8v8" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+              </svg>
+              {customBarcode}
+            </span>
+          )}
         </div>
 
         <form onSubmit={handleCreateCustom} className="space-y-4">
@@ -706,6 +804,15 @@ export default function DailyLog() {
             onChange={(e) => setCustomForm((f) => ({ ...f, name_tr: e.target.value }))}
             className="w-full rounded-2xl border border-white/[0.08] bg-white/[0.04] px-4 py-3.5 text-[15px] text-text outline-none transition-colors placeholder:text-text-muted focus:border-white/25"
           />
+          {customBarcode && (
+            <input
+              type="text"
+              placeholder="Marka (opsiyonel — örn. Ülker)"
+              value={customBrand}
+              onChange={(e) => setCustomBrand(e.target.value)}
+              className="w-full rounded-2xl border border-white/[0.08] bg-white/[0.04] px-4 py-3.5 text-[15px] text-text outline-none transition-colors placeholder:text-text-muted focus:border-white/25"
+            />
+          )}
 
           {/* besin değerleri kartı */}
           <div className="rounded-3xl border border-white/[0.06] bg-surface p-5">
@@ -822,6 +929,11 @@ export default function DailyLog() {
         {/* başlık */}
         <div className="space-y-2">
           <h1 className="text-2xl font-semibold tracking-tight text-text">{selectedFood.name_tr}</h1>
+          {selectedFood.brand && (
+            <div className="text-[11px] font-medium uppercase tracking-wide text-text-muted opacity-80">
+              {selectedFood.brand}
+            </div>
+          )}
           <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm">
             <span className="text-text-muted">{selectedFood.calories_per_100g} kcal / 100g</span>
             {selectedFood.is_verified && (
@@ -1371,6 +1483,23 @@ export default function DailyLog() {
                 ✕
               </button>
             )}
+            {/* barkod tarayıcı */}
+            <button
+              type="button"
+              onClick={() => setScanning(true)}
+              aria-label="Barkod tara"
+              disabled={scanBusy}
+              className="btn-icon -mr-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-text-muted transition-colors hover:text-text disabled:opacity-50"
+            >
+              {scanBusy ? (
+                <span className="h-4 w-4 animate-spin rounded-full border-[1.8px] border-white/15 border-t-white/60" />
+              ) : (
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                  <path d="M7 8v8M10.5 8v8M13.5 8v8M17 8v8" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                </svg>
+              )}
+            </button>
           </div>
         )}
 
@@ -1569,6 +1698,11 @@ export default function DailyLog() {
                         {highlightMatch(food.name_tr, query)}
                         {food.is_verified && <span className="ml-1 text-text-muted">✓</span>}
                       </span>
+                      {food.brand && (
+                        <span className="mt-0.5 block truncate text-[10.5px] font-medium uppercase tracking-wide text-text-muted opacity-80">
+                          {food.brand}
+                        </span>
+                      )}
                       <span className="mt-1 flex items-center gap-2.5 text-xs tabular-nums text-text-muted">
                         {MACRO_DOTS.map((d) => (
                           <span key={d.suffix} className="flex items-center gap-1">
@@ -1707,7 +1841,8 @@ export default function DailyLog() {
           {goalCalories ? (
             <div className="bar-track mt-4 h-[3px] w-full overflow-hidden rounded-full bg-white/[0.07]">
               <motion.div
-                className="bar-fill h-full rounded-full bg-white/90"
+                className="bar-fill h-full rounded-full"
+                style={{ backgroundColor: profile?.preferences?.ringColor || '#3DA5FF' }}
                 initial={{ width: 0 }}
                 animate={{ width: `${progressPct}%` }}
                 transition={{ duration: 0.7, ease: barEase }}
