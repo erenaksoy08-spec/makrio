@@ -803,12 +803,62 @@ export default function DailyLog() {
           </h1>
           <p className="mt-1 text-sm text-text-muted">
             {customBarcode
-              ? 'Bu barkod hiçbir veritabanında yok — etiketteki değerleri gir, ilk sen tanımla. 🎉'
+              ? 'Etiketteki değerleri gir — bu ürünü ilk sen tanımlıyorsun.'
               : 'Bir kez kaydet, sonra aramadan tek dokunuşla ekle.'}
           </p>
+        </div>
+
+        {/* canlı önizleme — yazdıkça dolan vitrin kartı */}
+        <div
+          className="relative overflow-hidden rounded-3xl border border-white/[0.07] px-5 pb-5 pt-4 text-center"
+          style={{
+            background:
+              'linear-gradient(180deg, rgba(255,255,255,0.03), transparent 45%), radial-gradient(110% 90% at 50% 0%, rgba(61,165,255,0.07), var(--color-surface) 68%)',
+            boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.05), 0 6px 20px rgba(0,0,0,0.22)',
+          }}
+        >
+          <span
+            className="pointer-events-none absolute inset-x-8 top-0 h-px"
+            style={{ background: 'linear-gradient(90deg, transparent, rgba(61,165,255,0.45), transparent)' }}
+          />
+          <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-text-muted">
+            Önizleme · 100 g
+          </div>
+          <div className="mt-1.5 flex items-baseline justify-center gap-1.5">
+            <span className="text-[38px] font-bold leading-none tabular-nums tracking-tight text-text">
+              {Number(customForm.calories_per_100g) || 0}
+            </span>
+            <span className="text-sm text-text-muted">kcal</span>
+          </div>
+          <div className={`mt-1.5 truncate text-sm font-medium ${customForm.name_tr ? 'text-text' : 'text-text-muted opacity-60'}`}>
+            {customForm.name_tr || 'Yemeğin adı'}
+            {customBrand.trim() && <span className="text-text-muted"> · {customBrand.trim()}</span>}
+          </div>
+          <div className="mt-3 flex items-center justify-center gap-2">
+            {macroInputs.map((m) => {
+              const v = Number(customForm[m.key]) || 0
+              return (
+                <span
+                  key={m.key}
+                  className="flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] tabular-nums transition-opacity"
+                  style={{
+                    borderColor: v > 0 ? `${m.color}40` : 'rgba(255,255,255,0.07)',
+                    backgroundColor: v > 0 ? `${m.color}14` : 'transparent',
+                    color: v > 0 ? m.color : 'var(--color-text-muted)',
+                    opacity: v > 0 ? 1 : 0.55,
+                  }}
+                >
+                  <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: m.color }} />
+                  {v}g {m.label}
+                </span>
+              )
+            })}
+          </div>
           {customBarcode && (
-            <span className="mt-2 inline-flex items-center gap-1.5 rounded-full border border-white/[0.1] bg-white/[0.04] px-2.5 py-1 text-xs tabular-nums text-text-muted">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
+            <span className="mt-3 inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] tabular-nums"
+              style={{ borderColor: 'rgba(242,201,76,0.3)', backgroundColor: 'rgba(242,201,76,0.08)', color: '#D9B25F' }}
+            >
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
                 <path d="M7 8v8M10.5 8v8M13.5 8v8M17 8v8" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
               </svg>
               {customBarcode}
@@ -817,47 +867,47 @@ export default function DailyLog() {
         </div>
 
         <form onSubmit={handleCreateCustom} className="space-y-4">
-          {/* isim — arama çubuğuyla aynı cam stil */}
-          <input
-            type="text"
-            autoFocus={!customForm.name_tr}
-            placeholder="Yemeğin adı (örn. Annemin böreği)"
-            value={customForm.name_tr}
-            onChange={(e) => setCustomForm((f) => ({ ...f, name_tr: e.target.value }))}
-            className="w-full rounded-2xl border border-white/[0.08] bg-white/[0.04] px-4 py-3.5 text-[15px] text-text outline-none transition-colors placeholder:text-text-muted focus:border-white/25"
-          />
-          {customBarcode && (
-            <input
-              type="text"
-              placeholder="Marka (opsiyonel — örn. Ülker)"
-              value={customBrand}
-              onChange={(e) => setCustomBrand(e.target.value)}
-              className="w-full rounded-2xl border border-white/[0.08] bg-white/[0.04] px-4 py-3.5 text-[15px] text-text outline-none transition-colors placeholder:text-text-muted focus:border-white/25"
-            />
-          )}
+          {/* form — satırlı sade defter */}
+          <div className="overflow-hidden rounded-3xl border border-white/[0.06] bg-surface">
+            <label className="flex items-center gap-3 border-b border-white/[0.05] px-4 py-3.5">
+              <span className="w-14 shrink-0 text-xs font-medium text-text-muted">İsim</span>
+              <input
+                type="text"
+                autoFocus={!customForm.name_tr}
+                placeholder="örn. Annemin böreği"
+                value={customForm.name_tr}
+                onChange={(e) => setCustomForm((f) => ({ ...f, name_tr: e.target.value }))}
+                className="min-w-0 flex-1 bg-transparent text-[15px] text-text outline-none placeholder:text-text-muted"
+              />
+            </label>
 
-          {/* besin değerleri kartı */}
-          <div className="rounded-3xl border border-white/[0.06] bg-surface p-5">
-            <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-text-muted">
-              100 gram için besin değerleri
-            </div>
-
-            <div className="mt-4 flex items-center justify-between gap-3">
-              <span className="text-sm font-medium text-text">Kalori</span>
-              <div className="flex items-baseline gap-1.5">
+            {customBarcode && (
+              <label className="flex items-center gap-3 border-b border-white/[0.05] px-4 py-3.5">
+                <span className="w-14 shrink-0 text-xs font-medium text-text-muted">Marka</span>
                 <input
-                  type="number"
-                  inputMode="decimal"
-                  min="0"
-                  placeholder="0"
-                  value={customForm.calories_per_100g}
-                  onFocus={(e) => e.target.select()}
-                  onChange={(e) => setCustomForm((f) => ({ ...f, calories_per_100g: e.target.value }))}
-                  className="w-24 rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-2.5 text-right text-lg font-semibold tabular-nums text-text outline-none transition-colors focus:border-white/25 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                  type="text"
+                  placeholder="opsiyonel — örn. Ülker"
+                  value={customBrand}
+                  onChange={(e) => setCustomBrand(e.target.value)}
+                  className="min-w-0 flex-1 bg-transparent text-[15px] text-text outline-none placeholder:text-text-muted"
                 />
-                <span className="text-sm text-text-muted">kcal</span>
-              </div>
-            </div>
+              </label>
+            )}
+
+            <label className="flex items-center gap-3 px-4 py-3.5">
+              <span className="w-14 shrink-0 text-xs font-medium text-text-muted">Kalori</span>
+              <input
+                type="number"
+                inputMode="decimal"
+                min="0"
+                placeholder="0"
+                value={customForm.calories_per_100g}
+                onFocus={(e) => e.target.select()}
+                onChange={(e) => setCustomForm((f) => ({ ...f, calories_per_100g: e.target.value }))}
+                className="min-w-0 flex-1 bg-transparent text-right text-lg font-semibold tabular-nums text-text outline-none placeholder:text-text-muted [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+              />
+              <span className="shrink-0 text-xs text-text-muted">kcal / 100g</span>
+            </label>
 
             {/* makrolardan canlı kalori önerisi — dokununca uygular */}
             <AnimatePresence>
@@ -868,21 +918,25 @@ export default function DailyLog() {
                   animate={{ opacity: 1, height: 'auto' }}
                   exit={{ opacity: 0, height: 0 }}
                   onClick={() => setCustomForm((f) => ({ ...f, calories_per_100g: String(macroKcal) }))}
-                  className="btn-chip mt-2 w-full overflow-hidden rounded-xl bg-white/[0.04] px-3 py-2 text-left text-xs text-text-muted"
+                  className="btn-chip block w-full overflow-hidden border-t border-white/[0.05] px-4 py-2.5 text-left text-xs text-text-muted"
                 >
-                  Makrolara göre ≈ <span className="font-semibold tabular-nums text-text">{macroKcal} kcal</span> — dokunarak uygula
+                  Makrolara göre ≈ <span className="font-semibold tabular-nums text-text">{macroKcal} kcal</span>
+                  <span className="float-right font-semibold" style={{ color: '#3DA5FF' }}>Uygula</span>
                 </motion.button>
               )}
             </AnimatePresence>
 
-            <div className="mt-4 grid grid-cols-3 gap-2.5 border-t border-white/[0.06] pt-4">
-              {macroInputs.map((m) => (
-                <div key={m.key}>
-                  <span className="flex items-center gap-1.5 text-[11px] text-text-muted">
-                    <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: m.color }} />
+            <div className="grid grid-cols-3 border-t border-white/[0.05]">
+              {macroInputs.map((m, i) => (
+                <label key={m.key} className={`relative px-3 py-3.5 text-center ${i > 0 ? 'border-l border-white/[0.05]' : ''}`}>
+                  <span
+                    className="pointer-events-none absolute inset-x-5 top-0 h-[2px] rounded-b-full"
+                    style={{ backgroundColor: `${m.color}66` }}
+                  />
+                  <span className="flex items-center justify-center gap-1.5 text-[11px] text-text-muted">
                     {m.label}
                   </span>
-                  <div className="mt-1.5 flex items-baseline gap-1">
+                  <div className="mt-1 flex items-baseline justify-center gap-0.5">
                     <input
                       type="number"
                       inputMode="decimal"
@@ -891,11 +945,11 @@ export default function DailyLog() {
                       value={customForm[m.key]}
                       onFocus={(e) => e.target.select()}
                       onChange={(e) => setCustomForm((f) => ({ ...f, [m.key]: e.target.value }))}
-                      className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-2.5 py-2.5 text-right text-base font-semibold tabular-nums text-text outline-none transition-colors focus:border-white/25 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                      className="w-12 bg-transparent text-center text-lg font-semibold tabular-nums text-text outline-none placeholder:text-text-muted [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                     />
                     <span className="text-xs text-text-muted">g</span>
                   </div>
-                </div>
+                </label>
               ))}
             </div>
           </div>
@@ -1477,44 +1531,58 @@ export default function DailyLog() {
           </span>
         </div>
 
-        {/* arama çubuğu — yazarken liste kaybolmaz, sağda ince bir spinner döner */}
+        {/* arama çubuğu + barkod karosu */}
         {tab !== 'recipes' && (
-          <div className="flex items-center gap-2.5 rounded-2xl border border-white/[0.08] bg-white/[0.04] px-4 transition-colors focus-within:border-white/25">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="shrink-0 text-text-muted">
-              <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="1.8" />
-              <path d="M20 20l-3.2-3.2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-            </svg>
-            <input
-              type="text"
-              autoFocus
-              placeholder="Yemek ara... (örn. menemen)"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              className="w-full bg-transparent py-3.5 text-[15px] text-text outline-none placeholder:text-text-muted"
-            />
-            {loading && results.length > 0 && (
-              <span className="h-4 w-4 shrink-0 animate-spin rounded-full border-[1.8px] border-white/15 border-t-white/60" />
-            )}
-            {query && (
-              <button
-                type="button"
-                onClick={() => setQuery('')}
-                aria-label="Aramayı temizle"
-                className="btn-icon flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white/[0.08] text-[11px] text-text-muted"
-              >
-                ✕
-              </button>
-            )}
-            {/* barkod tarayıcı */}
+          <div className="flex items-stretch gap-2.5">
+            <div className="flex min-w-0 flex-1 items-center gap-2.5 rounded-2xl border border-white/[0.08] bg-white/[0.04] px-4 transition-colors focus-within:border-white/25">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="shrink-0 text-text-muted">
+                <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="1.8" />
+                <path d="M20 20l-3.2-3.2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+              </svg>
+              <input
+                type="text"
+                autoFocus
+                placeholder="Yemek ara... (örn. menemen)"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                className="w-full bg-transparent py-3.5 text-[15px] text-text outline-none placeholder:text-text-muted"
+              />
+              {loading && results.length > 0 && (
+                <span className="h-4 w-4 shrink-0 animate-spin rounded-full border-[1.8px] border-white/15 border-t-white/60" />
+              )}
+              {query && (
+                <button
+                  type="button"
+                  onClick={() => setQuery('')}
+                  aria-label="Aramayı temizle"
+                  className="btn-icon flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white/[0.08] text-[11px] text-text-muted"
+                >
+                  ✕
+                </button>
+              )}
+            </div>
+
+            {/* barkod tarayıcı — klas kare karo: köşe braketleri + orta tarama hattı */}
             <button
               type="button"
               onClick={() => setScanning(true)}
               aria-label="Barkod tara"
-              className="btn-icon -mr-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-text-muted transition-colors hover:text-text"
+              className="btn-icon relative flex w-[52px] shrink-0 items-center justify-center overflow-hidden rounded-2xl border text-text transition-colors"
+              style={{
+                borderColor: 'rgba(61,165,255,0.28)',
+                background:
+                  'linear-gradient(180deg, rgba(61,165,255,0.09), rgba(61,165,255,0.02) 60%), rgba(255,255,255,0.03)',
+                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.07)',
+              }}
             >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                <path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-                <path d="M7 8v8M10.5 8v8M13.5 8v8M17 8v8" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"
+                  stroke="#3DA5FF"
+                  strokeWidth="1.9"
+                  strokeLinecap="round"
+                />
+                <path d="M7.5 8.5v7M11 8.5v7M14 8.5v7M16.5 8.5v7" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" opacity="0.85" />
               </svg>
             </button>
           </div>
