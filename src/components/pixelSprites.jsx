@@ -254,11 +254,17 @@ const BRONZE_GRID = [
   '..AAAAA..',
 ]
 
-export function PixelBronzeBadge({ size = 18 }) {
+const BADGE_TIER_PALETTES = {
+  bronze: { L: '#E0573E', U: '#4F84D6', A: '#C77B3C', S: '#FCE3C2' },
+  silver: { L: '#E0573E', U: '#4F84D6', A: '#C3CAD4', S: '#FFFFFF' },
+  gold: { L: '#E0573E', U: '#4F84D6', A: '#E8B84B', S: '#FFF3C4' },
+}
+
+export function PixelBronzeBadge({ size = 18, tier = 'bronze' }) {
   return (
     <PixelSprite
       grid={BRONZE_GRID}
-      palette={{ L: '#E0573E', U: '#4F84D6', A: '#C77B3C', S: '#FCE3C2' }}
+      palette={BADGE_TIER_PALETTES[tier] ?? BADGE_TIER_PALETTES.bronze}
       size={size}
     />
   )

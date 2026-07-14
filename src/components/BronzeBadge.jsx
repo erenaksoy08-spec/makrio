@@ -1,18 +1,41 @@
 import usePixelTheme from '../hooks/usePixelTheme'
 import { PixelBronzeBadge } from './pixelSprites'
 
-export default function BronzeBadge({ size = 40 }) {
-  const pixel = usePixelTheme()
-  if (pixel) return <PixelBronzeBadge size={size} />
+// Seri rozeti — kademe rengine göre madalya: bronz (30g), gümüş (60g), altın (90g).
+const TIERS = {
+  bronze: {
+    disc: ['#F0B47A', '#C77B3C', '#8A4F22'],
+    stroke: '#6E3D1A',
+    ring: '#F2C79A',
+    star: '#FCE3C2',
+  },
+  silver: {
+    disc: ['#F4F6FA', '#C3CAD4', '#7E8794'],
+    stroke: '#5C6470',
+    ring: '#E8ECF2',
+    star: '#FFFFFF',
+  },
+  gold: {
+    disc: ['#FBE9A6', '#E8B84B', '#A87A1C'],
+    stroke: '#7E5A12',
+    ring: '#F8E7A0',
+    star: '#FFF3C4',
+  },
+}
 
-  const uid = 'bronze'
+export default function BronzeBadge({ size = 40, tier = 'bronze' }) {
+  const pixel = usePixelTheme()
+  if (pixel) return <PixelBronzeBadge size={size} tier={tier} />
+
+  const t = TIERS[tier] ?? TIERS.bronze
+  const uid = `medal-${tier}`
   return (
     <svg width={size} height={size} viewBox="0 0 48 48" fill="none">
       <defs>
         <radialGradient id={`${uid}-disc`} cx="38%" cy="32%" r="75%">
-          <stop offset="0%" stopColor="#F0B47A" />
-          <stop offset="45%" stopColor="#C77B3C" />
-          <stop offset="100%" stopColor="#8A4F22" />
+          <stop offset="0%" stopColor={t.disc[0]} />
+          <stop offset="45%" stopColor={t.disc[1]} />
+          <stop offset="100%" stopColor={t.disc[2]} />
         </radialGradient>
         <linearGradient id={`${uid}-ribbonL`} x1="0" y1="0" x2="1" y2="1">
           <stop offset="0%" stopColor="#E0573E" />
@@ -33,13 +56,13 @@ export default function BronzeBadge({ size = 40 }) {
       <path d="M32 6 L26 26 L33 25 L36.5 18 Z" fill={`url(#${uid}-ribbonR)`} />
 
       {/* medal disc */}
-      <circle cx="24" cy="31" r="14" fill={`url(#${uid}-disc)`} stroke="#6E3D1A" strokeWidth="1.2" />
-      <circle cx="24" cy="31" r="10.5" fill="none" stroke="#F2C79A" strokeWidth="1" strokeOpacity="0.5" />
+      <circle cx="24" cy="31" r="14" fill={`url(#${uid}-disc)`} stroke={t.stroke} strokeWidth="1.2" />
+      <circle cx="24" cy="31" r="10.5" fill="none" stroke={t.ring} strokeWidth="1" strokeOpacity="0.5" />
 
       {/* star */}
       <path
         d="M24 24.5l1.9 4 4.3.5-3.2 2.9 0.9 4.3L24 34.1l-3.9 2.1 0.9-4.3-3.2-2.9 4.3-0.5z"
-        fill="#FCE3C2"
+        fill={t.star}
       />
 
       {/* gloss */}

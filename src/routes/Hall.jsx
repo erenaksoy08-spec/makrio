@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useAuth } from '../contexts/AuthContext'
 import { supabase } from '../lib/supabase'
-import { REWARDS, isUnlocked, unlockStreakFrom } from '../lib/rewards'
+import { REWARDS, isUnlocked, unlockStreakFrom, badgeTierFrom } from '../lib/rewards'
 import RewardMedallion from '../components/RewardMedallion'
 import RewardCeremony from '../components/RewardCeremony'
 import BackButton from '../components/BackButton'
@@ -83,7 +83,8 @@ export default function Hall() {
   function isActive(reward) {
     if (reward.duo) return reward.duo.some((d) => preferences[d.key] === d.value)
     if (reward.id === 'pixel-theme') return String(preferences.theme ?? '').startsWith('pixel')
-    return reward.type === 'badge' ? preferences.badge !== false : preferences[reward.type] === reward.value
+    if (reward.type === 'badge') return badgeTierFrom(preferences, unlockStreak) === reward.value
+    return preferences[reward.type] === reward.value
   }
 
   // 'locked' → henüz kazanılmadı; 'sealed' → kazanıldı ama hiç açılmadı; 'open' → koleksiyonda.
@@ -130,7 +131,7 @@ export default function Hall() {
       if (!turnOff) navigator.vibrate?.([12, 30, 16])
     } else {
       const active = isActive(reward)
-      if (reward.type === 'badge') patch.badge = active ? false : true
+      if (reward.type === 'badge') patch.badge = active ? false : reward.value
       else patch[reward.type] = active ? null : reward.value
       if (!active) navigator.vibrate?.([12, 30, 16])
     }

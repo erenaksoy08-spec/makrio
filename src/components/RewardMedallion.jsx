@@ -102,7 +102,7 @@ export default function RewardMedallion({ reward, state, size = 62, progress = 0
                 <PixelRewardIcon rewardId={reward.id} size={size * 0.5} />
               </span>
             ) : reward.type === 'badge' ? (
-              <BronzeBadge size={size * 0.6} />
+              <BronzeBadge size={size * 0.6} tier={reward.value} />
             ) : reward.id === 'pixel-theme' ? (
               <span className="pixel-bounce inline-flex">
                 <PixelBrain size={size * 0.56} />

@@ -5,7 +5,7 @@ import { useAuth } from '../contexts/AuthContext'
 import { supabase } from '../lib/supabase'
 import { unlockStreakFrom } from '../lib/rewards'
 import { buildInventory, CATEGORY_ORDER } from '../lib/inventory'
-import { GOLD_NAME_STYLE } from '../lib/store'
+import { GOLD_NAME_STYLE, BRONZE_NAME_STYLE } from '../lib/store'
 import BackButton from '../components/BackButton'
 
 // Envanter — deri sırt çantasının içi: dikişli paneller, çukur eşya yuvaları,
@@ -51,6 +51,12 @@ function SlotArt({ item, dim }) {
   if (item.kind === 'gold-name')
     return (
       <span className="text-[19px] font-black leading-none" style={{ ...GOLD_NAME_STYLE, ...(dim ? { opacity: 0.22, filter: 'grayscale(1)' } : {}) }}>
+        Aa
+      </span>
+    )
+  if (item.kind === 'bronze-name')
+    return (
+      <span className="text-[19px] font-black leading-none" style={{ ...BRONZE_NAME_STYLE, ...(dim ? { opacity: 0.22, filter: 'grayscale(1)' } : {}) }}>
         Aa
       </span>
     )
@@ -145,8 +151,9 @@ export default function Inventory() {
       patch.claimedRewards = [...new Set([...(preferences.claimedRewards ?? []), item.claimId])]
     let turnedOn = false
     if (item.special === 'badge') {
-      turnedOn = preferences.badge === false
-      patch.badge = turnedOn
+      // Kademeli rozet: kuşanılıysa çıkar, değilse o kademeyi tak.
+      turnedOn = !item.equipped
+      patch.badge = turnedOn ? item.value : false
     } else if (item.variants) {
       const turnOff = preferences[item.prefKey] === variantValue
       patch[item.prefKey] = turnOff ? null : variantValue

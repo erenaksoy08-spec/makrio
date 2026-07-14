@@ -103,7 +103,73 @@ export const REWARDS = [
     rarity: 'Efsanevi',
     accent: '#E0A34E',
   },
+  {
+    id: 'spiral-bars',
+    days: 45,
+    title: 'Spiral Makro Barları',
+    description:
+      'Ana sayfadaki makro barların berber direği gibi dönen ışık şeritleriyle akar — dolum canlı bir spirale dönüşür.',
+    type: 'barStyle',
+    value: 'spiral',
+    icon: '🌀',
+    tier: 4,
+    rarity: 'Efsanevi',
+    accent: '#7DD3FC',
+  },
+  {
+    id: 'silver-badge',
+    days: 60,
+    title: 'Gümüş Rozet',
+    description: 'Nişanın gümüşe yükselir — iki ayı deviren az kişi var.',
+    type: 'badge',
+    value: 'silver',
+    icon: '🥈',
+    tier: 4,
+    rarity: 'Efsanevi',
+    accent: '#C7CCD6',
+  },
+  {
+    id: 'bronze-name',
+    days: 75,
+    title: 'Kullanıcı Adı Rengi: Parlak Bronz',
+    description: "Adın Arkadaş Ligi'nde parlak bronz ışıltısıyla yazılır — herkes görür.",
+    type: 'nameColor',
+    value: 'bronze',
+    icon: '✨',
+    tier: 4,
+    rarity: 'Efsanevi',
+    accent: '#E8955D',
+  },
+  {
+    id: 'gold-badge',
+    days: 90,
+    title: 'Altın Rozet',
+    description: 'Nişanların zirvesi: 90 günlük demir iradenin altın kanıtı.',
+    type: 'badge',
+    value: 'gold',
+    icon: '🥇',
+    tier: 4,
+    rarity: 'Efsanevi',
+    accent: '#F5C84B',
+  },
 ]
+
+// Rozet kademesi: seri uzadıkça bronz → gümüş → altın.
+export function highestBadgeTier(streak) {
+  const s = streak ?? 0
+  if (s >= 90) return 'gold'
+  if (s >= 60) return 'silver'
+  if (s >= 30) return 'bronze'
+  return null
+}
+
+// Gösterilecek rozet: kullanıcı kapatmışsa yok; belirli bir kademe seçmişse o;
+// yoksa kazandığı en yüksek kademe.
+export function badgeTierFrom(preferences, streak) {
+  if (preferences?.badge === false) return null
+  if (typeof preferences?.badge === 'string') return preferences.badge
+  return highestBadgeTier(streak)
+}
 
 export function isUnlocked(streak, days) {
   return (streak ?? 0) >= days

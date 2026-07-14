@@ -15,6 +15,7 @@ import { computeWaterGoal } from '../lib/water'
 import { Skeleton } from '../components/SkeletonLoader'
 import usePixelTheme from '../hooks/usePixelTheme'
 import { PixelFlame, PixelGreetingIcon } from '../components/pixelSprites'
+import { badgeTierFrom } from '../lib/rewards'
 
 export default function Dashboard() {
   const { user, profile, refreshProfile } = useAuth()
@@ -154,9 +155,11 @@ export default function Dashboard() {
   )
 
   const ringColor = profile?.preferences?.ringColor || '#3DA5FF'
-  const showBadge =
-    profile?.preferences?.badge !== false &&
-    Math.max(profile?.current_streak ?? 0, profile?.longest_streak ?? 0) >= 30
+  const badgeTier = badgeTierFrom(
+    profile?.preferences,
+    Math.max(profile?.current_streak ?? 0, profile?.longest_streak ?? 0),
+  )
+  const spiralBars = profile?.preferences?.barStyle === 'spiral'
 
   const hour = new Date().getHours()
   const greeting =
@@ -183,7 +186,7 @@ export default function Dashboard() {
           </h1>
         </div>
         <div className="flex shrink-0 items-center gap-1.5 rounded-full border border-white/[0.08] bg-white/[0.04] px-3 py-1.5">
-          {showBadge && <BronzeBadge size={18} />}
+          {badgeTier && <BronzeBadge size={18} tier={badgeTier} />}
           {pixelUi ? (
             <span className="pixel-flicker">
               <PixelFlame size={13} />
@@ -208,9 +211,9 @@ export default function Dashboard() {
       </div>
 
       <div className="space-y-5 rounded-3xl border border-white/[0.06] bg-surface p-5">
-        <MacroBar label="Protein" consumed={consumed.protein_g} goal={goalProtein} color="#FF8A5B" delay={0} />
-        <MacroBar label="Yağ" consumed={consumed.fat_g} goal={goalFat} color="#F2C94C" delay={160} />
-        <MacroBar label="Karbonhidrat" consumed={consumed.carbs_g} goal={goalCarbs} color="#6FCF97" delay={320} />
+        <MacroBar label="Protein" consumed={consumed.protein_g} goal={goalProtein} color="#FF8A5B" delay={0} spiral={spiralBars} />
+        <MacroBar label="Yağ" consumed={consumed.fat_g} goal={goalFat} color="#F2C94C" delay={160} spiral={spiralBars} />
+        <MacroBar label="Karbonhidrat" consumed={consumed.carbs_g} goal={goalCarbs} color="#6FCF97" delay={320} spiral={spiralBars} />
       </div>
 
       <ScoreCard score={dayScore} />

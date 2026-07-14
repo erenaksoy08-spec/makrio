@@ -6,7 +6,7 @@ import BackButton from '../components/BackButton'
 import { todayStr } from '../lib/date'
 import { scoreDay, scoreColor, fmtScore } from '../lib/dayScore'
 import { REWARDS, isUnlocked } from '../lib/rewards'
-import { GOLD_NAME_STYLE } from '../lib/store'
+import { GOLD_NAME_STYLE, BRONZE_NAME_STYLE } from '../lib/store'
 import { Skeleton } from '../components/SkeletonLoader'
 import usePixelTheme from '../hooks/usePixelTheme'
 import { PixelFlame } from '../components/pixelSprites'
@@ -301,11 +301,12 @@ export default function League() {
                           <span className="flex items-center gap-2">
                             <span
                               className="truncate text-[15px] font-semibold"
-                              style={
-                                (isMe ? profile?.preferences?.nameColor : row.name_color) === 'gold'
-                                  ? GOLD_NAME_STYLE
-                                  : { color: 'var(--color-text)' }
-                              }
+                              style={(() => {
+                                const nameColor = isMe ? profile?.preferences?.nameColor : row.name_color
+                                if (nameColor === 'gold') return GOLD_NAME_STYLE
+                                if (nameColor === 'bronze') return BRONZE_NAME_STYLE
+                                return { color: 'var(--color-text)' }
+                              })()}
                             >
                               {row.name ?? 'İsimsiz'}
                             </span>

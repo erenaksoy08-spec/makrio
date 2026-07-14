@@ -71,3 +71,12 @@ export const GOLD_NAME_STYLE = {
   color: 'transparent',
   filter: 'drop-shadow(0 0 6px rgba(242,201,76,0.35))',
 }
+
+// Parlak bronz isim yazısı — 75 gün Şeref Salonu ödülü.
+export const BRONZE_NAME_STYLE = {
+  backgroundImage: 'linear-gradient(92deg, #F2A05E 10%, #C96F33 45%, #FFD2A6 70%, #C96F33 95%)',
+  WebkitBackgroundClip: 'text',
+  backgroundClip: 'text',
+  color: 'transparent',
+  filter: 'drop-shadow(0 0 6px rgba(232,149,93,0.35))',
+}

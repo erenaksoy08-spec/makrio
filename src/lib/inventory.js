@@ -1,6 +1,6 @@
 // Envanter — kullanıcının kazandığı/satın aldığı tüm kozmetiklerin tek kütüğü.
 // Seri ödülleri (Şeref Salonu) + Vitrin ürünleri, eşya tarzına göre gruplanır.
-import { isUnlocked } from './rewards'
+import { isUnlocked, badgeTierFrom } from './rewards'
 
 export const PIXEL_VARIANTS = [
   { value: 'pixel', label: 'Aydınlık', swatch: '#e9e4d8' },
@@ -17,8 +17,8 @@ export const BG_VARIANTS = [
 
 export const CATEGORY_ORDER = ['Tema', 'Halka', 'Su', 'Zemin', 'Arayüz', 'Prestij', 'Rozet']
 
-function equippedOf(item, preferences) {
-  if (item.special === 'badge') return preferences.badge !== false
+function equippedOf(item, preferences, unlockStreak) {
+  if (item.special === 'badge') return badgeTierFrom(preferences, unlockStreak) === item.value
   if (item.variants) return item.variants.some((v) => preferences[item.prefKey] === v.value)
   return preferences[item.prefKey] === item.value
 }
@@ -167,6 +167,32 @@ export function buildInventory(preferences = {}, unlockStreak = 0) {
       value: 'gold',
     },
     {
+      id: 'spiral-bars',
+      cat: 'Arayüz',
+      name: 'Spiral Makro Barları',
+      icon: '🌀',
+      accent: '#7DD3FC',
+      desc: 'Ana sayfa makro barları berber direği gibi akan ışık spiraliyle dolar.',
+      source: 'salon',
+      claimId: 'spiral-bars',
+      days: 45,
+      prefKey: 'barStyle',
+      value: 'spiral',
+    },
+    {
+      id: 'bronze-name',
+      cat: 'Prestij',
+      name: 'Parlak Bronz Ad',
+      kind: 'bronze-name',
+      accent: '#E8955D',
+      desc: "Adın Arkadaş Ligi'nde parlak bronz ışıltısıyla yazılır.",
+      source: 'salon',
+      claimId: 'bronze-name',
+      days: 75,
+      prefKey: 'nameColor',
+      value: 'bronze',
+    },
+    {
       id: 'bronze-badge',
       cat: 'Rozet',
       name: 'Bronz Rozet',
@@ -177,13 +203,40 @@ export function buildInventory(preferences = {}, unlockStreak = 0) {
       claimId: 'bronze-badge',
       days: 30,
       special: 'badge',
+      value: 'bronze',
+    },
+    {
+      id: 'silver-badge',
+      cat: 'Rozet',
+      name: 'Gümüş Rozet',
+      icon: '🥈',
+      accent: '#C7CCD6',
+      desc: 'İki ayı deviren azınlığın gümüş nişanı.',
+      source: 'salon',
+      claimId: 'silver-badge',
+      days: 60,
+      special: 'badge',
+      value: 'silver',
+    },
+    {
+      id: 'gold-badge',
+      cat: 'Rozet',
+      name: 'Altın Rozet',
+      icon: '🥇',
+      accent: '#F5C84B',
+      desc: '90 günlük demir iradenin altın kanıtı.',
+      source: 'salon',
+      claimId: 'gold-badge',
+      days: 90,
+      special: 'badge',
+      value: 'gold',
     },
   ]
 
   return items.map((it) => ({
     ...it,
     owned: it.source === 'salon' ? isUnlocked(unlockStreak, it.days) : ownedIds.includes(it.id),
-    equipped: equippedOf(it, preferences),
+    equipped: equippedOf(it, preferences, unlockStreak),
     activeVariant: it.variants ? (preferences[it.prefKey] ?? null) : null,
   }))
 }
