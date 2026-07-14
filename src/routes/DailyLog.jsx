@@ -21,7 +21,6 @@ import BarcodeScanner from '../components/BarcodeScanner'
 import ScanResult from '../components/ScanResult'
 import { isGold, FREE_LOG_LIMIT } from '../lib/gold'
 import { scoreFood } from '../lib/foodScore'
-import { foodEmoji } from '../lib/foodVisual'
 import FoodReportCard from '../components/FoodReportCard'
 import KarneSheet from '../components/KarneSheet'
 
@@ -1788,9 +1787,6 @@ export default function DailyLog() {
               const i = rowIndex
               const isFav = favoriteIds.has(food.id)
               const karne = scoreFood(food)
-              // Görsel: pikselde sprite öncelikli; markasız besinlerde her zaman emoji.
-              const emoji =
-                pixelUi && hasPixelFoodIcon(food.name_tr) ? null : foodEmoji(food.name_tr, { fallback: !food.brand })
               return (
                 <motion.div
                   key={food.id}
@@ -1811,13 +1807,6 @@ export default function DailyLog() {
                           <span className="mt-0.5 inline-flex items-center gap-[3px] text-[11px] font-bold leading-none tabular-nums text-text">
                             {food.calories_per_100g}
                             <PixelFlame size={11} />
-                          </span>
-                        </>
-                      ) : emoji ? (
-                        <>
-                          <span className="text-[19px] leading-none">{emoji}</span>
-                          <span className="mt-0.5 text-[9px] font-bold leading-none tabular-nums text-text">
-                            {food.calories_per_100g}
                           </span>
                         </>
                       ) : (
@@ -2137,16 +2126,12 @@ export default function DailyLog() {
                     {mealLogs.map((log) => (
                       <SwipeableLogRow key={log.id} id={log.id} onDelete={handleDelete} onTap={() => startEdit(log)}>
                         <div className="relative flex items-center justify-between px-4 pl-[4.4rem] text-sm">
-                          {pixelUi && hasPixelFoodIcon(log.food_name) ? (
+                          {pixelUi && (
                             <PixelFoodIcon
                               name={log.food_name}
                               size={26}
                               className="absolute left-[26px] top-1/2 -translate-y-1/2"
                             />
-                          ) : (
-                            <span className="absolute left-[26px] top-1/2 -translate-y-1/2 text-[19px] leading-none">
-                              {foodEmoji(log.food_name)}
-                            </span>
                           )}
                           <span className="min-w-0 truncate text-[13px] text-text">
                             {log.food_name}
