@@ -1048,9 +1048,19 @@ body {
    ────────────────────────────────────────────────────────────── */
 .bar-fill.bar-spiral {
   background-image:
-    /* dönen spiral şeritler: parlak ışık + ince gölge */
-    linear-gradient(
+    /* zikzak örgü — üst yarı sağa yatık şeritler */
+    repeating-linear-gradient(
       115deg,
+      rgba(255, 255, 255, 0.42) 0 4px,
+      rgba(255, 255, 255, 0.1) 4px 8px,
+      transparent 8px 14px,
+      rgba(0, 0, 0, 0.2) 14px 18px,
+      transparent 18px 22px
+    ),
+    /* zikzak örgü — alt yarı sola yatık şeritler (yarım periyot kaydırılır,
+       üsttekiyle birleşip akan bir zikzak kurdele oluşturur) */
+    repeating-linear-gradient(
+      65deg,
       rgba(255, 255, 255, 0.42) 0 4px,
       rgba(255, 255, 255, 0.1) 4px 8px,
       transparent 8px 14px,
@@ -1059,15 +1069,16 @@ body {
     ),
     /* cam cila: üstte spekular şerit, altta gövde gölgesi */
     linear-gradient(to bottom, rgba(255, 255, 255, 0.32), rgba(255, 255, 255, 0) 42%, rgba(0, 0, 0, 0.2));
-  background-size: 22px 100%, 100% 100%;
-  background-repeat: repeat-x, no-repeat;
+  background-size: 22px 58%, 22px 58%, 100% 100%;
+  background-position: 0 0, 11px 100%, 0 0;
+  background-repeat: repeat-x, repeat-x, no-repeat;
   animation: spiral-flow 1.4s linear infinite;
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14), 0 0 12px -3px currentColor;
 }
 
 @keyframes spiral-flow {
   to {
-    background-position: 22px 0, 0 0;
+    background-position: 22px 0, 33px 100%, 0 0;
   }
 }
 
