@@ -2,34 +2,14 @@ export const REWARDS = [
   {
     id: 'gym-theme',
     days: 1,
-    title: 'İlk Gün Paketi',
-    description:
-      'İlk gün hediyen iki parça: Demir Çağı teması (eski okul demir salonu) ve Su Dostu (su içtikçe dolan gülen yüz). İstediğini aç, istersen ikisini birden.',
+    title: 'İlk Gün Hediyesi',
+    description: 'Hoş geldin hediyen: Demir Çağı teması — eski okul demir salonu. Pas, demir ve ter.',
     type: 'theme',
     value: 'gym',
     icon: '🏋️',
     tier: 3,
     rarity: 'Hediye',
     accent: '#C0392B',
-    // Aynı kutuda iki bağımsız hediye — her biri kendi tercihini açıp kapatır.
-    duo: [
-      {
-        key: 'theme',
-        value: 'gym',
-        label: 'Demir Çağı',
-        icon: '🏋️',
-        accent: '#C0392B',
-        desc: 'Old school demir salonu teması',
-      },
-      {
-        key: 'waterStyle',
-        value: 'smiley',
-        label: 'Su Dostu',
-        icon: '🙂',
-        accent: '#29B6F6',
-        desc: 'Su içtikçe dolan gülen yüz',
-      },
-    ],
   },
   {
     id: 'light-theme',
@@ -151,6 +131,19 @@ export const REWARDS = [
     tier: 4,
     rarity: 'Efsanevi',
     accent: '#F5C84B',
+  },
+  {
+    id: 'smiley-water',
+    days: 100,
+    title: 'Gülen 100',
+    description:
+      '100 gün boyunca her lokmanın hesabını tuttun... ve büyük ödül: gülen yüzlü bir su bardağı. 🙂 Evet, cidden bu. Ama itiraf et — o da sana gülümseyince gülümsüyorsun.',
+    type: 'waterStyle',
+    value: 'smiley',
+    icon: '🙂',
+    tier: 4,
+    rarity: 'Efsanevi',
+    accent: '#29B6F6',
   },
 ]
 

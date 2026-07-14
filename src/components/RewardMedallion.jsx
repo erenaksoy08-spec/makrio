@@ -108,19 +108,7 @@ export default function RewardMedallion({ reward, state, size = 62, progress = 0
                 <PixelBrain size={size * 0.56} />
               </span>
             ) : reward.id === 'gym-theme' ? (
-              // İlk Gün Paketi — iki hediye birden: dambıl + su dostu yan yana
-              <span className="flex items-center" style={{ gap: size * 0.02 }}>
-                <DumbbellIcon size={size * 0.46} />
-                <span
-                  style={{
-                    fontSize: size * 0.3,
-                    lineHeight: 1,
-                    filter: 'drop-shadow(0 2px 5px rgba(41,182,246,0.55))',
-                  }}
-                >
-                  🙂
-                </span>
-              </span>
+              <DumbbellIcon size={size * 0.52} />
             ) : reward.id === 'premium-nav' ? (
               <CrownIcon size={size * 0.6} />
             ) : (
