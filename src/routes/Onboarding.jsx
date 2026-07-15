@@ -5,6 +5,7 @@ import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import { ACTIVITY_LEVELS, GOALS, computePlan, carbsForRemaining } from '../lib/nutrition'
 import MacroTuner from '../components/MacroTuner'
+import PaceWarning from '../components/PaceWarning'
 
 // Hesapsız (ilk giriş) akışında cevaplar tarayıcıda saklanır;
 // kayıt tamamlanınca temizlenir.
@@ -427,7 +428,15 @@ export default function Onboarding() {
                     <ChoiceCard
                       key={g.value}
                       active={form.goal === g.value}
-                      onClick={() => setForm((f) => ({ ...f, goal: g.value, manualMacros: null }))}
+                      onClick={() =>
+                        setForm((f) => ({
+                          ...f,
+                          goal: g.value,
+                          manualMacros: null,
+                          // 1 kg/hafta üzeri yalnızca kilo vermede seçilebilir.
+                          rate: g.value === 'lose' ? f.rate : Math.min(f.rate, 1),
+                        }))
+                      }
                       icon={GOAL_ICONS[g.value]}
                       title={g.label}
                       desc={g.description}
@@ -448,7 +457,7 @@ export default function Onboarding() {
                     <input
                       type="range"
                       min="0.1"
-                      max="1"
+                      max={form.goal === 'lose' ? 1.4 : 1}
                       step="0.05"
                       value={form.rate}
                       onChange={(e) => setForm((f) => ({ ...f, rate: Number(e.target.value), manualMacros: null }))}
@@ -458,6 +467,7 @@ export default function Onboarding() {
                       <span>yavaş & sürdürülebilir</span>
                       <span>hızlı</span>
                     </div>
+                    <PaceWarning show={form.goal === 'lose' && form.rate >= 1} />
                     {autoPlan && (
                       <div className="mt-3 flex items-center justify-between border-t border-border pt-3">
                         <span className="text-xs text-text-muted">Bu hızla günlük hedef</span>

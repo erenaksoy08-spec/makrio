@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import { calculateBMR, calculateTDEE, macrosForCalories, carbsForRemaining, KCAL_PER_KG } from '../lib/nutrition'
 import MacroTuner from './MacroTuner'
+import PaceWarning from './PaceWarning'
 
 const GOAL_OPTIONS = [
   { value: 'lose', label: 'Kilo ver' },
@@ -162,6 +163,8 @@ export default function GoalEditor({ currentWeight, onClose }) {
             onClick={() => {
               setGoal(g.value)
               setManualMacros(null)
+              // 1 kg/hafta üzeri yalnızca kilo vermede seçilebilir.
+              if (g.value !== 'lose') setRate((r) => Math.min(r, 1))
             }}
             className={`rounded-lg py-2 text-sm font-medium transition-colors ${
               goal === g.value ? 'bg-white/10 text-text' : 'text-text-muted'
@@ -234,7 +237,7 @@ export default function GoalEditor({ currentWeight, onClose }) {
             <input
               type="range"
               min="0.1"
-              max="1"
+              max={goal === 'lose' ? 1.4 : 1}
               step="0.05"
               value={rate}
               onChange={(e) => {
@@ -247,6 +250,7 @@ export default function GoalEditor({ currentWeight, onClose }) {
               <span>yavaş</span>
               <span>hızlı</span>
             </div>
+            <PaceWarning show={goal === 'lose' && rate >= 1} />
           </div>
         </>
       )}
