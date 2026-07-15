@@ -10,6 +10,7 @@ import { scoopBalance } from '../lib/store'
 import { buildMilestones, buildDaily, buildRepeatables, questState } from '../lib/quests'
 import useBlokTheme from '../hooks/useBlokTheme'
 import { BlokCheck } from '../components/blokSprites'
+import BronzeBadge from '../components/BronzeBadge'
 
 // Görev Panosu'nun kendi büyüsü — menekşe gece + altın ışık.
 const GOLD = '#F2C94C'
@@ -187,7 +188,17 @@ function QuestCard({ quest, index, saving, onCollect, gain }) {
           filter: collected ? 'grayscale(0.7)' : 'none',
         }}
       >
-        {collected ? (blok ? <BlokCheck size={14} color={GOLD} /> : '✓') : quest.icon}
+        {collected ? (
+          blok ? (
+            <BlokCheck size={14} color={GOLD} />
+          ) : (
+            '✓'
+          )
+        ) : quest.id === 'bronze-claim' ? (
+          <BronzeBadge size={22} tier="bronze" />
+        ) : (
+          quest.icon
+        )}
       </motion.span>
 
       <div className="min-w-0 flex-1">

@@ -7,6 +7,7 @@ import { unlockStreakFrom } from '../lib/rewards'
 import { buildInventory, CATEGORY_ORDER } from '../lib/inventory'
 import { GOLD_NAME_STYLE, BRONZE_NAME_STYLE } from '../lib/store'
 import BackButton from '../components/BackButton'
+import BronzeBadge from '../components/BronzeBadge'
 
 // Envanter — deri sırt çantasının içi: dikişli paneller, çukur eşya yuvaları,
 // pirinç perçinler. Uygulamanın geri kalanına benzemez; RPG çantası gibi hissettirir.
@@ -58,6 +59,12 @@ function SlotArt({ item, dim }) {
     return (
       <span className="text-[19px] font-black leading-none" style={{ ...BRONZE_NAME_STYLE, ...(dim ? { opacity: 0.22, filter: 'grayscale(1)' } : {}) }}>
         Aa
+      </span>
+    )
+  if (item.special === 'badge')
+    return (
+      <span className="inline-flex" style={style}>
+        <BronzeBadge size={28} tier={item.value} />
       </span>
     )
   return (

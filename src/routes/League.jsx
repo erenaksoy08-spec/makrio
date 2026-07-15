@@ -8,6 +8,7 @@ import { scoreDay, scoreColor, fmtScore } from '../lib/dayScore'
 import { REWARDS, isUnlocked } from '../lib/rewards'
 import { GOLD_NAME_STYLE, BRONZE_NAME_STYLE } from '../lib/store'
 import { Skeleton } from '../components/SkeletonLoader'
+import BronzeBadge from '../components/BronzeBadge'
 import usePixelTheme from '../hooks/usePixelTheme'
 import { PixelFlame } from '../components/pixelSprites'
 
@@ -29,7 +30,10 @@ function memberScore(row) {
 
 function memberBadges(row) {
   const peak = Math.max(row.current_streak ?? 0, row.longest_streak ?? 0)
-  return REWARDS.filter((r) => isUnlocked(peak, r.days))
+  const unlocked = REWARDS.filter((r) => isUnlocked(peak, r.days))
+  // Rütbe rozetlerinden yalnızca en yükseği görünür — kademeler birbirinin yerine geçer.
+  const topBadge = unlocked.filter((r) => r.type === 'badge').at(-1)
+  return unlocked.filter((r) => r.type !== 'badge').concat(topBadge ? [topBadge] : [])
 }
 
 function RankChip({ index }) {
@@ -326,9 +330,15 @@ export default function League() {
                             <span>gün</span>
                             {row.badges.length > 0 && (
                               <span className="ml-1 inline-flex gap-0.5 text-[11px] opacity-80">
-                                {row.badges.map((b) => (
-                                  <span key={b.id}>{b.icon}</span>
-                                ))}
+                                {row.badges.map((b) =>
+                                  b.type === 'badge' ? (
+                                    <span key={b.id} className="inline-flex align-middle">
+                                      <BronzeBadge size={13} tier={b.value} />
+                                    </span>
+                                  ) : (
+                                    <span key={b.id}>{b.icon}</span>
+                                  ),
+                                )}
                               </span>
                             )}
                           </span>

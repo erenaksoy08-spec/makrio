@@ -241,29 +241,32 @@ export function PixelNavIcon({ name, isActive, activeColor = 'var(--color-text)'
   )
 }
 
-/* ---------- Bronz rozet (kurdeleli madalya) ---------- */
+/* ---------- Rütbe rozeti (piksel kalkan) ---------- */
+// O: kenar, F: metal yüz, H: sol üst ışık, S: yıldız
 
-const BRONZE_GRID = [
-  '.LL...UU.',
-  '.LL...UU.',
-  '..LL.UU..',
-  '..AAAAA..',
-  '.AAASAAA.',
-  '.AASSSAA.',
-  '.AAASAAA.',
-  '..AAAAA..',
+const BADGE_GRID = [
+  '.OOOOOOO.',
+  'OHFFFFFFO',
+  'OHFFSFFFO',
+  'OFFSSSFFO',
+  'OFSSSSSFO',
+  'OFFSSSFFO',
+  'OFFFSFFFO',
+  '.OFFFFFO.',
+  '..OFFFO..',
+  '...OFO...',
 ]
 
 const BADGE_TIER_PALETTES = {
-  bronze: { L: '#E0573E', U: '#4F84D6', A: '#C77B3C', S: '#FCE3C2' },
-  silver: { L: '#E0573E', U: '#4F84D6', A: '#C3CAD4', S: '#FFFFFF' },
-  gold: { L: '#E0573E', U: '#4F84D6', A: '#E8B84B', S: '#FFF3C4' },
+  bronze: { O: '#6E3D1A', F: '#C77B3C', H: '#F0B47A', S: '#FCE3C2' },
+  silver: { O: '#5C6470', F: '#B9C1CC', H: '#F4F6FA', S: '#FFFFFF' },
+  gold: { O: '#7E5A12', F: '#E8B84B', H: '#FBE9A6', S: '#FFF3C4' },
 }
 
 export function PixelBronzeBadge({ size = 18, tier = 'bronze' }) {
   return (
     <PixelSprite
-      grid={BRONZE_GRID}
+      grid={BADGE_GRID}
       palette={BADGE_TIER_PALETTES[tier] ?? BADGE_TIER_PALETTES.bronze}
       size={size}
     />
@@ -780,19 +783,6 @@ const REWARD_SPRITES = {
       '..AAAAA..',
     ],
     palette: { A: '#22D3EE' },
-  },
-  'bronze-badge': {
-    grid: [
-      '.RR...RR.',
-      '.RR...RR.',
-      '..RR.RR..',
-      '..AAAAA..',
-      '.AAABAAA.',
-      '.AABBBAA.',
-      '.AAABAAA.',
-      '..AAAAA..',
-    ],
-    palette: { R: '#8C6239', A: '#E0A34E', B: '#F5D9A8' },
   },
 }
 
