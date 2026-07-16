@@ -1,8 +1,25 @@
+import { useEffect, useRef } from 'react'
 import { AnimatePresence, motion, useDragControls } from 'framer-motion'
 
 export default function Sheet({ open, onClose, title, children, variant = 'bottom' }) {
   const center = variant === 'center'
   const dragControls = useDragControls()
+  const panelRef = useRef(null)
+
+  // Dialog davranışı: Escape kapatır, odak panele taşınır ve kapanınca geri döner.
+  useEffect(() => {
+    if (!open) return
+    const opener = document.activeElement
+    panelRef.current?.focus()
+    const onKey = (e) => {
+      if (e.key === 'Escape') onClose?.()
+    }
+    document.addEventListener('keydown', onKey)
+    return () => {
+      document.removeEventListener('keydown', onKey)
+      opener?.focus?.()
+    }
+  }, [open, onClose])
 
   return (
     <AnimatePresence>
@@ -15,7 +32,12 @@ export default function Sheet({ open, onClose, title, children, variant = 'botto
         >
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
           <motion.div
-            className={`relative max-h-[88svh] w-full max-w-md overflow-y-auto border border-border bg-surface px-5 ${
+            ref={panelRef}
+            role="dialog"
+            aria-modal="true"
+            aria-label={title}
+            tabIndex={-1}
+            className={`relative max-h-[88svh] w-full max-w-md overflow-y-auto border border-border bg-surface px-5 outline-none ${
               center ? 'rounded-3xl py-5' : 'rounded-t-3xl pb-8 pt-2 safe-bottom'
             }`}
             initial={center ? { opacity: 0, scale: 0.94, y: 12 } : { y: '100%' }}
@@ -46,6 +68,7 @@ export default function Sheet({ open, onClose, title, children, variant = 'botto
               <button
                 type="button"
                 onClick={onClose}
+                aria-label="Kapat"
                 className="btn-icon relative flex h-8 w-8 items-center justify-center rounded-full border border-border text-text-muted after:absolute after:-inset-2 after:content-['']"
               >
                 ✕

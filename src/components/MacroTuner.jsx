@@ -14,10 +14,10 @@ export default function MacroTuner({ calories, macros, manual, onSet, onReset })
         const pct = calories ? Math.round(((g * m.kcal) / calories) * 100) : 0
         return (
           <div key={m.key} className="flex items-center justify-between rounded-xl border border-border bg-surface px-3 py-2">
-            <div className="flex min-w-0 items-center gap-2">
+            <div className="flex min-w-0 flex-1 items-center gap-2 pr-2">
               <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ backgroundColor: m.color }} />
-              <span className="text-sm text-text">{m.label}</span>
-              <span className="text-xs tabular-nums text-text-muted">%{pct}</span>
+              <span className="truncate text-sm text-text">{m.label}</span>
+              <span className="shrink-0 text-xs tabular-nums text-text-muted">%{pct}</span>
             </div>
 
             {m.editable ? (

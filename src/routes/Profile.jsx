@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { useAuth } from '../contexts/AuthContext'
+import { supabase } from '../lib/supabase'
 import { LEGAL_PAGES } from '../lib/legalInfo'
 
 const GOAL_LABELS = { lose: 'Kilo verme', gain: 'Kilo alma', maintain: 'Formu koruma' }
@@ -109,6 +110,18 @@ export default function Profile() {
   const isGold = ['gold', 'active'].includes(profile?.subscription_status)
   const initial = (profile?.name || user.email || '?').trim().charAt(0).toUpperCase()
 
+  // Kilo, onboarding'de kalan değer yerine son tartı kaydını gösterir.
+  const [latestWeight, setLatestWeight] = useState(null)
+  useEffect(() => {
+    supabase
+      .from('weight_logs')
+      .select('kg')
+      .eq('user_id', user.id)
+      .order('logged_at', { ascending: false })
+      .limit(1)
+      .then(({ data }) => setLatestWeight(data?.[0]?.kg ?? null))
+  }, [user.id])
+
   return (
     <div className="mx-auto max-w-md space-y-4 px-4 py-6">
       <h1 className="text-2xl font-semibold text-text">Profil</h1>
@@ -146,7 +159,7 @@ export default function Profile() {
           const a = meta.accent
           const targetWeight = profile?.preferences?.targetWeight
           const stats = [
-            profile.weight_kg && { value: profile.weight_kg, unit: 'kg', label: 'Kilo' },
+            (latestWeight ?? profile.weight_kg) && { value: latestWeight ?? profile.weight_kg, unit: 'kg', label: 'Kilo' },
             profile.height_cm && { value: profile.height_cm, unit: 'cm', label: 'Boy' },
             profile.age && { value: profile.age, unit: '', label: 'Yaş' },
             profile.gender && { value: GENDER_LABELS[profile.gender] ?? profile.gender, unit: '', label: 'Cinsiyet' },
