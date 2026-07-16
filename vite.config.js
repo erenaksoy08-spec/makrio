@@ -9,6 +9,10 @@ export default defineConfig({
     react(),
     tailwindcss(),
     VitePWA({
+      // Push bildirimi (günaydın) için özel SW gerekiyor — injectManifest.
+      strategies: 'injectManifest',
+      srcDir: 'src',
+      filename: 'sw.js',
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg'],
       manifest: {
@@ -39,7 +43,7 @@ export default defineConfig({
           },
         ],
       },
-      workbox: {
+      injectManifest: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
       },
     }),

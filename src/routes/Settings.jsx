@@ -5,6 +5,7 @@ import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import Sheet from '../components/Sheet'
 import { LEGAL_PAGES } from '../lib/legalInfo'
+import { getPushState, subscribePush, unsubscribePush } from '../lib/push'
 
 /* ---------- ikonlar ---------- */
 
@@ -385,7 +386,7 @@ function PermissionsSheet({ open, onClose }) {
 
   const rows = [
     { label: 'Kamera', desc: 'Barkod taramak için kullanılır', state: cam },
-    { label: 'Bildirimler', desc: 'Hatırlatıcılar için kullanılır', state: notif },
+    { label: 'Bildirimler', desc: 'Sabah günaydın mesajı için kullanılır', state: notif },
   ]
 
   return (
@@ -422,43 +423,63 @@ function PermissionsSheet({ open, onClose }) {
 /* ---------- Seçenekler: Bildirimler ---------- */
 
 function NotificationsSheet({ open, onClose }) {
-  const [perm, setPerm] = useState(typeof Notification !== 'undefined' ? Notification.permission : 'unsupported')
+  const { user } = useAuth()
+  const [state, setState] = useState('loading') // loading | unsupported | denied | on | off
+  const [busy, setBusy] = useState(false)
+  const [error, setError] = useState('')
 
-  async function request() {
-    const p = await Notification.requestPermission()
-    setPerm(p)
+  useEffect(() => {
+    if (!open) return
+    setError('')
+    getPushState().then(setState)
+  }, [open])
+
+  async function toggle() {
+    setBusy(true)
+    setError('')
+    try {
+      setState(state === 'on' ? await unsubscribePush() : await subscribePush(user.id))
+    } catch {
+      setError('Ayarlanamadı — internet bağlantını kontrol edip tekrar dene.')
+    }
+    setBusy(false)
   }
 
   return (
     <Sheet open={open} onClose={onClose} title="Bildirimler">
       <div className="space-y-4 pb-1">
-        <div className="flex items-center justify-between rounded-2xl border border-border p-4">
-          <div>
-            <div className="text-sm font-medium text-text">Bildirim izni</div>
-            <div className="text-xs text-text-muted">Öğün ve su hatırlatıcıları için gerekli</div>
+        <div className="flex items-center gap-3 rounded-2xl border border-border p-4">
+          <span className="text-xl">☀️</span>
+          <div className="min-w-0 flex-1">
+            <div className="text-sm font-medium text-text">Günaydın mesajı</div>
+            <div className="text-xs leading-relaxed text-text-muted">
+              Her sabah 05.00'te, uygulamadaki selamlama "Günaydın"a dönerken tek bir güne başlama mesajı.
+            </div>
           </div>
-          {perm === 'granted' ? (
-            <span className="rounded-full bg-accent/15 px-2.5 py-1 text-[11px] font-semibold text-accent">Verildi</span>
-          ) : perm === 'denied' ? (
-            <span className="rounded-full bg-red-500/15 px-2.5 py-1 text-[11px] font-semibold text-red-400">
-              Reddedildi
-            </span>
-          ) : perm === 'unsupported' ? (
-            <span className="rounded-full bg-white/[0.06] px-2.5 py-1 text-[11px] font-semibold text-text-muted">
+          {state === 'unsupported' ? (
+            <span className="shrink-0 rounded-full bg-white/[0.06] px-2.5 py-1 text-[11px] font-semibold text-text-muted">
               Desteklenmiyor
             </span>
+          ) : state === 'denied' ? (
+            <span className="shrink-0 rounded-full bg-red-500/15 px-2.5 py-1 text-[11px] font-semibold text-red-400">
+              İzin kapalı
+            </span>
           ) : (
-            <button
-              type="button"
-              onClick={request}
-              className="btn-chip rounded-full border border-accent/40 bg-accent/10 px-3 py-1.5 text-xs font-semibold text-accent"
-            >
-              İzin ver
-            </button>
+            <span className={busy || state === 'loading' ? 'pointer-events-none opacity-50' : ''}>
+              <Toggle on={state === 'on'} label="Günaydın bildirimi" onChange={toggle} />
+            </span>
           )}
         </div>
+
+        {state === 'denied' && (
+          <p className="text-center text-xs text-text-muted">
+            Bildirim izni reddedilmiş — tarayıcı/işletim sistemi ayarlarından Makrio'ya izin verip tekrar dene.
+          </p>
+        )}
+        {error && <p className="text-center text-xs text-red-400">{error}</p>}
+
         <p className="text-center text-xs text-text-muted">
-          Öğün ve su hatırlatıcı bildirimleri çok yakında geliyor — iznini şimdiden verebilirsin.
+          Hepsi bu kadar — seni bildirime boğmayacağız. Başka bildirim yok.
         </p>
       </div>
     </Sheet>
@@ -704,7 +725,7 @@ export default function Settings() {
 
       <Section title="Seçenekler">
         <Row first icon={I.permissions} title="İzinler" desc="Kamera ve bildirim izinleri" onClick={() => setSheet('izinler')} />
-        <Row icon={I.bell} title="Bildirimler" desc="Hatırlatıcı tercihleri" onClick={() => setSheet('bildirimler')} />
+        <Row icon={I.bell} title="Bildirimler" desc="Sadece günaydın mesajı" onClick={() => setSheet('bildirimler')} />
         <div className="flex items-center gap-3 border-t border-border px-4 py-3.5">
           <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/[0.04] text-text-muted">
             {I.fontSize}
