@@ -1216,8 +1216,8 @@ export default function DailyLog() {
                   <span className="min-w-0 flex-1">
                     <span className="block truncate text-[15px] text-text">{highlightMatch(food.name_tr, query)}</span>
                     <span className="text-xs tabular-nums text-text-muted">
-                      {Math.round(food.protein_per_100g ?? 0)}g pro · {Math.round(food.fat_per_100g ?? 0)}g yağ ·{' '}
-                      {Math.round(food.carbs_per_100g ?? 0)}g karb / 100g
+                      {Math.round(food.protein_per_100g ?? 0)}P {Math.round(food.fat_per_100g ?? 0)}Y{' '}
+                      {Math.round(food.carbs_per_100g ?? 0)}K / 100g
                       {searching && (
                         <span className="ml-2 font-bold" style={{ color: scoreFood(food).color }}>
                           {scoreFood(food).display}
@@ -1314,8 +1314,8 @@ export default function DailyLog() {
                 <div className="min-w-0 flex-1">
                   <div className="truncate text-[14px] text-text">{it.food_name}</div>
                   <div className="text-xs tabular-nums text-text-muted">
-                    {it.calories} kcal · {Math.round(it.protein_g)}g pro · {Math.round(it.fat_g)}g yağ ·{' '}
-                    {Math.round(it.carbs_g)}g karb
+                    {it.calories} kcal · {Math.round(it.protein_g)}P {Math.round(it.fat_g)}Y{' '}
+                    {Math.round(it.carbs_g)}K
                   </div>
                 </div>
                 <div className="flex items-center gap-1 rounded-lg border border-white/[0.08] bg-white/[0.03] px-2 py-1">
@@ -2107,7 +2107,7 @@ export default function DailyLog() {
                     </div>
                     <div className="mt-0.5 text-xs tabular-nums text-text-muted">
                       {mealTotal > 0
-                        ? `${Math.round(mealTotal)} kcal · ${Math.round(mealProtein)}g pro · ${Math.round(mealFat)}g yağ · ${Math.round(mealCarbs)}g karb`
+                        ? `${Math.round(mealTotal)} kcal · ${Math.round(mealProtein)}P ${Math.round(mealFat)}Y ${Math.round(mealCarbs)}K`
                         : 'Henüz kayıt yok'}
                     </div>
                   </div>
@@ -2143,8 +2143,8 @@ export default function DailyLog() {
                               {Math.round(log.calories)} kcal
                             </div>
                             <div className="text-[11px] tabular-nums text-text-muted">
-                              {Math.round(log.protein_g ?? 0)}g pro · {Math.round(log.fat_g ?? 0)}g yağ ·{' '}
-                              {Math.round(log.carbs_g ?? 0)}g karb
+                              {Math.round(log.protein_g ?? 0)}P {Math.round(log.fat_g ?? 0)}Y{' '}
+                              {Math.round(log.carbs_g ?? 0)}K
                             </div>
                           </span>
                         </div>
