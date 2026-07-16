@@ -17,6 +17,15 @@ export default function AppLayout() {
     }
   }, [theme])
 
+  // Yazı büyüklüğü tercihi: rem tabanlı tüm metinler kök font boyutuyla ölçeklenir.
+  const fontScale = profile?.preferences?.fontScale
+  useEffect(() => {
+    const map = { kucuk: '93.75%', buyuk: '106.25%' }
+    if (map[fontScale]) document.documentElement.style.fontSize = map[fontScale]
+    else document.documentElement.style.removeProperty('font-size')
+    return () => document.documentElement.style.removeProperty('font-size')
+  }, [fontScale])
+
   // Vitrin: özel zemin rengi temalarla birlikte kullanılamaz — her temanın
   // kendi zemini vardır. Yalnızca varsayılan (koyu) görünümde uygulanır.
   const bgColor = theme === 'dark' ? profile?.preferences?.bgColor : null

@@ -23,6 +23,9 @@ export default function BottomNav() {
   const premium = profile?.preferences?.navStyle === 'premium'
   const pixel = String(profile?.preferences?.theme ?? '').startsWith('pixel')
   const blok = profile?.preferences?.theme === 'blok'
+  // "Sadece takibe odaklan" tercihi: İlerleme sekmesi navdan kalkar.
+  const items =
+    profile?.preferences?.progressTab === 'off' ? ITEMS.filter((it) => it.to !== '/ilerleme') : ITEMS
 
   return (
     <nav
@@ -33,7 +36,7 @@ export default function BottomNav() {
       {/* pathname key'i: ışık süpürmesi sekme değişiminde bir kez oynar, sonsuz dönmez */}
       {premium && <span key={pathname} className="nav-lux-edge pointer-events-none absolute inset-x-0 top-0 h-[2px]" />}
       <div className="mx-auto flex max-w-md justify-around">
-        {ITEMS.map(({ to, label, Icon, pixelName, end, activeColor: baseColor }) => {
+        {items.map(({ to, label, Icon, pixelName, end, activeColor: baseColor }) => {
           // Blok Diyarı: İlerleme'nin mücevheri zümrüt — etiket de yeşile döner.
           const activeColor = blok && pixelName === 'star' ? '#4EC94E' : baseColor
           return (

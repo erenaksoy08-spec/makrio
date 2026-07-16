@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { useAuth } from '../contexts/AuthContext'
 import { supabase } from '../lib/supabase'
-import { LEGAL_PAGES } from '../lib/legalInfo'
 
 const GOAL_LABELS = { lose: 'Kilo verme', gain: 'Kilo alma', maintain: 'Formu koruma' }
 const GENDER_LABELS = { female: 'Kadın', male: 'Erkek' }
@@ -267,22 +266,6 @@ export default function Profile() {
         </div>
         <span className="text-text-muted">›</span>
       </Link>
-
-      {/* legal */}
-      <div className="overflow-hidden rounded-2xl border border-white/5 bg-surface">
-        {Object.entries(LEGAL_PAGES).map(([slug, page], i) => (
-          <Link
-            key={slug}
-            to={`/yasal/${slug}`}
-            className={`btn-row flex items-center justify-between px-4 py-3 text-sm text-text-muted ${
-              i > 0 ? 'border-t border-border' : ''
-            }`}
-          >
-            {page.title}
-            <span>›</span>
-          </Link>
-        ))}
-      </div>
 
       <button
         type="button"
