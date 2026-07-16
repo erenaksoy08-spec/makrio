@@ -155,14 +155,14 @@ export default function CalorieRing({ consumed, goal, color = '#3DA5FF', shape =
         style={{ width: innerDiameter * 0.85, height: innerDiameter * 0.85 }}
       >
         <span
-          className="font-bold tabular-nums text-text"
-          style={{ fontSize: numberFontSize, lineHeight: 1 }}
+          className="tabular-nums text-text"
+          style={{ fontSize: numberFontSize * 1.06, lineHeight: 1, fontWeight: 620, letterSpacing: '-0.025em' }}
         >
           {animatedRemaining}
         </span>
         <span
-          className="text-text-muted"
-          style={{ fontSize: captionFontSize, lineHeight: 1.4, marginTop: 4 }}
+          className="uppercase text-text-muted"
+          style={{ fontSize: captionFontSize * 0.92, lineHeight: 1.4, marginTop: 5, letterSpacing: '0.14em' }}
         >
           {over > 0 ? 'kcal aşıldı' : 'kcal kaldı'}
         </span>

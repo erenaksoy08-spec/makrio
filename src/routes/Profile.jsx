@@ -207,13 +207,11 @@ export default function Profile() {
                 )}
               </div>
 
-              <div className="relative mt-4 grid grid-cols-4 gap-2">
+              {/* iç içe kart yerine tek şerit + ince ayraçlar */}
+              <div className="relative mt-4 grid grid-cols-4 divide-x divide-white/[0.07] border-t border-white/[0.07] pt-3">
                 {stats.map((s) => (
-                  <div
-                    key={s.label}
-                    className="rounded-xl border border-white/[0.05] bg-white/[0.03] px-1 py-2.5 text-center"
-                  >
-                    <div className="text-sm font-bold tabular-nums text-text">
+                  <div key={s.label} className="px-1 text-center">
+                    <div className="text-sm font-semibold tabular-nums text-text">
                       {s.value}
                       {s.unit && <span className="text-[10px] font-medium text-text-muted"> {s.unit}</span>}
                     </div>

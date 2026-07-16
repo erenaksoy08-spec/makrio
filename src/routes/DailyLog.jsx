@@ -1903,9 +1903,9 @@ export default function DailyLog() {
 
   const totalToday = logs.reduce((sum, l) => sum + l.calories, 0)
   const currentMeal = defaultMealType()
-  const currentIdx = MEAL_TYPES.findIndex((m) => m.value === currentMeal)
-  const sortedMeals =
-    currentIdx > 0 ? [...MEAL_TYPES.slice(currentIdx), ...MEAL_TYPES.slice(0, currentIdx)] : MEAL_TYPES
+  // Öğünler her zaman kronolojik — "ŞİMDİ" etiketi zaten aktif öğünü işaret ediyor.
+  // (Döndürme, kayıtlı öğünleri listenin dibine itiyordu ve geçmiş günlerde anlamsızdı.)
+  const sortedMeals = MEAL_TYPES
   const progressPct = goalCalories ? Math.min(100, (totalToday / goalCalories) * 100) : 0
   const consumedProtein = logs.reduce((sum, l) => sum + (l.protein_g ?? 0), 0)
   const consumedCarbs = logs.reduce((sum, l) => sum + (l.carbs_g ?? 0), 0)

@@ -216,7 +216,7 @@ export default function Dashboard() {
         <MacroBar label="Karbonhidrat" consumed={consumed.carbs_g} goal={goalCarbs} color="#6FCF97" delay={120} spiral={spiralBars} />
       </div>
 
-      <ScoreCard score={dayScore} />
+      <ScoreCard score={dayScore} idle={consumed.calories === 0 && waterConsumed === 0} />
 
       <WaterTracker
         consumed_ml={waterConsumed}

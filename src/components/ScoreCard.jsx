@@ -8,13 +8,14 @@ const BREAKDOWN = [
   { key: 'water', label: 'Su', max: 2 },
 ]
 
-export default function ScoreCard({ score }) {
+export default function ScoreCard({ score, idle = false }) {
   const size = 64
   const stroke = 6
   const r = (size - stroke) / 2
   const circ = 2 * Math.PI * r
   const ratio = Math.min(1, score.total / 10)
-  const color = scoreColor(score.total)
+  // Gün henüz boşken "Zayıf" damgası vurma — nötr bekleme durumu.
+  const color = idle ? 'var(--color-text-muted)' : scoreColor(score.total)
 
   const [offset, setOffset] = useState(circ)
   useEffect(() => {
@@ -48,7 +49,7 @@ export default function ScoreCard({ score }) {
         <div className="flex items-center justify-between">
           <span className="text-sm text-text-muted">Günün Puanı</span>
           <span className="text-sm font-semibold" style={{ color }}>
-            {scoreLabel(score.total)}
+            {idle ? 'Gün yeni başlıyor' : scoreLabel(score.total)}
           </span>
         </div>
         <div className="mt-2 grid grid-cols-4 gap-1.5">

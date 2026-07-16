@@ -102,18 +102,10 @@ export default function Login() {
 
   return (
     <div className="relative flex min-h-svh items-center justify-center overflow-hidden px-4">
-      {/* ambiyans — yumuşak renk küreleri */}
+      {/* Tek ambiyans kaynağı: marka halkasının ışığı — jenerik renk küreleri yok */}
       <div
-        className="pointer-events-none absolute -top-32 -left-24 h-80 w-80 rounded-full blur-3xl"
-        style={{ background: 'radial-gradient(circle, rgba(255,255,255,0.10), transparent 65%)' }}
-      />
-      <div
-        className="pointer-events-none absolute -bottom-36 -right-24 h-96 w-96 rounded-full blur-3xl"
-        style={{ background: 'radial-gradient(circle, rgba(61,165,255,0.16), transparent 65%)' }}
-      />
-      <div
-        className="pointer-events-none absolute top-1/3 right-0 h-64 w-64 rounded-full blur-3xl"
-        style={{ background: 'radial-gradient(circle, rgba(167,139,250,0.10), transparent 65%)' }}
+        className="pointer-events-none absolute left-1/2 top-[12%] h-[420px] w-[420px] -translate-x-1/2 rounded-full blur-3xl"
+        style={{ background: 'radial-gradient(circle, rgba(61,165,255,0.11), rgba(255,138,91,0.05) 45%, transparent 68%)' }}
       />
 
       <div className="relative w-full max-w-sm">
@@ -135,8 +127,8 @@ export default function Login() {
           initial={{ opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.05, duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-          className="space-y-3 rounded-3xl border border-white/10 bg-surface/80 p-5 backdrop-blur"
-          style={{ boxShadow: '0 20px 60px rgba(0,0,0,0.45)' }}
+          className="space-y-3 rounded-3xl border border-white/[0.08] bg-surface p-5"
+          style={{ boxShadow: '0 1px 0 rgba(255,255,255,0.04) inset' }}
         >
           <Field
             id="email"

@@ -44,9 +44,17 @@ export default function BottomNav() {
             key={to}
             to={to}
             end={end}
-            className="btn-nav flex flex-1 flex-col items-center gap-1 py-2.5 text-xs text-text-muted"
+            className="btn-nav flex flex-1 flex-col items-center gap-1 py-2.5 text-[11px] font-medium text-text-muted"
           >
-            {({ isActive }) => (
+            {({ isActive: routeActive }) => {
+              // İlerleme'nin alt sayfalarında (salon, lig, görevler...) sekme yanık kalsın.
+              const isActive =
+                to === '/ilerleme'
+                  ? ['/ilerleme', '/salon', '/lig', '/gorevler', '/vitrin', '/envanter'].some((p) =>
+                      pathname.startsWith(p),
+                    )
+                  : routeActive
+              return (
               <>
                 <div className="relative flex h-7 w-12 items-center justify-center">
                   {isActive && (
@@ -84,7 +92,8 @@ export default function BottomNav() {
                   {label}
                 </span>
               </>
-            )}
+              )
+            }}
           </NavLink>
           )
         })}
