@@ -12,7 +12,7 @@ import Laurel from '../components/Laurel'
 const GOLD = '#F2A93B'
 
 // Koleksiyon karosu — madalyon + gün etiketi. state: 'locked' | 'sealed' | 'open'
-function RewardTile({ reward, state, index, active, progress, onClick }) {
+function RewardTile({ reward, state, index, active, progress, intro, onClick }) {
   const a = reward.accent
   const sealed = state === 'sealed'
   const open = state === 'open'
@@ -21,9 +21,9 @@ function RewardTile({ reward, state, index, active, progress, onClick }) {
     <motion.button
       type="button"
       onClick={onClick}
-      initial={{ opacity: 0, scale: 0.7, y: 14 }}
+      initial={intro ? { opacity: 0, scale: 0.92, y: 10 } : false}
       animate={{ opacity: 1, scale: 1, y: 0 }}
-      transition={{ delay: index * 0.07, type: 'spring', stiffness: 300, damping: 20 }}
+      transition={{ delay: Math.min(index, 6) * 0.04, type: 'spring', stiffness: 300, damping: 22 }}
       whileTap={{ scale: 0.92 }}
       className="relative flex flex-col items-center gap-2 rounded-2xl border py-4"
       style={{
@@ -41,7 +41,7 @@ function RewardTile({ reward, state, index, active, progress, onClick }) {
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           transition={{ delay: index * 0.07 + 0.3, type: 'spring', stiffness: 400, damping: 15 }}
-          className="absolute -top-1.5 right-2 rounded-full px-1.5 py-0.5 text-[9px] font-bold text-black"
+          className="absolute -top-1.5 right-2 rounded-full px-1.5 py-0.5 text-[10px] font-bold text-black"
           style={{ backgroundColor: '#F2A93B' }}
         >
           YENİ
@@ -74,6 +74,9 @@ export default function Hall() {
   const { profile, refreshProfile } = useAuth()
   const [saving, setSaving] = useState(false)
   const [ceremony, setCeremony] = useState(null) // { reward, mode }
+  // Giriş koreografisi oturum başına bir kez — tekrar ziyarette karolar anında yerinde.
+  const [intro] = useState(() => !sessionStorage.getItem('hall-intro-seen'))
+  if (intro) sessionStorage.setItem('hall-intro-seen', '1')
 
   const unlockStreak = unlockStreakFrom(profile)
   const preferences = profile?.preferences ?? {}
@@ -205,6 +208,7 @@ export default function Hall() {
               index={i}
               active={state === 'open' && isActive(reward)}
               progress={unlockStreak / reward.days}
+              intro={intro}
               onClick={() => openCeremony(reward)}
             />
           )

@@ -26,8 +26,8 @@ export default function MacroBar({ label, consumed, goal, unit = 'g', color = 'v
             backgroundColor: color,
             // Spiral parlaması makro rengini alır (currentColor).
             color,
-            // Ağır dolum: yavaş kalkış, kütleli itiş, ufak taşma ve oturma.
-            transition: 'width 1450ms cubic-bezier(0.62, 0.01, 0.06, 1.12)',
+            // Hızlı kalkış, yumuşak oturma — sık görülen UI 300-600ms bandında kalmalı.
+            transition: 'width 600ms cubic-bezier(0.22, 1, 0.36, 1)',
           }}
         />
       </div>

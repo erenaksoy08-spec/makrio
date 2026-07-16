@@ -1,4 +1,4 @@
-import { NavLink } from 'react-router-dom'
+import { NavLink, useLocation } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { useAuth } from '../contexts/AuthContext'
 import HomeIcon from './HomeIcon'
@@ -19,6 +19,7 @@ const ITEMS = [
 
 export default function BottomNav() {
   const { profile } = useAuth()
+  const { pathname } = useLocation()
   const premium = profile?.preferences?.navStyle === 'premium'
   const pixel = String(profile?.preferences?.theme ?? '').startsWith('pixel')
   const blok = profile?.preferences?.theme === 'blok'
@@ -29,7 +30,8 @@ export default function BottomNav() {
         premium ? 'border-transparent bg-surface/90' : 'border-border bg-surface/95'
       }`}
     >
-      {premium && <span className="nav-lux-edge pointer-events-none absolute inset-x-0 top-0 h-[2px]" />}
+      {/* pathname key'i: ışık süpürmesi sekme değişiminde bir kez oynar, sonsuz dönmez */}
+      {premium && <span key={pathname} className="nav-lux-edge pointer-events-none absolute inset-x-0 top-0 h-[2px]" />}
       <div className="mx-auto flex max-w-md justify-around">
         {ITEMS.map(({ to, label, Icon, pixelName, end, activeColor: baseColor }) => {
           // Blok Diyarı: İlerleme'nin mücevheri zümrüt — etiket de yeşile döner.

@@ -34,7 +34,7 @@ export default function KarneSheet({ food, onClose }) {
             type="button"
             onClick={onClose}
             aria-label="Kapat"
-            className="btn-icon flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-white/[0.1] text-text-muted"
+            className="btn-icon relative flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-white/[0.1] text-text-muted after:absolute after:-inset-2 after:content-['']"
           >
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
               <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />

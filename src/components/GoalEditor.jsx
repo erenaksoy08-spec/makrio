@@ -2,9 +2,17 @@ import { useMemo, useState } from 'react'
 import { motion } from 'framer-motion'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
-import { calculateBMR, calculateTDEE, macrosForCalories, carbsForRemaining, KCAL_PER_KG } from '../lib/nutrition'
+import {
+  calculateBMR,
+  calculateTDEE,
+  macrosForCalories,
+  carbsForRemaining,
+  KCAL_PER_KG,
+  maxSafeLossRate,
+  calorieFloor,
+} from '../lib/nutrition'
 import MacroTuner from './MacroTuner'
-import PaceWarning from './PaceWarning'
+import PaceWarning, { SafeFloorNote } from './PaceWarning'
 
 const GOAL_OPTIONS = [
   { value: 'lose', label: 'Kilo ver' },
@@ -83,13 +91,14 @@ export default function GoalEditor({ currentWeight, onClose }) {
     const bmr = Math.round(calculateBMR(bodyProfile))
     const tdee = Math.round(calculateTDEE(bodyProfile))
 
-    // kalori hedefi hıza göre sabittir
+    // kalori hedefi hıza göre sabittir; kilo vermede güvenli tabanın altına inmez
     let calories
     if (goal === 'maintain') {
       calories = tdee + Number(maintainAdjust || 0)
     } else {
       const dailyDelta = (rate * KCAL_PER_KG) / 7
       calories = Math.round(goal === 'lose' ? tdee - dailyDelta : tdee + dailyDelta)
+      if (goal === 'lose') calories = Math.max(calories, calorieFloor(profile?.gender))
     }
     const autoMacros = macrosForCalories(calories, start)
 
@@ -120,6 +129,10 @@ export default function GoalEditor({ currentWeight, onClose }) {
 
   const canSave = goal === 'maintain' || calc.valid
 
+  // Kilo vermede hız, kalori tabanına dayandığı noktada durur.
+  const rateCap = goal === 'lose' ? 1.4 : 1
+  const rateMax = goal === 'lose' && calc ? maxSafeLossRate({ tdee: calc.tdee, gender: profile?.gender }) : rateCap
+
   async function handleSave() {
     setSaving(true)
     setError('')
@@ -131,7 +144,7 @@ export default function GoalEditor({ currentWeight, onClose }) {
       else delete nextPrefs.maintainAdjust
     } else {
       nextPrefs.targetWeight = Number(target)
-      nextPrefs.goalRate = Number(rate)
+      nextPrefs.goalRate = Math.min(Number(rate), rateMax)
       delete nextPrefs.maintainAdjust
     }
     if (manualMacros) nextPrefs.manualMacros = manualMacros
@@ -237,9 +250,9 @@ export default function GoalEditor({ currentWeight, onClose }) {
             <input
               type="range"
               min="0.1"
-              max={goal === 'lose' ? 1.4 : 1}
+              max={rateMax}
               step="0.05"
-              value={rate}
+              value={Math.min(Number(rate), rateMax)}
               onChange={(e) => {
                 setRate(Number(e.target.value))
                 setManualMacros(null)
@@ -250,7 +263,11 @@ export default function GoalEditor({ currentWeight, onClose }) {
               <span>yavaş</span>
               <span>hızlı</span>
             </div>
-            <PaceWarning show={goal === 'lose' && rate >= 1} />
+            <PaceWarning show={goal === 'lose' && Math.min(Number(rate), rateMax) >= 1} />
+            <SafeFloorNote
+              show={goal === 'lose' && rateMax < 1.4 && Number(rate) >= rateMax}
+              floor={calorieFloor(profile?.gender)}
+            />
           </div>
         </>
       )}

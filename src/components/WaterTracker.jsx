@@ -48,14 +48,14 @@ export default function WaterTracker({ consumed_ml, goal_ml, weightKg, onAdd, on
             type="button"
             disabled={!canUndo}
             onClick={onUndo}
-            className="btn-icon flex h-10 w-10 items-center justify-center rounded-full border border-border text-text-muted disabled:opacity-40"
+            className="btn-icon relative flex h-10 w-10 items-center justify-center rounded-full border border-border text-text-muted after:absolute after:-inset-1 after:content-[''] disabled:opacity-40"
           >
             −
           </button>
           <button
             type="button"
             onClick={() => onAdd(glassSize)}
-            className="btn-icon flex h-10 w-10 items-center justify-center rounded-full text-black"
+            className="btn-icon relative flex h-10 w-10 items-center justify-center rounded-full text-black after:absolute after:-inset-1 after:content-['']"
             style={{ backgroundColor: WATER_BLUE }}
           >
             +
@@ -68,9 +68,9 @@ export default function WaterTracker({ consumed_ml, goal_ml, weightKg, onAdd, on
           <AnimatePresence mode="popLayout">
             <motion.span
               key={smiley ? Math.min(100, Math.round((consumed_ml / goal_ml) * 100)) : glassesConsumed}
-              initial={{ scale: 0.6, opacity: 0 }}
+              initial={{ scale: 0.92, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              transition={{ type: 'spring', duration: 0.2 }}
+              transition={{ duration: 0.15, ease: [0.22, 1, 0.36, 1] }}
               style={{ display: 'inline-block' }}
             >
               {smiley ? `%${Math.min(100, Math.round((consumed_ml / goal_ml) * 100))}` : glassesConsumed}

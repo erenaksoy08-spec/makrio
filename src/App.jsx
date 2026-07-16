@@ -1,10 +1,10 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { MotionConfig } from 'framer-motion'
 import { AuthProvider } from './contexts/AuthContext'
 import ProtectedRoute from './components/ProtectedRoute'
 import OnboardingGate from './components/OnboardingGate'
 import AppLayout from './components/AppLayout'
 import Login from './routes/Login'
-import Register from './routes/Register'
 import ResetPassword from './routes/ResetPassword'
 import Onboarding from './routes/Onboarding'
 import Dashboard from './routes/Dashboard'
@@ -23,9 +23,12 @@ export default function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
+        {/* Sistem "hareketi azalt" tercihinde framer animasyonları otomatik kısılır */}
+        <MotionConfig reducedMotion="user">
         <Routes>
           <Route path="/giris" element={<Login />} />
-          <Route path="/kayit" element={<Register />} />
+          {/* Tek kayıt yolu: soruların önde olduğu onboarding akışı */}
+          <Route path="/kayit" element={<Navigate to="/hosgeldin" replace />} />
           <Route path="/hosgeldin" element={<Onboarding />} />
           <Route path="/sifre-sifirla" element={<ResetPassword />} />
           <Route path="/yasal/:slug" element={<LegalPage />} />
@@ -48,6 +51,7 @@ export default function App() {
             </Route>
           </Route>
         </Routes>
+        </MotionConfig>
       </AuthProvider>
     </BrowserRouter>
   )

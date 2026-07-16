@@ -26,7 +26,7 @@ function BrandMark() {
         transform="rotate(-90 36 36)"
         initial={{ strokeDashoffset: 2 * Math.PI * 29 }}
         animate={{ strokeDashoffset: 2 * Math.PI * 29 * 0.22 }}
-        transition={{ delay: 0.25, duration: 1.1, ease: [0.34, 1.1, 0.64, 1] }}
+        transition={{ delay: 0.1, duration: 0.6, ease: [0.34, 1.1, 0.64, 1] }}
       />
       <text x="36" y="43" textAnchor="middle" fontSize="22" fontWeight="800" fill="var(--color-text)">
         M
@@ -89,7 +89,12 @@ export default function Login() {
 
     setLoading(false)
     if (signInError) {
-      setError('E-posta veya şifre hatalı.')
+      // Ağ hatasını kimlik hatası gibi etiketleme — kullanıcı şifresinden şüphelenmesin.
+      setError(
+        signInError.message?.includes('Invalid login credentials')
+          ? 'E-posta veya şifre hatalı.'
+          : 'Bağlanılamadı — internet bağlantını kontrol edip tekrar dene.',
+      )
       return
     }
     navigate('/')
@@ -129,7 +134,7 @@ export default function Login() {
           onSubmit={handleSubmit}
           initial={{ opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.12, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ delay: 0.05, duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
           className="space-y-3 rounded-3xl border border-white/10 bg-surface/80 p-5 backdrop-blur"
           style={{ boxShadow: '0 20px 60px rgba(0,0,0,0.45)' }}
         >
@@ -175,7 +180,7 @@ export default function Login() {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.3, duration: 0.4 }}
+          transition={{ delay: 0.15, duration: 0.35 }}
           className="mt-6 text-center text-sm text-text-muted"
         >
           Makrio&apos;da yeni misin?{' '}

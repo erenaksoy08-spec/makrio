@@ -3,9 +3,9 @@ import { Link, useNavigate } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
-import { ACTIVITY_LEVELS, GOALS, computePlan, carbsForRemaining } from '../lib/nutrition'
+import { ACTIVITY_LEVELS, GOALS, computePlan, carbsForRemaining, maxSafeLossRate, calorieFloor } from '../lib/nutrition'
 import MacroTuner from '../components/MacroTuner'
-import PaceWarning from '../components/PaceWarning'
+import PaceWarning, { SafeFloorNote } from '../components/PaceWarning'
 
 // Hesapsız (ilk giriş) akışında cevaplar tarayıcıda saklanır;
 // kayıt tamamlanınca temizlenir.
@@ -14,7 +14,9 @@ const DRAFT_KEY = 'makrio-onboarding-draft'
 const EMPTY_FORM = {
   name: '',
   age: '',
-  gender: 'female',
+  // Cinsiyet önseçilmez: BMR formülü cinsiyete bağlı, yanlışlıkla geçilen
+  // bir önseçim tüm planı yanlış temele oturtur.
+  gender: '',
   height_cm: '',
   weight_kg: '',
   bodyFat: '',
@@ -142,6 +144,12 @@ export default function Onboarding() {
         })
       : null
 
+  // Hız kaydırıcısının güvenli üst sınırı: günlük hedef kalori tabanının altına inemez.
+  const rateCap = form.goal === 'lose' ? 1.4 : 1
+  const rateMax =
+    form.goal === 'lose' && autoPlan ? maxSafeLossRate({ tdee: autoPlan.tdee, gender: form.gender }) : rateCap
+  const rateClamped = form.goal === 'lose' && rateMax < rateCap && Number(form.rate) >= rateMax
+
   // Kalori hedefi sabittir (hıza göre). Elle ayar sadece protein & yağı değiştirir,
   // karbonhidrat kalan kaloriyi doldurur.
   const effCalories = autoPlan?.calories
@@ -188,7 +196,7 @@ export default function Onboarding() {
     // preferences kolonu RLS nedeniyle doğrudan update edilemiyor; RPC ile yazılır.
     const nextPrefs = { ...(currentPrefs ?? {}) }
     if (form.bodyFat) nextPrefs.bodyFat = Number(form.bodyFat)
-    if (form.goal !== 'maintain') nextPrefs.goalRate = Number(form.rate)
+    if (form.goal !== 'maintain') nextPrefs.goalRate = Math.min(Number(form.rate), rateMax)
     if (form.bodyFat || form.goal !== 'maintain') {
       await supabase.rpc('update_preferences', { p_preferences: nextPrefs })
     }
@@ -457,9 +465,9 @@ export default function Onboarding() {
                     <input
                       type="range"
                       min="0.1"
-                      max={form.goal === 'lose' ? 1.4 : 1}
+                      max={rateMax}
                       step="0.05"
-                      value={form.rate}
+                      value={Math.min(Number(form.rate), rateMax)}
                       onChange={(e) => setForm((f) => ({ ...f, rate: Number(e.target.value), manualMacros: null }))}
                       className="w-full accent-[color:var(--color-accent)]"
                     />
@@ -467,7 +475,8 @@ export default function Onboarding() {
                       <span>yavaş & sürdürülebilir</span>
                       <span>hızlı</span>
                     </div>
-                    <PaceWarning show={form.goal === 'lose' && form.rate >= 1} />
+                    <PaceWarning show={form.goal === 'lose' && Math.min(Number(form.rate), rateMax) >= 1} />
+                    <SafeFloorNote show={rateClamped} floor={calorieFloor(form.gender)} />
                     {autoPlan && (
                       <div className="mt-3 flex items-center justify-between border-t border-border pt-3">
                         <span className="text-xs text-text-muted">Bu hızla günlük hedef</span>

@@ -5,6 +5,38 @@ import { AnimatePresence, motion } from 'framer-motion'
 // çizgi, tek cümlelik uyarı, panik rengi yok.
 const AMBER = '#D9A048'
 
+// Güvenli taban notu — hız kaydırıcısı kalori tabanına dayandığında görünür.
+// PaceWarning ile aynı görsel dil; ton bilgilendirici, uyarıcı değil.
+export function SafeFloorNote({ show, floor }) {
+  return (
+    <AnimatePresence initial={false}>
+      {show && (
+        <motion.div
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: 'auto' }}
+          exit={{ opacity: 0, height: 0 }}
+          transition={{ duration: 0.28, ease: [0.32, 0.72, 0, 1] }}
+          className="overflow-hidden"
+        >
+          <p className="mt-2.5 flex items-start gap-2 text-[11.5px] leading-relaxed text-text-muted">
+            <span
+              className="mt-0.5 w-[2px] shrink-0 self-stretch rounded-full"
+              style={{ background: `linear-gradient(180deg, ${AMBER}, color-mix(in srgb, ${AMBER} 25%, transparent))` }}
+            />
+            <span>
+              Hız burada sınırlandı: günlük hedefin güvenli taban olan{' '}
+              <span className="font-semibold" style={{ color: `color-mix(in srgb, ${AMBER} 70%, var(--color-text))` }}>
+                {floor} kcal
+              </span>
+              &apos;nin altına inmemesi için.
+            </span>
+          </p>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  )
+}
+
 export default function PaceWarning({ show }) {
   return (
     <AnimatePresence initial={false}>

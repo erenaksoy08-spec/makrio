@@ -22,6 +22,22 @@ export function getGoal(value) {
 
 export const KCAL_PER_KG = 7700
 
+// Güvenli günlük kalori tabanı — kilo verme planı bu sınırın altına inmez.
+// Yaygın klinik alt sınırlar: kadın 1200, erkek 1500 kcal/gün.
+export const MIN_CALORIES = { female: 1200, male: 1500 }
+
+export function calorieFloor(gender) {
+  return MIN_CALORIES[gender] ?? 1350
+}
+
+// TDEE ve tabana göre seçilebilir en yüksek güvenli haftalık verme hızı.
+// 0,05 adımına aşağı yuvarlanır; [0.1, cap] aralığına sıkıştırılır.
+export function maxSafeLossRate({ tdee, gender, cap = 1.4 }) {
+  const room = ((tdee - calorieFloor(gender)) * 7) / KCAL_PER_KG
+  const stepped = Math.floor(room / 0.05) * 0.05
+  return Math.max(0.1, Math.min(cap, Number(stepped.toFixed(2))))
+}
+
 // Bazal metabolizma:
 // Vücut yağ oranı biliniyorsa Katch-McArdle (yağsız kütleye dayalı, daha hassas),
 // bilinmiyorsa Mifflin-St Jeor.
@@ -69,16 +85,25 @@ export function computePlan({ gender, weight_kg, height_cm, age, bodyFat, activi
   const bmr = calculateBMR({ gender, weight_kg, height_cm, age, bodyFat })
   const tdee = bmr * (getActivityLevel(activity_level)?.multiplier ?? 1.2)
   let calories
+  let floored = false
   if (goal === 'maintain') {
     calories = Math.round(tdee)
   } else {
     const dailyDelta = (rate * KCAL_PER_KG) / 7
     calories = Math.round(goal === 'lose' ? tdee - dailyDelta : tdee + dailyDelta)
+    if (goal === 'lose') {
+      const floor = calorieFloor(gender)
+      if (calories < floor) {
+        calories = floor
+        floored = true
+      }
+    }
   }
   return {
     bmr: Math.round(bmr),
     tdee: Math.round(tdee),
     calories,
+    floored,
     macros: macrosForCalories(calories, weight_kg),
   }
 }

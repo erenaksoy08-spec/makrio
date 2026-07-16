@@ -25,6 +25,8 @@ const GOLD_PERKS = [
 
 function GoldCard({ isGold }) {
   const [info, setInfo] = useState(false)
+  // Perk listesi istek üzerine açılır — kart her profil ziyaretinde tam boy bağırmasın.
+  const [expanded, setExpanded] = useState(false)
 
   return (
     <div className="relative overflow-hidden rounded-3xl border border-[#E8B84B]/40 bg-gradient-to-br from-[#3a2e12] via-surface to-surface p-5">
@@ -49,16 +51,26 @@ function GoldCard({ isGold }) {
 
         <p className="mt-1 text-xs text-text-muted">Potansiyelini sonuna kadar kullan.</p>
 
-        <ul className="mt-4 space-y-2">
-          {GOLD_PERKS.map((p) => (
-            <li key={p.text} className="flex items-center gap-2.5 text-sm text-text">
-              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#F5C84B]/15 text-xs text-[#F5C84B]">
-                {p.icon}
-              </span>
-              {p.text}
-            </li>
-          ))}
-        </ul>
+        <button
+          type="button"
+          onClick={() => setExpanded((v) => !v)}
+          className="mt-3 flex items-center gap-1.5 text-xs font-semibold text-[#F5C84B]"
+        >
+          Neler dahil?
+          <span className={`inline-block transition-transform ${expanded ? 'rotate-180' : ''}`}>▾</span>
+        </button>
+        {expanded && (
+          <ul className="mt-3 space-y-2">
+            {GOLD_PERKS.map((p) => (
+              <li key={p.text} className="flex items-center gap-2.5 text-sm text-text">
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#F5C84B]/15 text-xs text-[#F5C84B]">
+                  {p.icon}
+                </span>
+                {p.text}
+              </li>
+            ))}
+          </ul>
+        )}
 
         {!isGold && (
           <>
@@ -193,7 +205,7 @@ export default function Profile() {
                       {s.value}
                       {s.unit && <span className="text-[10px] font-medium text-text-muted"> {s.unit}</span>}
                     </div>
-                    <div className="mt-0.5 text-[9px] font-medium uppercase tracking-[0.1em] text-text-muted">
+                    <div className="mt-0.5 text-[10px] font-medium uppercase tracking-[0.1em] text-text-muted">
                       {s.label}
                     </div>
                   </div>

@@ -175,11 +175,11 @@ export default function Dashboard() {
   return (
     <div className="mx-auto max-w-md space-y-5 px-4 py-6">
       <div className="flex items-center justify-between">
-        <div>
+        <div className="min-w-0">
           <div className="text-xs font-medium uppercase tracking-[0.14em] text-text-muted">
             {formatHeaderDate(today)}
           </div>
-          <h1 className="mt-1 text-[26px] font-semibold tracking-tight text-text">
+          <h1 className="mt-1 text-[26px] font-semibold leading-tight tracking-tight text-text [overflow-wrap:anywhere]">
             {greeting.text}
             {firstName ? `, ${firstName}` : ''}{' '}
             {pixelUi ? <PixelGreetingIcon period={greeting.period} /> : greeting.emoji}
@@ -212,8 +212,8 @@ export default function Dashboard() {
 
       <div className="space-y-5 rounded-3xl border border-white/[0.06] bg-surface p-5">
         <MacroBar label="Protein" consumed={consumed.protein_g} goal={goalProtein} color="#FF8A5B" delay={0} spiral={spiralBars} />
-        <MacroBar label="Yağ" consumed={consumed.fat_g} goal={goalFat} color="#F2C94C" delay={160} spiral={spiralBars} />
-        <MacroBar label="Karbonhidrat" consumed={consumed.carbs_g} goal={goalCarbs} color="#6FCF97" delay={320} spiral={spiralBars} />
+        <MacroBar label="Yağ" consumed={consumed.fat_g} goal={goalFat} color="#F2C94C" delay={60} spiral={spiralBars} />
+        <MacroBar label="Karbonhidrat" consumed={consumed.carbs_g} goal={goalCarbs} color="#6FCF97" delay={120} spiral={spiralBars} />
       </div>
 
       <ScoreCard score={dayScore} />
