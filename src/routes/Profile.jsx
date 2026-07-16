@@ -243,6 +243,31 @@ export default function Profile() {
         <span className="text-text-muted">›</span>
       </Link>
 
+      {/* settings */}
+      <Link
+        to="/ayarlar"
+        className="btn-row flex items-center justify-between rounded-2xl border border-white/5 bg-surface p-4"
+      >
+        <div className="flex items-center gap-3">
+          <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white/[0.04] text-text-muted">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="3.2" stroke="currentColor" strokeWidth="1.7" />
+              <path
+                d="M12 3.5v2.2M12 18.3v2.2M20.5 12h-2.2M5.7 12H3.5M18 6l-1.6 1.6M7.6 16.4 6 18M18 18l-1.6-1.6M7.6 7.6 6 6"
+                stroke="currentColor"
+                strokeWidth="1.7"
+                strokeLinecap="round"
+              />
+            </svg>
+          </span>
+          <div>
+            <div className="text-sm font-medium text-text">Ayarlar</div>
+            <div className="text-xs text-text-muted">Veri sıfırlama ve hesap</div>
+          </div>
+        </div>
+        <span className="text-text-muted">›</span>
+      </Link>
+
       {/* legal */}
       <div className="overflow-hidden rounded-2xl border border-white/5 bg-surface">
         {Object.entries(LEGAL_PAGES).map(([slug, page], i) => (

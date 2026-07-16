@@ -11,6 +11,7 @@ import Dashboard from './routes/Dashboard'
 import DailyLog from './routes/DailyLog'
 import History from './routes/History'
 import Profile from './routes/Profile'
+import Settings from './routes/Settings'
 import Progress from './routes/Progress'
 import League from './routes/League'
 import Store from './routes/Store'
@@ -41,6 +42,7 @@ export default function App() {
                 <Route path="/gunluk" element={<DailyLog />} />
                 <Route path="/gecmis" element={<History />} />
                 <Route path="/profil" element={<Profile />} />
+                <Route path="/ayarlar" element={<Settings />} />
                 <Route path="/ilerleme" element={<Progress />} />
                 <Route path="/lig" element={<League />} />
                 <Route path="/vitrin" element={<Store />} />
