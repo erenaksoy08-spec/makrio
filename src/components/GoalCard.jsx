@@ -33,7 +33,7 @@ export default function GoalCard({ goal, calories, currentWeight, targetWeight, 
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="btn-row flex h-full flex-col rounded-3xl border border-white/[0.06] bg-surface p-4 text-left"
+        className="btn-card flex h-full flex-col rounded-3xl border border-white/[0.06] bg-surface p-4 text-left"
       >
         <div className="flex w-full items-center justify-between">
           <span className="text-sm text-text-muted">Hedef</span>

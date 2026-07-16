@@ -44,7 +44,7 @@ export default function WeightCard({ logs, goal, onAdd }) {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="btn-row flex h-full flex-col justify-between rounded-3xl border border-white/[0.06] bg-surface p-4 text-left"
+        className="btn-card flex h-full flex-col justify-between rounded-3xl border border-white/[0.06] bg-surface p-4 text-left"
       >
         <div className="flex items-start justify-between">
           <span className="text-sm text-text-muted">Kilo</span>

@@ -140,7 +140,7 @@ export default function Progress() {
         {/* Envanter — deri çanta: dikişli pervaz, dikey kese */}
         <Link
           to="/envanter"
-          className="btn-row relative block overflow-hidden rounded-3xl p-[3px]"
+          className="btn-card relative block overflow-hidden rounded-3xl p-[3px]"
           style={{
             background: 'linear-gradient(180deg, #2b1d0d, #171007)',
             border: '1px solid rgba(201,161,90,0.32)',
@@ -185,7 +185,7 @@ export default function Progress() {
       {/* Görevler — büyülü gece kapısı: menekşe bulutsu, yıldızlar, süzülen tomar */}
       <Link
         to="/gorevler"
-        className="btn-row relative block overflow-hidden rounded-3xl"
+        className="btn-card relative block overflow-hidden rounded-3xl"
         style={{
           border: `1px solid ${questsReady > 0 ? 'rgba(139,92,246,0.55)' : 'rgba(139,92,246,0.35)'}`,
           background:
@@ -289,7 +289,7 @@ export default function Progress() {
       {/* Şeref Salonu — onur plaketi: defne dalları arasında madalyon */}
       <Link
         to="/salon"
-        className="btn-row relative block overflow-hidden rounded-3xl border"
+        className="btn-card relative block overflow-hidden rounded-3xl border"
         style={{
           borderColor: 'rgba(242,169,59,0.32)',
           background:
@@ -392,7 +392,7 @@ export default function Progress() {
       {/* Arkadaş Ligi — sade arena kartı: serin çelik ton, mini podyum */}
       <Link
         to="/lig"
-        className="btn-row relative flex items-center gap-3.5 overflow-hidden rounded-3xl border p-4"
+        className="btn-card relative flex items-center gap-3.5 overflow-hidden rounded-3xl border p-4"
         style={{
           borderColor: 'rgba(148,180,255,0.16)',
           background:
@@ -428,7 +428,7 @@ export default function Progress() {
       </Link>
 
       {/* Vitrin — mağaza girişi: dönen ışık çerçevesi + mini tente */}
-      <Link to="/vitrin" className="vitrin-frame btn-row relative block overflow-hidden rounded-3xl">
+      <Link to="/vitrin" className="vitrin-frame btn-card relative block overflow-hidden rounded-3xl">
         <span className="vitrin-awning block h-[7px]" />
         <span className="vitrin-scallop block h-[7px] opacity-90" />
         <span className="flex items-center gap-3.5 p-4 pt-3">

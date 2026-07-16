@@ -337,7 +337,8 @@ export default function Inventory() {
                 <button
                   type="button"
                   onClick={() => setSelId(null)}
-                  className="shrink-0 text-sm" style={{ color: '#A79B85' }}
+                  className="btn-icon relative shrink-0 text-sm after:absolute after:-inset-2 after:content-['']"
+                  style={{ color: '#A79B85' }}
                   aria-label="Kapat"
                 >
                   ✕
@@ -348,7 +349,7 @@ export default function Inventory() {
               {!selected.owned ? (
                 <Link
                   to={selected.source === 'salon' ? '/salon' : '/vitrin'}
-                  className="mt-3 flex w-full items-center justify-center gap-1.5 rounded-xl border py-2.5 text-[11px] font-bold uppercase tracking-[0.14em]"
+                  className="btn-chip mt-3 flex w-full items-center justify-center gap-1.5 rounded-xl border py-2.5 text-[11px] font-bold uppercase tracking-[0.14em]"
                   style={{ borderColor: `${BRASS_SOFT}0.35)`, color: BRASS, backgroundColor: 'rgba(0,0,0,0.25)' }}
                 >
                   🔒 {selected.source === 'salon' ? `${selected.days} gün seriyle açılır — Salona git` : `${selected.price} Plaka — Vitrine git`}
@@ -363,7 +364,7 @@ export default function Inventory() {
                         type="button"
                         disabled={saving}
                         onClick={() => equip(selected, v.value)}
-                        className="flex items-center gap-1.5 rounded-full border px-2.5 py-1.5 text-[10px] font-semibold disabled:opacity-50"
+                        className="btn-chip flex items-center gap-1.5 rounded-full border px-2.5 py-1.5 text-[10px] font-semibold disabled:opacity-50"
                         style={{
                           borderColor: active ? BRASS : `${BRASS_SOFT}0.25)`,
                           backgroundColor: active ? `${BRASS_SOFT}0.16)` : 'rgba(0,0,0,0.25)',
@@ -383,7 +384,7 @@ export default function Inventory() {
                   type="button"
                   disabled={saving}
                   onClick={() => equip(selected)}
-                  className="mt-3 w-full rounded-xl border py-2.5 text-[11px] font-bold uppercase tracking-[0.18em] disabled:opacity-50"
+                  className="btn-primary mt-3 w-full rounded-xl border py-2.5 text-[11px] font-bold uppercase tracking-[0.18em] disabled:opacity-50"
                   style={
                     selected.equipped
                       ? { borderColor: 'rgba(255,255,255,0.14)', color: '#A79B85', backgroundColor: 'rgba(0,0,0,0.25)' }

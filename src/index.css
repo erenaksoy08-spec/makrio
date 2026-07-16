@@ -950,6 +950,7 @@ body {
   .btn-icon,
   .btn-chip,
   .btn-row,
+  .btn-card,
   .btn-nav {
     -webkit-tap-highlight-color: transparent;
     touch-action: manipulation;
@@ -1010,18 +1011,46 @@ body {
       opacity 75ms ease-in;
   }
 
-  /* btn-row — full-width tappable list rows (food search results) */
+  /* btn-row — full-width tappable list rows (arama sonuçları, ayar satırları).
+     Parmağın altında hafif çöker + yüzey aydınlanır: belirgin ama sade. */
   .btn-row {
     transition:
-      opacity 160ms ease-out,
-      transform 160ms ease-out;
+      transform 200ms cubic-bezier(0.34, 1.4, 0.64, 1),
+      filter 200ms ease-out;
   }
   .btn-row:active {
-    opacity: 0.6;
-    transform: translateX(2px);
+    transform: scale(0.982);
+    filter: brightness(1.18);
     transition:
-      opacity 60ms ease-in,
-      transform 60ms ease-in;
+      transform 70ms ease-in,
+      filter 70ms ease-in;
+  }
+
+  /* btn-card — büyük dokunulabilir kartlar (İlerleme bölmeleri, Kilo/Hedef kartı).
+     Satırdan daha ağır kütle hissi: biraz daha az çökme, biraz daha uzun salınım. */
+  .btn-card {
+    transition:
+      transform 240ms cubic-bezier(0.34, 1.45, 0.64, 1),
+      filter 240ms ease-out;
+  }
+  .btn-card:active {
+    transform: scale(0.972);
+    filter: brightness(1.12);
+    transition:
+      transform 85ms ease-in,
+      filter 85ms ease-in;
+  }
+
+  /* Açık zeminli temalarda aydınlanma yerine hafif kararma okunur */
+  [data-theme='light'] .btn-row:active,
+  [data-theme='pixel'] .btn-row:active,
+  [data-theme='pixel-color'] .btn-row:active {
+    filter: brightness(0.94);
+  }
+  [data-theme='light'] .btn-card:active,
+  [data-theme='pixel'] .btn-card:active,
+  [data-theme='pixel-color'] .btn-card:active {
+    filter: brightness(0.95);
   }
 
   /* btn-nav — bottom navigation links */

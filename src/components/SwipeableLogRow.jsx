@@ -81,7 +81,10 @@ export default function SwipeableLogRow({ id, onDelete, onTap, children }) {
         onPointerUp={clearPress}
         onPointerLeave={clearPress}
         onClick={handleContentClick}
-        style={{ x }}
+        style={{ x, filter: 'brightness(1)' }}
+        // Düzenlemek için dokununca satır parmağın altında yanıt versin
+        whileTap={{ scale: 0.98, filter: 'brightness(1.18)' }}
+        transition={{ type: 'spring', stiffness: 500, damping: 30 }}
         className="relative cursor-grab bg-surface py-2.5 active:cursor-grabbing"
       >
         {children}
