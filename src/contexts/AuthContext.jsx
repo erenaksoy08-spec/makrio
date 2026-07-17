@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
+import { initPurchases, hasGoldEntitlement, purchasesAvailable } from '../lib/purchases'
 
 const AuthContext = createContext(null)
 
@@ -46,6 +47,24 @@ export function AuthProvider({ children }) {
 
     return () => subscription.subscription.unsubscribe()
   }, [fetchProfile])
+
+  // Native (iOS/Android): girişte RevenueCat'i başlat ve aktif aboneliği
+  // profile senkronla — cihaz değişiminde/yeniden kurulumda Gold kaybolmasın.
+  // NOT: Üretimde asıl senkron RevenueCat webhook'u ile sunucudan yapılmalı;
+  // bu istemci senkronu hesaplar kurulana kadarki köprü.
+  const userId = session?.user?.id
+  useEffect(() => {
+    if (!userId || !purchasesAvailable()) return
+    initPurchases(userId)
+      .then(() => hasGoldEntitlement())
+      .then(async (active) => {
+        if (active) {
+          await supabase.from('profiles').update({ subscription_status: 'gold' }).eq('id', userId)
+          fetchProfile(userId)
+        }
+      })
+      .catch(() => {}) // anahtar yoksa/ağ hatasında sessiz geç — web akışı etkilenmez
+  }, [userId, fetchProfile])
 
   const value = {
     session,

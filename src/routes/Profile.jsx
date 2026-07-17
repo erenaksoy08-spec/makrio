@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { useAuth } from '../contexts/AuthContext'
 import { supabase } from '../lib/supabase'
+import { purchasesAvailable } from '../lib/purchases'
+import Paywall from '../components/Paywall'
 
 const GOAL_LABELS = { lose: 'Kilo verme', gain: 'Kilo alma', maintain: 'Formu koruma' }
 const GENDER_LABELS = { female: 'Kadın', male: 'Erkek' }
@@ -25,6 +27,8 @@ const GOLD_PERKS = [
 
 function GoldCard({ isGold }) {
   const [info, setInfo] = useState(false)
+  // Native'de gerçek satın alma ekranı; web'de "yakında" bilgisi.
+  const [paywall, setPaywall] = useState(false)
   // Perk listesi istek üzerine açılır — kart her profil ziyaretinde tam boy bağırmasın.
   const [expanded, setExpanded] = useState(false)
 
@@ -81,11 +85,12 @@ function GoldCard({ isGold }) {
             <motion.button
               type="button"
               whileTap={{ scale: 0.97 }}
-              onClick={() => setInfo(true)}
+              onClick={() => (purchasesAvailable() ? setPaywall(true) : setInfo(true))}
               className="btn-primary mt-3 w-full rounded-xl bg-gradient-to-r from-[#F5C84B] to-[#E0A93B] py-3 font-semibold text-black"
             >
               Gold'a Yükselt
             </motion.button>
+            <Paywall open={paywall} onClose={() => setPaywall(false)} />
             {info && (
               <motion.p
                 initial={{ opacity: 0, y: 4 }}

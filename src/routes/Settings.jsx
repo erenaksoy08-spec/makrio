@@ -6,6 +6,8 @@ import { useAuth } from '../contexts/AuthContext'
 import Sheet from '../components/Sheet'
 import { LEGAL_PAGES } from '../lib/legalInfo'
 import { getPushState, subscribePush, unsubscribePush } from '../lib/push'
+import { purchasesAvailable } from '../lib/purchases'
+import Paywall from '../components/Paywall'
 
 /* ---------- ikonlar ---------- */
 
@@ -304,6 +306,7 @@ function AccountSheet({ open, onClose }) {
 function SubscriptionSheet({ open, onClose }) {
   const { profile } = useAuth()
   const isGold = ['gold', 'active'].includes(profile?.subscription_status)
+  const [paywall, setPaywall] = useState(false)
 
   return (
     <Sheet open={open} onClose={onClose} title="Abonelik">
@@ -332,11 +335,23 @@ function SubscriptionSheet({ open, onClose }) {
             <span className="text-sm text-text-muted">/ ay</span>
           </div>
         )}
+        {!isGold && purchasesAvailable() && (
+          <button
+            type="button"
+            onClick={() => setPaywall(true)}
+            className="btn-primary w-full rounded-xl bg-gradient-to-r from-[#F5C84B] to-[#E0A93B] py-3 font-semibold text-black"
+          >
+            Gold'a Yükselt
+          </button>
+        )}
         <p className="text-center text-xs text-text-muted">
           {isGold
-            ? 'Abonelik yönetimi (iptal / plan değişikliği) ödeme altyapısıyla birlikte gelecek.'
-            : '🚀 Ödeme altyapısı çok yakında aktifleşecek!'}
+            ? 'Abonelik yönetimi (iptal / plan değişikliği) App Store / Play Store abonelik ayarlarından yapılır.'
+            : purchasesAvailable()
+              ? 'Abonelik App Store / Play Store hesabına bağlanır; istediğin an iptal edebilirsin.'
+              : '🚀 Ödeme altyapısı çok yakında aktifleşecek!'}
         </p>
+        <Paywall open={paywall} onClose={() => setPaywall(false)} />
       </div>
     </Sheet>
   )
