@@ -12,10 +12,9 @@ export default function MacroBar({ label, consumed, goal, unit = 'g', color = 'v
   return (
     <div className="space-y-2">
       <div className="flex items-baseline justify-between">
-        {/* metrik adı ikincil, değer birincil — veri önde (Health/MacroFactor hiyerarşisi) */}
-        <span className="text-[13px] font-medium text-text-muted">{label}</span>
+        <span className="text-sm font-medium text-text">{label}</span>
         <span className="text-sm tabular-nums">
-          <span className="font-semibold text-text">{Math.round(consumed)}</span>
+          <span className="font-bold text-text">{Math.round(consumed)}</span>
           <span className="text-text-muted"> / {Math.round(goal)} {unit}</span>
         </span>
       </div>

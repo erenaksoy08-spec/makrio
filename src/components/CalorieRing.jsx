@@ -155,8 +155,8 @@ export default function CalorieRing({ consumed, goal, color = '#3DA5FF', shape =
         style={{ width: innerDiameter * 0.85, height: innerDiameter * 0.85 }}
       >
         <span
-          className="tabular-nums text-text"
-          style={{ fontSize: numberFontSize * 1.06, lineHeight: 1, fontWeight: 620, letterSpacing: '-0.025em' }}
+          className="font-bold tabular-nums text-text"
+          style={{ fontSize: numberFontSize, lineHeight: 1 }}
         >
           {animatedRemaining}
         </span>

@@ -14,7 +14,7 @@ export default function MacroBox({ label, consumed, goal, unit = 'g', color = 'v
       className="relative flex flex-col items-center gap-1 overflow-hidden rounded-xl border border-border bg-surface px-2 pt-3 pb-4"
     >
       <span className="text-xs font-medium text-text-muted">{label}</span>
-      <span className="text-lg font-semibold tabular-nums text-text">{Math.round(consumed)}</span>
+      <span className="text-lg font-bold tabular-nums text-text">{Math.round(consumed)}</span>
       <span className="text-[11px] tabular-nums text-text-muted">/ {Math.round(goal)} {unit}</span>
 
       <div className="bar-track absolute inset-x-2 bottom-1.5 h-1 overflow-hidden rounded-full bg-white/[0.06]">

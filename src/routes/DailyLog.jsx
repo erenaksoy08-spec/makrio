@@ -224,7 +224,7 @@ export default function DailyLog() {
     const [{ data: logsData }, { data: goals }] = await Promise.all([
       supabase
         .from('food_logs')
-        .select('id, meal_type, food_name, amount_g, calories, protein_g, carbs_g, fat_g')
+        .select('id, meal_type, food_name, amount_g, calories, protein_g, carbs_g, fat_g, created_at')
         .eq('user_id', user.id)
         .eq('date', selectedDate)
         .order('created_at', { ascending: true }),
@@ -2127,12 +2127,20 @@ export default function DailyLog() {
                     {mealLogs.map((log) => (
                       <SwipeableLogRow key={log.id} id={log.id} onDelete={handleDelete} onTap={() => startEdit(log)}>
                         <div className="relative flex items-center justify-between px-4 pl-[4.4rem] text-sm">
-                          {pixelUi && (
+                          {pixelUi ? (
                             <PixelFoodIcon
                               name={log.food_name}
                               size={26}
                               className="absolute left-[26px] top-1/2 -translate-y-1/2"
                             />
+                          ) : (
+                            /* sol oluk: kaydın girildiği saat — boşluk bilgiye dönüşür */
+                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[11px] font-medium tabular-nums text-text-muted">
+                              {new Date(log.created_at).toLocaleTimeString('tr-TR', {
+                                hour: '2-digit',
+                                minute: '2-digit',
+                              })}
+                            </span>
                           )}
                           <span className="min-w-0 truncate text-[13px] text-text">
                             {log.food_name}
