@@ -1137,8 +1137,13 @@ body {
   --color-text: #3d2508; /* koyu kahve — kum üstünde ≥7:1 */
   --color-text-muted: #7a5a2b;
   --color-accent: #e89a00; /* sikke altını */
-  --color-track: #e3d0a8;
+  --color-track: #35659f; /* halka kanalı gökyüzüne oyulur — kum değil */
   --icon-muted: rgba(61, 37, 8, 0.55);
+}
+
+/* Oyun yazısı: Monocraft (Blok Diyarı ile aynı aile) — Pixelify'dan daha köşeli */
+[data-theme='pixel-super'] body {
+  font-family: 'Monocraft', 'Pixelify Sans', ui-monospace, monospace;
 }
 
 /* Gökyüzü + bloklu (yüzsüz) bulutlar — her bulut iki üst üste dikdörtgen */
@@ -1171,23 +1176,55 @@ body {
   background-attachment: fixed;
 }
 
-/* Kum bloğu kartlar: üstten güneş, alttan tuğla gölgesi (outset kabartma) */
+/* Kum bloğu kartlar: belirgin tuğla çerçeve + outset kabartma — "blok" gibi dursun */
 [data-theme='pixel-super'] .bg-surface {
   background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.55), transparent 32%);
   box-shadow:
-    inset 0 2px 0 rgba(255, 255, 255, 0.75),
-    inset 2px 0 0 rgba(255, 255, 255, 0.35),
-    inset 0 -3px 0 rgba(146, 86, 24, 0.28),
-    inset -2px 0 0 rgba(146, 86, 24, 0.14),
-    0 3px 0 rgba(24, 46, 84, 0.28);
+    inset 0 2px 0 rgba(255, 255, 255, 0.8),
+    inset 2px 0 0 rgba(255, 255, 255, 0.4),
+    inset 0 -4px 0 rgba(146, 86, 24, 0.32),
+    inset -2px 0 0 rgba(146, 86, 24, 0.16),
+    0 4px 0 rgba(24, 46, 84, 0.32);
 }
 
-/* Koyu temaya göre yazılmış beyaz hairline/dolgular → tuğla tonu */
+/* Koyu temaya göre yazılmış beyaz hairline/dolgular → tuğla tonu (kalın kenar) */
 [data-theme='pixel-super'] [class*='border-white'] {
-  border-color: rgba(146, 86, 24, 0.32);
+  border-color: rgba(146, 86, 24, 0.42);
 }
 [data-theme='pixel-super'] [class*='bg-white/'] {
-  background-color: rgba(146, 86, 24, 0.09);
+  background-color: rgba(146, 86, 24, 0.1);
+}
+
+/* Ana metinlerde klasik oyun dokunuşu: hafif kum-gölge */
+[data-theme='pixel-super'] .text-text {
+  text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+/* Alt menü: oyunun "zemin bloğu" — kum şerit + tuğla üst kenar + damalı doku */
+[data-theme='pixel-super'] nav.safe-bottom {
+  background-color: #e8c878 !important;
+  background-image: repeating-conic-gradient(rgba(146, 86, 24, 0.06) 0% 25%, transparent 0% 50%);
+  background-size: 18px 18px;
+  border-top: 3px solid #c98a33 !important;
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.5);
+  backdrop-filter: none;
+}
+[data-theme='pixel-super'] nav.safe-bottom .text-text-muted,
+[data-theme='pixel-super'] nav.safe-bottom span {
+  color: #5c3f14;
+}
+
+/* Butonlar/çipler: köşeli mini bloklar */
+[data-theme='pixel-super'] .btn-icon,
+[data-theme='pixel-super'] .btn-chip {
+  border-radius: 6px !important;
+}
+
+/* Sikke altını CTA: kabartmalı altın blok */
+[data-theme='pixel-super'] .bg-white,
+[data-theme='pixel-super'] .btn-primary.bg-accent {
+  border: 2px solid #8a5a10;
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.55), inset 0 -3px 0 rgba(110, 62, 12, 0.4);
 }
 
 /* Sikke altını CTA üzerinde koyu kahve okunur */
@@ -1195,10 +1232,12 @@ body {
   color: var(--color-accent);
 }
 
-/* Barlar: oyulmuş kum oyuğu + piksel dilimli dolum (renkler inline korunur) */
+/* Barlar: tuğlaya oyulmuş oyuk — kumdan net ayrışır (renkler inline korunur) */
 [data-theme='pixel-super'] .bar-track {
-  background-color: #dcc79c !important;
-  box-shadow: inset 0 2px 0 rgba(120, 72, 18, 0.3), inset 0 0 0 1px rgba(120, 72, 18, 0.22);
+  border-radius: 3px !important;
+  background-color: #c39a55 !important;
+  box-shadow: inset 0 2px 0 rgba(110, 62, 12, 0.45), inset 0 0 0 1px rgba(110, 62, 12, 0.35),
+    0 1px 0 rgba(255, 255, 255, 0.55);
 }
 [data-theme='pixel-super'] .bar-fill {
   background-image: repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.22) 0 3px, transparent 3px 9px),
