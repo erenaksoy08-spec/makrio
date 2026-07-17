@@ -6,6 +6,58 @@ const WATER_COLOR = '#29B6F6'
 const WAVE_PATH =
   'M -22 0 Q -16.5 -2.2 -11 0 Q -5.5 2.2 0 0 Q 5.5 -2.2 11 0 Q 16.5 2.2 22 0 Q 27.5 -2.2 33 0 L 33 8 L -22 8 Z'
 
+// Süper Makrio su borusu — bardak yerine dikey yeşil boru: su, borunun koyu iç
+// kanalında kademeli yükselir; dolunca ağızdan sıçrar ve boru bloğa kafa atmış
+// gibi zıplar (super-hop). Tamamen kendi çizimimiz — sprite kopyası değil.
+const PIPE_STEP = 'y 550ms steps(5, end), height 550ms steps(5, end)'
+
+function SuperPipeGlass({ fraction }) {
+  const f = Math.max(0, Math.min(1, fraction))
+  const levels = Math.round(f * 5)
+  const filled = f >= 1
+  const waterH = levels * 3.2
+  const topY = 24 - waterH
+
+  return (
+    <svg
+      key={filled ? 'full' : 'partial'}
+      viewBox="0 0 22 28"
+      className={`h-9 w-full ${filled ? 'super-hop' : ''}`}
+      shapeRendering="crispEdges"
+      style={{ transformOrigin: 'center bottom' }}
+    >
+      {/* ağız (rim) — gövdeden geniş bilezik */}
+      <rect x="3" y="2" width="16" height="5" fill="#3FA047" />
+      <rect x="3" y="2" width="16" height="1" fill="#7ADE66" />
+      <rect x="3" y="2" width="1.5" height="5" fill="#7ADE66" />
+      <rect x="17.5" y="2" width="1.5" height="5" fill="#1F7A2D" />
+      <rect x="3" y="6" width="16" height="1" fill="#1F7A2D" />
+
+      {/* gövde — sol ışık, sağ gölge */}
+      <rect x="5" y="7" width="12" height="19" fill="#3FA047" />
+      <rect x="5" y="7" width="1.5" height="19" fill="#7ADE66" />
+      <rect x="15.5" y="7" width="1.5" height="19" fill="#1F7A2D" />
+
+      {/* iç kanal — suyun yükseldiği koyu boşluk */}
+      <rect x="8" y="8" width="6" height="17" fill="#123A18" />
+      <rect x="8" width="6" fill={WATER_COLOR} style={{ y: topY, height: waterH, transition: PIPE_STEP }} />
+      <rect x="9" width="1.5" fill="#7fd4fb" opacity="0.9" style={{ y: topY, height: waterH, transition: PIPE_STEP }} />
+      {levels > 0 && (
+        <rect x="8" width="6" height="1.5" fill="#b5e6ff" style={{ y: topY, transition: PIPE_STEP }} />
+      )}
+
+      {/* dolunca ağızdan sıçrayan damlalar */}
+      {filled && (
+        <>
+          <rect x="5.5" y="0.5" width="1.5" height="1.5" fill="#b5e6ff" />
+          <rect x="10.5" y="0" width="1.5" height="1.5" fill="#dff4ff" />
+          <rect x="15" y="0.5" width="1.5" height="1.5" fill="#dff4ff" />
+        </>
+      )}
+    </svg>
+  )
+}
+
 // Piksel bardak — 8-bit kupa. Su tek blok halinde kademeli (steps) yükselir;
 // yüzey çizgisi, sol ışık şeridi ve yarıdan sonra yükselen piksel kabarcıkla.
 const PX_STEP = 'y 550ms steps(5, end), height 550ms steps(5, end)'
@@ -211,7 +263,8 @@ export function WaterBottle({ fraction, index, pixel = false, realistic = false 
   )
 }
 
-export default function WaterGlass({ fraction, index, realistic = false, pixel = false, gym = false }) {
+export default function WaterGlass({ fraction, index, realistic = false, pixel = false, gym = false, superTheme = false }) {
+  if (superTheme) return <SuperPipeGlass fraction={fraction} />
   if (pixel) return <PixelGlass fraction={fraction} />
   if (gym) return <ShakerBottle fraction={fraction} index={index} />
 

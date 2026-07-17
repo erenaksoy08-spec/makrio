@@ -14,6 +14,8 @@ export default function WaterTracker({ consumed_ml, goal_ml, weightKg, onAdd, on
   const gym = profile?.preferences?.theme === 'gym'
   // Blok Diyarı bardakları da 8-bit dilinde doldurur.
   const pixel = pixelTheme || profile?.preferences?.theme === 'blok'
+  // Süper Makrio: bardak yerine su borusu + zıplama animasyonu.
+  const superTheme = profile?.preferences?.theme === 'pixel-super'
   const smiley = profile?.preferences?.waterStyle === 'smiley'
 
   // Gym teması: her kap 1,5 L matara → hedef 1,5 L'ye bölünür.
@@ -121,14 +123,14 @@ export default function WaterTracker({ consumed_ml, goal_ml, weightKg, onAdd, on
         <div className="flex flex-wrap gap-3">
           {Array.from({ length: numGlasses }).map((_, i) => (
             <div key={i} className="w-11">
-              <WaterGlass index={i} fraction={unitFraction(i)} realistic={realistic} pixel={pixel} gym={gym} />
+              <WaterGlass index={i} fraction={unitFraction(i)} realistic={realistic} pixel={pixel} gym={gym} superTheme={superTheme} />
             </div>
           ))}
         </div>
       ) : (
         <div className="grid grid-cols-8 gap-2">
           {Array.from({ length: numGlasses }).map((_, i) => (
-            <WaterGlass key={i} index={i} fraction={unitFraction(i)} realistic={realistic} pixel={pixel} gym={gym} />
+            <WaterGlass key={i} index={i} fraction={unitFraction(i)} realistic={realistic} pixel={pixel} gym={gym} superTheme={superTheme} />
           ))}
         </div>
       )}

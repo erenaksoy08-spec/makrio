@@ -154,7 +154,6 @@ export default function Inventory() {
   const unlockStreak = unlockStreakFrom(profile)
   const items = useMemo(() => buildInventory(preferences, unlockStreak), [preferences, unlockStreak])
   const selected = items.find((i) => i.id === selId) ?? null
-  const ownedCount = items.filter((i) => i.owned).length
 
   const sections = CATEGORY_ORDER.map((cat) => ({ cat, list: items.filter((i) => i.cat === cat) })).filter(
     (s) => s.list.length > 0,
@@ -240,12 +239,6 @@ export default function Inventory() {
           <span className="h-0 flex-1" style={{ borderTop: `2px dashed ${BRASS_SOFT}0.4)` }} />
         </div>
         <p className="mt-2 text-[10px] tracking-[0.22em]" style={{ color: '#A79B85' }}>KAZANDIĞIN HER ŞEY TEK ÇANTADA</p>
-        <div
-          className="mx-auto mt-3 flex w-fit items-center gap-1.5 rounded-full border px-3 py-1 text-[10px] font-bold tabular-nums"
-          style={{ borderColor: `${BRASS_SOFT}0.4)`, backgroundColor: `${BRASS_SOFT}0.08)`, color: BRASS }}
-        >
-          🎒 {ownedCount}/{items.length} EŞYA
-        </div>
       </motion.div>
 
       {/* bölmeler — eşya tarzına göre dikişli deri panel + perçinler */}

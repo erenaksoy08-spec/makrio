@@ -40,7 +40,13 @@ export default function BottomNav() {
       <div className="mx-auto flex max-w-md justify-around">
         {items.map(({ to, label, Icon, pixelName, end, activeColor: baseColor }) => {
           // Blok Diyarı: İlerleme'nin mücevheri zümrüt — etiket de yeşile döner.
-          const activeColor = blok && pixelName === 'star' ? '#4EC94E' : baseColor
+          // Süper Makrio: altın etiket kum zeminde kayboluyor — tuğla kızılına döner.
+          const activeColor =
+            superTheme && pixelName === 'star'
+              ? '#B5451F'
+              : blok && pixelName === 'star'
+                ? '#4EC94E'
+                : baseColor
           return (
           <NavLink
             key={to}

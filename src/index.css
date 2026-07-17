@@ -1292,6 +1292,50 @@ body {
   box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.22);
 }
 
+/* Gramaj kaydırıcısı: yeşil boru gövdesi + M sikkesi tutamaç */
+[data-theme='pixel-super'] .gram-slider {
+  height: 14px;
+  border-radius: 3px;
+  background-image: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.6) 0 16%,
+    rgba(255, 255, 255, 0.22) 16% 38%,
+    transparent 38% 60%,
+    rgba(0, 0, 0, 0.16) 60% 82%,
+    rgba(0, 0, 0, 0.34) 82% 100%
+  );
+  background-color: #3fa047;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.32);
+}
+[data-theme='pixel-super'] .gram-slider::-webkit-slider-thumb,
+[data-theme='pixel-super'] .gram-slider::-moz-range-thumb {
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 9 9' shape-rendering='crispEdges'%3E%3Crect x='2' y='0' width='5' height='1' fill='%238A5A10'/%3E%3Crect x='1' y='1' width='7' height='1' fill='%23FFD766'/%3E%3Crect x='0' y='2' width='9' height='5' fill='%23F2B21B'/%3E%3Crect x='1' y='2' width='1' height='5' fill='%23FFD766'/%3E%3Crect x='2' y='2' width='1' height='4' fill='%237A4A00'/%3E%3Crect x='6' y='2' width='1' height='4' fill='%237A4A00'/%3E%3Crect x='3' y='3' width='1' height='1' fill='%237A4A00'/%3E%3Crect x='5' y='3' width='1' height='1' fill='%237A4A00'/%3E%3Crect x='4' y='4' width='1' height='1' fill='%237A4A00'/%3E%3Crect x='1' y='7' width='7' height='1' fill='%23C98A33'/%3E%3Crect x='2' y='8' width='5' height='1' fill='%238A5A10'/%3E%3C/svg%3E")
+    center / contain no-repeat;
+}
+
+/* Su borusu zıplaması — bloğa kafa atmış gibi: hızlı hop + ezilme + oturma */
+@keyframes super-hop {
+  0% {
+    transform: translateY(0) scaleY(1);
+  }
+  30% {
+    transform: translateY(-7px) scaleY(1.06);
+  }
+  55% {
+    transform: translateY(0) scaleY(0.82) scaleX(1.1);
+  }
+  75% {
+    transform: translateY(-3px) scaleY(1.02);
+  }
+  100% {
+    transform: translateY(0) scaleY(1);
+  }
+}
+.super-hop {
+  animation: super-hop 480ms steps(8, end) both;
+  transform-origin: center bottom;
+}
+
 /* Skeleton: kum tonları */
 [data-theme='pixel-super'] .skeleton {
   background: linear-gradient(90deg, #e6d4ac 25%, #f2e5c6 50%, #e6d4ac 75%);
@@ -1321,7 +1365,8 @@ body {
   .vitrin-frame,
   .pixel-bounce,
   .pixel-flicker,
-  .pixel-bubble {
+  .pixel-bubble,
+  .super-hop {
     animation: none !important;
   }
 }

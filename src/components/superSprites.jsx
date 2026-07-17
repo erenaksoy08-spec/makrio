@@ -57,17 +57,17 @@ const HISTORY_GRID = [
   'ZZZZZZZZZ',
 ]
 
-// Piksel yıldız — seviye sonu ödülü.
+// Piksel yıldız — seviye sonu ödülü. Koyu kontur, kum zeminde kaybolmasın.
 const STAR_GRID = [
-  '....A....',
-  '....A....',
-  '...AAA...',
-  'AAAAAAAAA',
-  '.AAAAAAA.',
-  '..AAAAA..',
-  '.AAA.AAA.',
-  '.A.....A.',
-  '.........',
+  '.....O.....',
+  '....OAO....',
+  '...OAAAO...',
+  'OOOAAAAAOOO',
+  '.OAAAAAAAO.',
+  '..OAAAAAO..',
+  '.OAAAOAAAO.',
+  '.OAO...OAO.',
+  '..O.....O..',
 ]
 
 // Oyuncu — jenerik piksel kişi (şapkasız, bıyıksız).
@@ -105,7 +105,7 @@ export function SuperNavIcon({ name, isActive }) {
     history: isActive
       ? { P: '#FF8A5B', F: STAR, C: '#6FCF97', Z: SAND_DARK }
       : { P: muted, F: dim(0.7), C: dim(0.5), Z: dim(0.85) },
-    star: isActive ? { A: STAR } : { A: dim(0.6) },
+    star: isActive ? { A: STAR, O: '#7A4A00' } : { A: dim(0.35), O: muted },
     profile: isActive
       ? { H: HAIR, S: SKIN, E: '#2A1C10', T: SHIRT }
       : { H: muted, S: dim(0.5), E: dim(0.95), T: dim(0.75) },
