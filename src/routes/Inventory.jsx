@@ -41,6 +41,23 @@ function SlotArt({ item, dim }) {
         <rect x="17" y="9" width="4" height="3" fill="#93D45F" />
       </svg>
     )
+  if (item.kind === 'super-coin')
+    return (
+      <svg width="26" height="26" viewBox="0 0 40 40" shapeRendering="crispEdges" style={style}>
+        <rect x="2" y="2" width="36" height="36" fill="#4A8DE0" />
+        <rect x="5" y="7" width="12" height="4" fill="#FFFFFF" />
+        <rect x="8" y="4" width="7" height="3" fill="#FFFFFF" />
+        <rect x="2" y="30" width="36" height="8" fill="#E8C878" />
+        <rect x="2" y="30" width="36" height="2" fill="#C98A33" />
+        <rect x="15" y="14" width="10" height="12" fill="#E89A00" />
+        <rect x="17" y="12" width="6" height="2" fill="#E89A00" />
+        <rect x="17" y="26" width="6" height="2" fill="#E89A00" />
+        <rect x="16" y="15" width="2" height="10" fill="#FFD766" />
+        <text x="20" y="24" textAnchor="middle" fontSize="9" fontWeight="800" fill="#7A4A00">
+          M
+        </text>
+      </svg>
+    )
   if (item.kind === 'swatches')
     return (
       <span className="grid grid-cols-2 gap-[3px]" style={style}>

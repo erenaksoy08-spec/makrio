@@ -78,6 +78,18 @@ export function buildInventory(preferences = {}, unlockStreak = 0) {
       value: 'blok',
     },
     {
+      id: 'super-theme',
+      cat: 'Tema',
+      name: 'Süper Makrio',
+      kind: 'super-coin',
+      accent: '#E89A00',
+      desc: 'Güneşli platform dünyası: gökyüzü mavisi, kum blokları ve sikke altını.',
+      source: 'vitrin',
+      price: 12,
+      prefKey: 'theme',
+      value: 'pixel-super',
+    },
+    {
       id: 'turquoise-ring',
       cat: 'Halka',
       name: 'Turkuaz Halka',
