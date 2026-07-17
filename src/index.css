@@ -1239,11 +1239,46 @@ body {
   box-shadow: inset 0 2px 0 rgba(110, 62, 12, 0.45), inset 0 0 0 1px rgba(110, 62, 12, 0.35),
     0 1px 0 rgba(255, 255, 255, 0.55);
 }
+/* Ana barlar boru kalınlığında — silindir ışığı nefes alsın (miniler oranında kalır) */
+[data-theme='pixel-super'] .bar-track.h-2 {
+  height: 13px;
+}
+[data-theme='pixel-super'] .bar-track .bar-fill {
+  height: 100% !important;
+}
+
+/* Dolum = yatay boru: silindir gövde (üst parlak, alt gölge) + uçta bilezik.
+   Renk inline'dan gelir (makro renk kodu korunur); form hepsinde boru. */
 [data-theme='pixel-super'] .bar-fill {
-  background-image: repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.22) 0 3px, transparent 3px 9px),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.4) 0 30%, transparent 30% 60%, rgba(0, 0, 0, 0.1) 60% 100%);
-  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.18);
-  filter: saturate(1.12);
+  position: relative;
+  overflow: hidden; /* bilezik boş barda taşmasın */
+  border-radius: 2px !important;
+  background-image: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.6) 0 16%,
+    rgba(255, 255, 255, 0.22) 16% 38%,
+    transparent 38% 60%,
+    rgba(0, 0, 0, 0.16) 60% 82%,
+    rgba(0, 0, 0, 0.34) 82% 100%
+  );
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.3);
+  filter: saturate(1.2);
+}
+[data-theme='pixel-super'] .bar-fill::after {
+  content: '';
+  position: absolute;
+  inset: 0 0 0 auto;
+  width: 7px;
+  /* boru ağzı: gövdeden koyu bilezik + sol kenarında ayrım çizgisi */
+  background-image: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.5) 0 20%,
+    rgba(255, 255, 255, 0.12) 20% 45%,
+    rgba(0, 0, 0, 0.22) 45% 100%
+  );
+  background-color: rgba(0, 0, 0, 0.12);
+  border-left: 1.5px solid rgba(0, 0, 0, 0.38);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.22);
 }
 
 /* Skeleton: kum tonları */
