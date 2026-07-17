@@ -2,10 +2,13 @@ import { useEffect, useState } from 'react'
 import { useCountUp } from '../hooks/useCountUp'
 import usePixelTheme from '../hooks/usePixelTheme'
 import useBlokTheme from '../hooks/useBlokTheme'
+import { useAuth } from '../contexts/AuthContext'
 
 export default function CalorieRing({ consumed, goal, color = '#3DA5FF', shape = 'circle' }) {
   const pixelTheme = usePixelTheme()
   const blok = useBlokTheme()
+  // Süper Makrio: halka dairesel bir boru gibi çizilir (gövde ışığı + uç bileziği).
+  const superTheme = useAuth().profile?.preferences?.theme === 'pixel-super'
   // Blok Diyarı da piksel halka dilini kullanır: kademeli dolum, keskin uçlar.
   const pixel = pixelTheme || blok
   const square = shape === 'square'
@@ -91,16 +94,84 @@ export default function CalorieRing({ consumed, goal, color = '#3DA5FF', shape =
               transition: 'stroke-dashoffset 900ms steps(9, end)',
             }}
           />
-          {/* boncuk deseni — bar-fill'deki açık çizgilerin dairesel karşılığı */}
-          <circle
-            cx={size / 2}
-            cy={size / 2}
-            r={radius}
-            fill="none"
-            stroke="rgba(255,255,255,0.32)"
-            strokeWidth={stroke}
-            strokeDasharray="2 4.5"
-          />
+          {superTheme ? (
+            <>
+              {/* boru gövdesi — dış kenarda ışık şeridi, iç kenarda gölge (yalnız dolu yay) */}
+              <circle
+                cx={size / 2}
+                cy={size / 2}
+                r={radius + stroke / 2 - 2.5}
+                fill="none"
+                stroke="rgba(255,255,255,0.5)"
+                strokeWidth={3}
+                pathLength="100"
+                strokeDasharray="100"
+                style={{
+                  strokeDashoffset: (animatedOffset / circumference) * 100,
+                  transition: 'stroke-dashoffset 900ms steps(9, end)',
+                }}
+              />
+              <circle
+                cx={size / 2}
+                cy={size / 2}
+                r={radius - stroke / 2 + 2.5}
+                fill="none"
+                stroke="rgba(0,0,0,0.24)"
+                strokeWidth={3.5}
+                pathLength="100"
+                strokeDasharray="100"
+                style={{
+                  strokeDashoffset: (animatedOffset / circumference) * 100,
+                  transition: 'stroke-dashoffset 900ms steps(9, end)',
+                }}
+              />
+              {/* boru ağzı — dolumun ucunda iki yana taşan bilezik, dolumla birlikte döner */}
+              {ratio > 0.02 && (
+                <g
+                  style={{
+                    transform: `rotate(${360 * (1 - animatedOffset / circumference)}deg)`,
+                    transformOrigin: '50% 50%',
+                    transition: 'transform 900ms steps(9, end)',
+                  }}
+                >
+                  <rect
+                    x={size / 2 + radius - stroke / 2 - 2.5}
+                    y={size / 2 - 3.5}
+                    width={stroke + 5}
+                    height={7}
+                    fill={color}
+                    stroke="rgba(0,0,0,0.42)"
+                    strokeWidth="1"
+                  />
+                  <rect
+                    x={size / 2 + radius - stroke / 2 - 2.5}
+                    y={size / 2 - 3.5}
+                    width={stroke + 5}
+                    height={7}
+                    fill="rgba(0,0,0,0.16)"
+                  />
+                  <rect
+                    x={size / 2 + radius - stroke / 2 - 2.5}
+                    y={size / 2 - 3.5}
+                    width={3.5}
+                    height={7}
+                    fill="rgba(255,255,255,0.4)"
+                  />
+                </g>
+              )}
+            </>
+          ) : (
+            /* boncuk deseni — bar-fill'deki açık çizgilerin dairesel karşılığı */
+            <circle
+              cx={size / 2}
+              cy={size / 2}
+              r={radius}
+              fill="none"
+              stroke="rgba(255,255,255,0.32)"
+              strokeWidth={stroke}
+              strokeDasharray="2 4.5"
+            />
+          )}
         </svg>
       ) : (
         <svg width={size} height={size} className="-rotate-90">
