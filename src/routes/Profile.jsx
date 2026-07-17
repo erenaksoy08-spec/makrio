@@ -5,6 +5,7 @@ import { useAuth } from '../contexts/AuthContext'
 import { supabase } from '../lib/supabase'
 import { purchasesAvailable } from '../lib/purchases'
 import Paywall from '../components/Paywall'
+import GoldPricing from '../components/GoldPricing'
 
 const GOAL_LABELS = { lose: 'Kilo verme', gain: 'Kilo alma', maintain: 'Formu koruma' }
 const GENDER_LABELS = { female: 'Kadın', male: 'Erkek' }
@@ -78,9 +79,8 @@ function GoldCard({ isGold }) {
 
         {!isGold && (
           <>
-            <div className="mt-4 flex items-baseline gap-1">
-              <span className="text-2xl font-bold text-text">₺79,99</span>
-              <span className="text-sm text-text-muted">/ ay</span>
+            <div className="mt-4">
+              <GoldPricing />
             </div>
             <motion.button
               type="button"

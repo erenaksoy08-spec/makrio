@@ -111,9 +111,20 @@ export default function GoldGate({ onClose, feature = 'limit' }) {
           ))}
         </ul>
 
-        <div className="mt-4 flex items-baseline justify-center gap-1">
-          <span className="text-xl font-bold" style={{ color: '#F5F1E4' }}>₺79,99</span>
-          <span className="text-xs" style={{ color: '#B7AC93' }}>/ ay</span>
+        <div className="mt-4">
+          <div className="flex items-baseline justify-center gap-1.5">
+            <span
+              className="rounded px-1.5 py-0.5 text-[9px] font-bold text-black"
+              style={{ background: `linear-gradient(90deg, #F8D64B, ${GOLD_DEEP})` }}
+            >
+              %37 İNDİRİM
+            </span>
+            <span className="text-xl font-bold tabular-nums" style={{ color: '#F5F1E4' }}>₺599,99</span>
+            <span className="text-xs" style={{ color: '#B7AC93' }}>/ yıl</span>
+          </div>
+          <div className="mt-1 text-center text-[11px] tabular-nums" style={{ color: '#B7AC93' }}>
+            <s className="opacity-70">₺959,88</s> · ≈ ₺50/ay — veya aylık ₺79,99
+          </div>
         </div>
 
         {purchasesAvailable() ? (

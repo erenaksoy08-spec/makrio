@@ -8,6 +8,7 @@ import { LEGAL_PAGES } from '../lib/legalInfo'
 import { getPushState, subscribePush, unsubscribePush } from '../lib/push'
 import { purchasesAvailable } from '../lib/purchases'
 import Paywall from '../components/Paywall'
+import GoldPricing from '../components/GoldPricing'
 
 /* ---------- ikonlar ---------- */
 
@@ -329,12 +330,7 @@ function SubscriptionSheet({ open, onClose }) {
               : "Sınırsız kayıt, detaylı raporlar, Arkadaş Ligi ve Tasarım Mağazası için Gold'a geç."}
           </p>
         </div>
-        {!isGold && (
-          <div className="flex items-baseline justify-center gap-1">
-            <span className="text-2xl font-bold text-text">₺79,99</span>
-            <span className="text-sm text-text-muted">/ ay</span>
-          </div>
-        )}
+        {!isGold && <GoldPricing />}
         {!isGold && purchasesAvailable() && (
           <button
             type="button"
