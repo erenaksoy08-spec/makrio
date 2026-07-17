@@ -1,8 +1,18 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
+import { purchasesAvailable } from '../lib/purchases'
+import Paywall from './Paywall'
 
 const GOLD = '#F5C84B'
 const GOLD_DEEP = '#E0A93B'
+
+// Hangi kapıdan gelindiyse ona özel mesaj (varsayılan: kayıt limiti).
+const FEATURE_TEXTS = {
+  limit: { headline: 'Bugünün ücretsiz kayıtları doldu', sub: 'Günde 3 kayıt ücretsiz. Gold ile sınır yok — takibin hiç durmasın.' },
+  league: { headline: "Arkadaş Ligi Gold'a özel", sub: 'Arkadaşlarınla yarışmak ve haftalık panoya girmek için Gold gerekiyor.' },
+  store: { headline: "Tasarım Mağazası Gold'a özel", sub: 'Temaları, halkaları ve tasarımları açmak için Gold gerekiyor.' },
+}
 
 const PERKS = [
   { icon: '♾️', text: 'Sınırsız yemek kaydı' },
@@ -12,8 +22,11 @@ const PERKS = [
   { icon: '🚫', text: 'Reklamsız deneyim' },
 ]
 
-// Ücretsiz limit dolunca çıkan Gold daveti — ceza değil, davet gibi hissettirir.
-export default function GoldGate({ onClose }) {
+// Gold kapısı — ceza değil, davet gibi hissettirir. `feature` hangi kapıdan
+// gelindiğini söyler; native'de CTA paywall'ı doğrudan açar, web'de Profil'e gider.
+export default function GoldGate({ onClose, feature = 'limit' }) {
+  const [paywall, setPaywall] = useState(false)
+  const texts = FEATURE_TEXTS[feature] ?? FEATURE_TEXTS.limit
   return (
     <motion.div
       className="fixed inset-0 z-50 flex items-center justify-center px-6"
@@ -73,9 +86,9 @@ export default function GoldGate({ onClose }) {
           Makrio Gold
         </h2>
 
-        <p className="mt-2 text-sm font-semibold" style={{ color: '#F5F1E4' }}>Bugünün ücretsiz kayıtları doldu</p>
+        <p className="mt-2 text-sm font-semibold" style={{ color: '#F5F1E4' }}>{texts.headline}</p>
         <p className="mt-1 text-xs leading-relaxed" style={{ color: '#B7AC93' }}>
-          Günde 3 kayıt ücretsiz. Gold ile sınır yok — takibin hiç durmasın.
+          {texts.sub}
         </p>
 
         <ul className="mt-4 space-y-2 text-left">
@@ -103,22 +116,43 @@ export default function GoldGate({ onClose }) {
           <span className="text-xs" style={{ color: '#B7AC93' }}>/ ay</span>
         </div>
 
-        <Link
-          to="/profil"
-          className="btn-primary relative mt-3 block w-full overflow-hidden rounded-xl py-3 font-semibold text-black"
-          style={{
-            background: `linear-gradient(90deg, #F8D64B, ${GOLD_DEEP})`,
-            boxShadow: `0 8px 24px ${GOLD}40, inset 0 1px 0 rgba(255,255,255,0.4)`,
-          }}
-        >
-          <span
-            className="medal-sheen pointer-events-none absolute inset-0"
+        {purchasesAvailable() ? (
+          <button
+            type="button"
+            onClick={() => setPaywall(true)}
+            className="btn-primary relative mt-3 block w-full overflow-hidden rounded-xl py-3 font-semibold text-black"
             style={{
-              background: 'linear-gradient(115deg, transparent 40%, rgba(255,255,255,0.45) 50%, transparent 60%)',
+              background: `linear-gradient(90deg, #F8D64B, ${GOLD_DEEP})`,
+              boxShadow: `0 8px 24px ${GOLD}40, inset 0 1px 0 rgba(255,255,255,0.4)`,
             }}
-          />
-          <span className="relative">👑 Gold'a Yükselt</span>
-        </Link>
+          >
+            <span
+              className="medal-sheen pointer-events-none absolute inset-0"
+              style={{
+                background: 'linear-gradient(115deg, transparent 40%, rgba(255,255,255,0.45) 50%, transparent 60%)',
+              }}
+            />
+            <span className="relative">👑 Gold'a Yükselt</span>
+          </button>
+        ) : (
+          <Link
+            to="/profil"
+            className="btn-primary relative mt-3 block w-full overflow-hidden rounded-xl py-3 font-semibold text-black"
+            style={{
+              background: `linear-gradient(90deg, #F8D64B, ${GOLD_DEEP})`,
+              boxShadow: `0 8px 24px ${GOLD}40, inset 0 1px 0 rgba(255,255,255,0.4)`,
+            }}
+          >
+            <span
+              className="medal-sheen pointer-events-none absolute inset-0"
+              style={{
+                background: 'linear-gradient(115deg, transparent 40%, rgba(255,255,255,0.45) 50%, transparent 60%)',
+              }}
+            />
+            <span className="relative">👑 Gold'a Yükselt</span>
+          </Link>
+        )}
+        <Paywall open={paywall} onClose={() => setPaywall(false)} feature={feature} />
 
         <button type="button" onClick={onClose} className="btn-chip mt-2.5 px-4 py-1.5 text-xs" style={{ color: '#B7AC93' }}>
           Şimdi değil

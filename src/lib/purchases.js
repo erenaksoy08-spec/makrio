@@ -61,6 +61,10 @@ export async function hasGoldEntitlement() {
 }
 
 // Paywall'da listelenecek paketler (RevenueCat "current" offering'i).
+// Beklenen iki paket: $rc_annual (Yıllık ₺599,99) ve $rc_monthly (Aylık ₺79,99).
+// Mağaza ürünleri (örn. makrio_gold_annual / makrio_gold_monthly) App Store
+// Connect + Play Console'da tanımlanıp RevenueCat offering'ine bağlanınca
+// burada otomatik görünürler — kod değişikliği gerekmez.
 export async function getGoldPackages() {
   const Purchases = await loadSdk()
   if (!Purchases) return []

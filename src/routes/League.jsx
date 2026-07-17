@@ -1,7 +1,10 @@
 import { useCallback, useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
+import { isGold } from '../lib/gold'
+import GoldGate from '../components/GoldGate'
 import BackButton from '../components/BackButton'
 import { todayStr } from '../lib/date'
 import { scoreDay, scoreColor, fmtScore } from '../lib/dayScore'
@@ -52,7 +55,18 @@ function RankChip({ index }) {
   )
 }
 
+// Arkadaş Ligi Gold'a özel — free kullanıcı içerik yerine Gold kapısını görür.
 export default function League() {
+  const { profile, profileLoading } = useAuth()
+  const navigate = useNavigate()
+  if (!profileLoading && !isGold(profile)) {
+    return <GoldGate feature="league" onClose={() => navigate(-1)} />
+  }
+  if (profileLoading) return null
+  return <LeagueBoard />
+}
+
+function LeagueBoard() {
   const { user, profile } = useAuth()
   const pixelUi = usePixelTheme()
   const today = todayStr()

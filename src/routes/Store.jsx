@@ -1,8 +1,10 @@
 import { useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
+import { isGold } from '../lib/gold'
+import GoldGate from '../components/GoldGate'
 import BackButton from '../components/BackButton'
 import PlateIcon from '../components/PlateIcon'
 import PlateBalance from '../components/PlateBalance'
@@ -102,7 +104,18 @@ function ItemPreview({ item, firstName }) {
   return null
 }
 
+// Vitrin Gold'a özel — free kullanıcı içerik yerine Gold kapısını görür.
 export default function Store() {
+  const { profile, profileLoading } = useAuth()
+  const navigate = useNavigate()
+  if (!profileLoading && !isGold(profile)) {
+    return <GoldGate feature="store" onClose={() => navigate(-1)} />
+  }
+  if (profileLoading) return null
+  return <StoreContent />
+}
+
+function StoreContent() {
   const { profile, refreshProfile } = useAuth()
   const preferences = profile?.preferences ?? {}
   const balance = scoopBalance(preferences)
