@@ -8,6 +8,7 @@ import ProfileIcon from './ProfileIcon'
 import StarIcon from './StarIcon'
 import { PixelNavIcon } from './pixelSprites'
 import { BlokNavIcon } from './blokSprites'
+import { SuperNavIcon } from './superSprites'
 
 const ITEMS = [
   { to: '/', label: 'Ana Sayfa', Icon: HomeIcon, pixelName: 'home', end: true, activeColor: 'var(--color-text)' },
@@ -21,6 +22,7 @@ export default function BottomNav() {
   const { profile } = useAuth()
   const { pathname } = useLocation()
   const premium = profile?.preferences?.navStyle === 'premium'
+  const superTheme = profile?.preferences?.theme === 'pixel-super'
   const pixel = String(profile?.preferences?.theme ?? '').startsWith('pixel')
   const blok = profile?.preferences?.theme === 'blok'
   // "Sadece takibe odaklan" tercihi: İlerleme sekmesi navdan kalkar.
@@ -76,7 +78,9 @@ export default function BottomNav() {
                     animate={{ y: premium && isActive ? -3 : 0 }}
                     transition={{ type: 'spring', stiffness: 500, damping: 18 }}
                   >
-                    {blok ? (
+                    {superTheme ? (
+                      <SuperNavIcon name={pixelName} isActive={isActive} />
+                    ) : blok ? (
                       <BlokNavIcon name={pixelName} isActive={isActive} />
                     ) : pixel ? (
                       <PixelNavIcon name={pixelName} isActive={isActive} activeColor={activeColor} />
