@@ -154,9 +154,11 @@ export default function Dashboard() {
     { calories: goalCalories, protein_g: goalProtein, carbs_g: goalCarbs, fat_g: goalFat, water_ml: goalWater },
   )
 
-  // Süper Makrio: halka temanın alev kırmızısında yanar (özel renk seçimini ezer).
+  // Kuşanılmış halka rengi (Turkuaz vb. ödüller) her temada geçerli;
+  // renk kuşanılmamışsa Süper Makrio kendi alev kırmızısını kullanır.
   const ringColor =
-    profile?.preferences?.theme === 'pixel-super' ? '#E5342B' : profile?.preferences?.ringColor || '#3DA5FF'
+    profile?.preferences?.ringColor ||
+    (profile?.preferences?.theme === 'pixel-super' ? '#E5342B' : '#3DA5FF')
   const badgeTier = badgeTierFrom(
     profile?.preferences,
     Math.max(profile?.current_streak ?? 0, profile?.longest_streak ?? 0),
