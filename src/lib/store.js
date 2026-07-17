@@ -18,6 +18,17 @@ export const STORE_ITEMS = [
     accent: '#7CBD4B',
   },
   {
+    id: 'super-theme',
+    category: 'Tema',
+    title: 'Süper Makrio',
+    description:
+      'Güneşli bir platform dünyası: gökyüzü mavisi, bloklu bulutlar, kum panelleri ve sikke altını. Klasik oyun ruhu, Makrio diliyle.',
+    price: 12,
+    prefKey: 'theme',
+    prefValue: 'pixel-super',
+    accent: '#E89A00',
+  },
+  {
     id: 'square-ring',
     category: 'Halka',
     title: 'Kare Kalori Halkası',

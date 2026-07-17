@@ -1122,6 +1122,97 @@ body {
 }
 
 /* Klavye odağı: her tıklanabilir öğede görünür halka (fare tıklamasında görünmez) */
+/* ──────────────────────────────────────────────────────────────
+   Süper Makrio — güneşli platform dünyası: gökyüzü, kum blokları,
+   tuğla kenarlar, sikke altını. `pixel-super` kimliği sayesinde tüm
+   piksel davranışları (font, sprite, steps easing) otomatik devralır.
+   Telif notu: yalnız jenerik platformcu dili — karakter, soru bloğu,
+   yüzlü bulut/tepe veya bire bir sprite kopyası YOK.
+   ────────────────────────────────────────────────────────────── */
+[data-theme='pixel-super'] {
+  color-scheme: light;
+  --color-bg: #4a8de0; /* gündüz gökyüzü */
+  --color-surface: #f6e6c4; /* kum bloğu panel */
+  --color-border: #c98a33; /* pişmiş tuğla kenar */
+  --color-text: #3d2508; /* koyu kahve — kum üstünde ≥7:1 */
+  --color-text-muted: #7a5a2b;
+  --color-accent: #e89a00; /* sikke altını */
+  --color-track: #e3d0a8;
+  --icon-muted: rgba(61, 37, 8, 0.55);
+}
+
+/* Gökyüzü + bloklu (yüzsüz) bulutlar — her bulut iki üst üste dikdörtgen */
+[data-theme='pixel-super'] body {
+  background-color: #4a8de0;
+  /* Bulutlar yarı saydam — içerik üstüne denk geldiğinde bant gibi durmasın,
+     uzak gökyüzü dokusu gibi okunsun. */
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.42), rgba(255, 255, 255, 0.42)),
+    linear-gradient(rgba(255, 255, 255, 0.42), rgba(255, 255, 255, 0.42)),
+    linear-gradient(rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.3)),
+    linear-gradient(rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.3)),
+    linear-gradient(rgba(255, 255, 255, 0.24), rgba(255, 255, 255, 0.24)),
+    linear-gradient(180deg, #63a2ec 0%, #4a8de0 52%, #3f7fd0 100%);
+  background-repeat: no-repeat;
+  background-size:
+    84px 15px,
+    50px 13px,
+    110px 16px,
+    64px 13px,
+    58px 11px,
+    100% 100%;
+  background-position:
+    6% 21%,
+    8% 18.6%,
+    94% 34%,
+    95% 31.6%,
+    38% 58%,
+    0 0;
+  background-attachment: fixed;
+}
+
+/* Kum bloğu kartlar: üstten güneş, alttan tuğla gölgesi (outset kabartma) */
+[data-theme='pixel-super'] .bg-surface {
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.55), transparent 32%);
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.75),
+    inset 2px 0 0 rgba(255, 255, 255, 0.35),
+    inset 0 -3px 0 rgba(146, 86, 24, 0.28),
+    inset -2px 0 0 rgba(146, 86, 24, 0.14),
+    0 3px 0 rgba(24, 46, 84, 0.28);
+}
+
+/* Koyu temaya göre yazılmış beyaz hairline/dolgular → tuğla tonu */
+[data-theme='pixel-super'] [class*='border-white'] {
+  border-color: rgba(146, 86, 24, 0.32);
+}
+[data-theme='pixel-super'] [class*='bg-white/'] {
+  background-color: rgba(146, 86, 24, 0.09);
+}
+
+/* Sikke altını CTA üzerinde koyu kahve okunur */
+[data-theme='pixel-super'] .text-white {
+  color: var(--color-accent);
+}
+
+/* Barlar: oyulmuş kum oyuğu + piksel dilimli dolum (renkler inline korunur) */
+[data-theme='pixel-super'] .bar-track {
+  background-color: #dcc79c !important;
+  box-shadow: inset 0 2px 0 rgba(120, 72, 18, 0.3), inset 0 0 0 1px rgba(120, 72, 18, 0.22);
+}
+[data-theme='pixel-super'] .bar-fill {
+  background-image: repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.22) 0 3px, transparent 3px 9px),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.4) 0 30%, transparent 30% 60%, rgba(0, 0, 0, 0.1) 60% 100%);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.18);
+  filter: saturate(1.12);
+}
+
+/* Skeleton: kum tonları */
+[data-theme='pixel-super'] .skeleton {
+  background: linear-gradient(90deg, #e6d4ac 25%, #f2e5c6 50%, #e6d4ac 75%);
+  background-size: 800px 100%;
+}
+
 :where(button, a, [role='button'], input[type='range']):focus-visible {
   outline: 2px solid var(--color-accent);
   outline-offset: 2px;

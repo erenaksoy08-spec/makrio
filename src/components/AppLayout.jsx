@@ -8,7 +8,9 @@ export default function AppLayout() {
   const location = useLocation()
   const { profile } = useAuth()
   const pref = profile?.preferences?.theme
-  const theme = ['light', 'pixel', 'pixel-dark', 'pixel-color', 'gym', 'blok'].includes(pref) ? pref : 'dark'
+  const theme = ['light', 'pixel', 'pixel-dark', 'pixel-color', 'pixel-super', 'gym', 'blok'].includes(pref)
+    ? pref
+    : 'dark'
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme
