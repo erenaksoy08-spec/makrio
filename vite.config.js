@@ -14,6 +14,8 @@ export default defineConfig({
       srcDir: 'src',
       filename: 'sw.js',
       registerType: 'autoUpdate',
+      // SW kaydı main.jsx'te elle yapılır — Capacitor native kabuğunda atlanır.
+      injectRegister: false,
       includeAssets: ['favicon.svg'],
       manifest: {
         name: 'Makrio',

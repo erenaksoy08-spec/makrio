@@ -1,0 +1,12 @@
+{
+  "appId": "com.makrio.app",
+  "appName": "Makrio",
+  "webDir": "dist",
+  "backgroundColor": "#0b0c0e",
+  "ios": {
+    "contentInset": "automatic"
+  },
+  "android": {
+    "allowMixedContent": false
+  }
+}

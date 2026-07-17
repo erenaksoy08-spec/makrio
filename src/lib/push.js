@@ -1,3 +1,4 @@
+import { Capacitor } from '@capacitor/core'
 import { supabase } from './supabase'
 
 // VAPID public key — istemcide açık olması normaldir; özel anahtar sunucuda.
@@ -11,6 +12,8 @@ function urlBase64ToUint8Array(base64String) {
 }
 
 export function pushSupported() {
+  // Native kabukta SW kapalı — web push yerine ileride FCM/APNs kullanılacak.
+  if (Capacitor.isNativePlatform()) return false
   return 'serviceWorker' in navigator && 'PushManager' in window && typeof Notification !== 'undefined'
 }
 
