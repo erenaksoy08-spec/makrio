@@ -26,3 +26,21 @@ export function defaultMealType() {
   if (hour >= 16 && hour < 22) return 'evening'
   return 'night' // 22:00–04:59
 }
+
+const MEAL_HOURS = { morning: [5, 12], noon: [12, 16], evening: [16, 22], night: [22, 5] }
+
+// Kayıt kendi öğün dilimi içinde girildiyse gerçek giriş saati; dilim dışında
+// (sonradan) eklendiyse dilimin başlangıç saati gösterilir — "sabah yediğimi
+// 15.00'te girdim" kaydında 15.00 değil 05.00 yazar.
+export function logDisplayTime(mealType, createdAt) {
+  const range = MEAL_HOURS[canonicalMealType(mealType)]
+  if (!range || !createdAt) return ''
+  const d = new Date(createdAt)
+  if (Number.isNaN(d.getTime())) return ''
+  const [start, end] = range
+  const h = d.getHours()
+  const inPeriod = start < end ? h >= start && h < end : h >= start || h < end
+  return inPeriod
+    ? d.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })
+    : `${String(start).padStart(2, '0')}:00`
+}

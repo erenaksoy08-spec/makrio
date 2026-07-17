@@ -6,7 +6,7 @@ import { useAuth } from '../contexts/AuthContext'
 import { todayStr, formatHeaderDate, addDays } from '../lib/date'
 import { computeMacrosForAmount } from '../lib/foodMath'
 import { emptyRecipeDraft, recipeTotals, recipeMacrosForServings } from '../lib/recipes'
-import { MEAL_TYPES, getMealTypeLabel, canonicalMealType, defaultMealType } from '../lib/mealTypes'
+import { MEAL_TYPES, getMealTypeLabel, canonicalMealType, defaultMealType, logDisplayTime } from '../lib/mealTypes'
 import { Skeleton } from '../components/SkeletonLoader'
 import MealPeriodIcon from '../components/MealPeriodIcon'
 import StarIcon from '../components/StarIcon'
@@ -2134,12 +2134,9 @@ export default function DailyLog() {
                               className="absolute left-[26px] top-1/2 -translate-y-1/2"
                             />
                           ) : (
-                            /* sol oluk: kaydın girildiği saat — boşluk bilgiye dönüşür */
+                            /* sol oluk: giriş saati (dilim dışı girildiyse dilimin başlangıcı) */
                             <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[11px] font-medium tabular-nums text-text-muted">
-                              {new Date(log.created_at).toLocaleTimeString('tr-TR', {
-                                hour: '2-digit',
-                                minute: '2-digit',
-                              })}
+                              {logDisplayTime(log.meal_type, log.created_at)}
                             </span>
                           )}
                           <span className="min-w-0 truncate text-[13px] text-text">
