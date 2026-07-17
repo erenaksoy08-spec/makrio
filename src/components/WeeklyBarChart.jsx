@@ -19,6 +19,7 @@ export default function WeeklyBarChart({ days, macroTotals, selectedDay, onSelec
   const { profile } = useAuth()
   const gym = profile?.preferences?.theme === 'gym'
   const blok = profile?.preferences?.theme === 'blok'
+  const superTheme = profile?.preferences?.theme === 'pixel-super'
   const today = todayStr()
   const radius = pixel || blok ? 0 : gym ? 1 : RADIUS
   // 8-bit büyüme: bar yüksekliği kademeli (quantized) dolsun
@@ -59,6 +60,18 @@ export default function WeeklyBarChart({ days, macroTotals, selectedDay, onSelec
             <rect width="4" height="4" fill="transparent" />
             <rect y="3" width="4" height="1" fill="rgba(0,0,0,0.16)" />
           </pattern>
+        </defs>
+      )}
+      {superTheme && (
+        <defs>
+          {/* dikey boru gövdesi — sol ışık şeridi, sağ gölge (silindir) */}
+          <linearGradient id="wbar-pipe" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stopColor="rgba(255,255,255,0.55)" />
+            <stop offset="0.22" stopColor="rgba(255,255,255,0.18)" />
+            <stop offset="0.55" stopColor="rgba(0,0,0,0)" />
+            <stop offset="0.85" stopColor="rgba(0,0,0,0.18)" />
+            <stop offset="1" stopColor="rgba(0,0,0,0.32)" />
+          </linearGradient>
         </defs>
       )}
       {gym && (
@@ -141,7 +154,11 @@ export default function WeeklyBarChart({ days, macroTotals, selectedDay, onSelec
                   {rendered.map((s, idx) =>
                     s.v > 0 ? <rect key={idx} x={x} y={s.y} width={barWidth} height={s.h} fill={s.c} /> : null
                   )}
-                  {pixel && <rect x={x} y={topY} width={barWidth} height={barHeight} fill="url(#wbar-scan)" />}
+                  {superTheme ? (
+                    <rect x={x} y={topY} width={barWidth} height={barHeight} fill="url(#wbar-pipe)" />
+                  ) : (
+                    pixel && <rect x={x} y={topY} width={barWidth} height={barHeight} fill="url(#wbar-scan)" />
+                  )}
                   {blok && <rect x={x} y={topY} width={barWidth} height={barHeight} fill="url(#wbar-blok)" />}
                   {gym && (
                     <>
@@ -151,6 +168,22 @@ export default function WeeklyBarChart({ days, macroTotals, selectedDay, onSelec
                     </>
                   )}
                 </motion.g>
+                {/* süper: boru ağzı — barın tepesinde yanlara taşan bilezik */}
+                {superTheme &&
+                  (() => {
+                    const topColor = [...rendered].reverse().find((s) => s.v > 0)?.c ?? CARB_COLOR
+                    const rx = x - 2
+                    const rw = barWidth + 4
+                    return (
+                      <g opacity={active ? 1 : 0.4} style={{ transition: 'opacity 200ms ease' }}>
+                        <rect x={rx} y={topY} width={rw} height={6} fill={topColor} />
+                        <rect x={rx} y={topY} width={rw} height={6} fill="url(#wbar-pipe)" />
+                        <rect x={rx} y={topY} width={rw} height={6} fill="rgba(0,0,0,0.14)" />
+                        <rect x={rx} y={topY} width={rw} height={1} fill="rgba(255,255,255,0.45)" />
+                        <rect x={rx} y={topY + 6} width={rw} height={1} fill="rgba(0,0,0,0.35)" />
+                      </g>
+                    )
+                  })()}
                 {/* gym: dökme demir blok kenarı */}
                 {gym && (
                   <rect

@@ -1239,9 +1239,20 @@ body {
   box-shadow: inset 0 2px 0 rgba(110, 62, 12, 0.45), inset 0 0 0 1px rgba(110, 62, 12, 0.35),
     0 1px 0 rgba(255, 255, 255, 0.55);
 }
-/* Ana barlar boru kalınlığında — silindir ışığı nefes alsın (miniler oranında kalır) */
+/* Barlar boru kalınlığında — silindir ışığı nefes alsın */
 [data-theme='pixel-super'] .bar-track.h-2 {
   height: 13px;
+}
+/* Günlük üst özeti: 3px'lik kalori/makro çizgileri boruya dönüşür */
+[data-theme='pixel-super'] .bar-track.h-\[3px\] {
+  height: 10px;
+}
+/* Günün Puanı çipleri ve mini göstergeler orantılı tombullaşır */
+[data-theme='pixel-super'] .bar-track.h-1\.5 {
+  height: 9px;
+}
+[data-theme='pixel-super'] .bar-track.h-1 {
+  height: 7px;
 }
 [data-theme='pixel-super'] .bar-track .bar-fill {
   height: 100% !important;
