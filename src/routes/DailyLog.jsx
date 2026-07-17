@@ -2127,14 +2127,16 @@ export default function DailyLog() {
                     {mealLogs.map((log) => (
                       <SwipeableLogRow key={log.id} id={log.id} onDelete={handleDelete} onTap={() => startEdit(log)}>
                         <div className="relative flex items-center justify-between px-4 pl-[4.4rem] text-sm">
+                          {/* sol oluk: giriş saati (dilim dışı girildiyse dilimin başlangıcı).
+                              Piksel temalarda yemek ikonuyla altlı üstlü dizilir. */}
                           {pixelUi ? (
-                            <PixelFoodIcon
-                              name={log.food_name}
-                              size={26}
-                              className="absolute left-[26px] top-1/2 -translate-y-1/2"
-                            />
+                            <span className="absolute left-2.5 top-1/2 flex w-12 -translate-y-1/2 flex-col items-center gap-1">
+                              <PixelFoodIcon name={log.food_name} size={22} />
+                              <span className="whitespace-nowrap text-[9px] font-medium tabular-nums leading-none text-text-muted">
+                                {logDisplayTime(log.meal_type, log.created_at)}
+                              </span>
+                            </span>
                           ) : (
-                            /* sol oluk: giriş saati (dilim dışı girildiyse dilimin başlangıcı) */
                             <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[11px] font-medium tabular-nums text-text-muted">
                               {logDisplayTime(log.meal_type, log.created_at)}
                             </span>
