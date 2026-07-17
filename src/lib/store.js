@@ -23,7 +23,7 @@ export const STORE_ITEMS = [
     title: 'Süper Makrio',
     description:
       'Güneşli bir platform dünyası: gökyüzü mavisi, bloklu bulutlar, kum panelleri ve sikke altını. Klasik oyun ruhu, Makrio diliyle.',
-    price: 12,
+    price: 40,
     prefKey: 'theme',
     prefValue: 'pixel-super',
     accent: '#E89A00',
@@ -33,7 +33,7 @@ export const STORE_ITEMS = [
     category: 'Halka',
     title: 'Kare Kalori Halkası',
     description: 'Ana sayfadaki kalori halkası yumuşak köşeli, keskin duruşlu bir kareye dönüşür.',
-    price: 30,
+    price: 20,
     prefKey: 'ringShape',
     prefValue: 'square',
     accent: '#4FC3F7',
@@ -44,7 +44,7 @@ export const STORE_ITEMS = [
     title: 'Özel Zemin Renkleri',
     description:
       'Uygulamanın zeminini özenle seçilmiş dört derin tondan biriyle boya. Temalarla birlikte kullanılamaz — bir tema aktifken temanın kendi zemini geçerlidir.',
-    price: 50,
+    price: 5,
     prefKey: 'bgColor',
     variants: [
       { value: '#0E1526', label: 'Gece Mavisi' },
