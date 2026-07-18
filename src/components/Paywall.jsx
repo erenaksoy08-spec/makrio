@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import Sheet from './Sheet'
 import { supabase } from '../lib/supabase'
@@ -211,6 +212,27 @@ export default function Paywall({ open, onClose, feature }) {
           {!purchasesAvailable() && (
             <p className="text-center text-xs text-text-muted">Satın alma iOS/Android uygulamasında yapılır.</p>
           )}
+
+          {/* Apple 3.1.2: yenileme koşulu + yasal linkler satın alma ekranında görünmeli */}
+          <div className="space-y-1.5 border-t border-border pt-3 text-center">
+            <p className="text-[11px] leading-relaxed text-text-muted">
+              Abonelik, iptal edilmediği sürece dönem sonunda otomatik yenilenir. Dilediğin an App Store / Google
+              Play hesap ayarlarından iptal edebilirsin.
+            </p>
+            <p className="text-[11px] text-text-muted">
+              <Link to="/yasal/kvkk" className="underline underline-offset-2">
+                Gizlilik (KVKK)
+              </Link>
+              {' · '}
+              <Link to="/yasal/kullanim-sartlari" className="underline underline-offset-2">
+                Kullanım Şartları
+              </Link>
+              {' · '}
+              <Link to="/yasal/mesafeli-satis" className="underline underline-offset-2">
+                Mesafeli Satış
+              </Link>
+            </p>
+          </div>
         </div>
       )}
     </Sheet>
