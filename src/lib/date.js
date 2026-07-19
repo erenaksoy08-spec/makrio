@@ -1,3 +1,5 @@
+import { getIntlLocale } from './i18n'
+
 function pad(n) {
   return String(n).padStart(2, '0')
 }
@@ -50,17 +52,17 @@ export function mondayOf(dateStr) {
 
 export function formatShortDate(dateStr) {
   const d = new Date(`${dateStr}T00:00:00`)
-  return new Intl.DateTimeFormat('tr-TR', { day: 'numeric', month: 'short' }).format(d)
+  return new Intl.DateTimeFormat(getIntlLocale(), { day: 'numeric', month: 'short' }).format(d)
 }
 
 export function formatDayLabel(dateStr) {
   const d = new Date(`${dateStr}T00:00:00`)
-  return new Intl.DateTimeFormat('tr-TR', { weekday: 'short' }).format(d)
+  return new Intl.DateTimeFormat(getIntlLocale(), { weekday: 'short' }).format(d)
 }
 
 export function formatHeaderDate(dateStr) {
   const d = new Date(`${dateStr}T00:00:00`)
-  const weekday = new Intl.DateTimeFormat('tr-TR', { weekday: 'long' }).format(d)
-  const month = new Intl.DateTimeFormat('tr-TR', { month: 'long' }).format(d)
+  const weekday = new Intl.DateTimeFormat(getIntlLocale(), { weekday: 'long' }).format(d)
+  const month = new Intl.DateTimeFormat(getIntlLocale(), { month: 'long' }).format(d)
   return `${weekday}, ${d.getDate()} ${month}`
 }

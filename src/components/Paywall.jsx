@@ -5,29 +5,30 @@ import Sheet from './Sheet'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import { getGoldPackages, purchaseGold, restoreGold, purchasesAvailable } from '../lib/purchases'
+import { t } from '../lib/i18n'
 
 const PERKS = [
-  'Sınırsız yemek kaydı',
-  'Detaylı haftalık & aylık raporlar',
-  "Arkadaş Ligi'ne erişim",
-  'Uygulama Tasarım Mağazası',
-  'Reklamsız deneyim',
+  t('Sınırsız yemek kaydı'),
+  t('Detaylı haftalık & aylık raporlar'),
+  t("Arkadaş Ligi'ne erişim"),
+  t('Uygulama Tasarım Mağazası'),
+  t('Reklamsız deneyim'),
 ]
 
 // Hangi kapıdan gelindiyse ona özel başlık — jenerik satış dili yerine
 // kullanıcının o an istediği şeyin adı.
 const FEATURE_TEXTS = {
-  limit: { title: 'Sınırsız kayıt için Gold', sub: 'Günde 3 ücretsiz kayıt doldu — Gold ile takibin hiç durmaz.' },
-  league: { title: "Arkadaş Ligi Gold'a özel", sub: 'Arkadaşlarınla yarışmak ve panoya girmek için Gold gerekiyor.' },
-  store: { title: "Tasarım Mağazası Gold'a özel", sub: 'Temaları ve tasarımları açmak için Gold gerekiyor.' },
+  limit: { title: t('Sınırsız kayıt için Gold'), sub: t('Günde 3 ücretsiz kayıt doldu — Gold ile takibin hiç durmaz.') },
+  league: { title: t("Arkadaş Ligi Gold'a özel"), sub: t('Arkadaşlarınla yarışmak ve panoya girmek için Gold gerekiyor.') },
+  store: { title: t("Tasarım Mağazası Gold'a özel"), sub: t('Temaları ve tasarımları açmak için Gold gerekiyor.') },
 }
 
 // Mağaza ürünleri (App Store Connect / Play Console + RevenueCat) kurulana
 // kadar paywall'ın tasarımını taşıyan yer tutucu planlar. Gerçek paketler
 // ($rc_annual / $rc_monthly) gelince otomatik devre dışı kalır.
 const PLACEHOLDER_PLANS = [
-  { identifier: 'annual', placeholder: true, title: 'Yıllık', priceString: '₺599,99', per: '≈ ₺50/ay', badge: '%37 TASARRUF' },
-  { identifier: 'monthly', placeholder: true, title: 'Aylık', priceString: '₺79,99', per: null },
+  { identifier: 'annual', placeholder: true, title: t('Yıllık'), priceString: '₺599,99', per: t('≈ ₺50/ay'), badge: t('%37 TASARRUF') },
+  { identifier: 'monthly', placeholder: true, title: t('Aylık'), priceString: '₺79,99', per: null },
 ]
 
 // RC paketini karta çevir: yıllıkta rozet + ay başına eşdeğer fiyat.
@@ -37,15 +38,15 @@ function toPlan(pkg) {
   const currency = pkg.product?.currencyCode ?? 'TRY'
   const per =
     annual && price
-      ? `≈ ${new Intl.NumberFormat('tr-TR', { style: 'currency', currency, maximumFractionDigits: 0 }).format(price / 12)}/ay`
+      ? t('≈ {price}/ay', { price: new Intl.NumberFormat('tr-TR', { style: 'currency', currency, maximumFractionDigits: 0 }).format(price / 12) })
       : null
   return {
     identifier: pkg.identifier,
     pkg,
-    title: annual ? 'Yıllık' : pkg.packageType === 'MONTHLY' || pkg.identifier === '$rc_monthly' ? 'Aylık' : pkg.product?.title,
+    title: annual ? t('Yıllık') : pkg.packageType === 'MONTHLY' || pkg.identifier === '$rc_monthly' ? t('Aylık') : pkg.product?.title,
     priceString: pkg.product?.priceString,
     per,
-    badge: annual ? '%37 TASARRUF' : null,
+    badge: annual ? t('%37 TASARRUF') : null,
     annual,
   }
 }
@@ -94,7 +95,7 @@ export default function Paywall({ open, onClose, feature }) {
     try {
       if (await purchaseGold(selected.pkg)) await markGold()
     } catch {
-      setError('Satın alma tamamlanamadı — tekrar dene.')
+      setError(t('Satın alma tamamlanamadı — tekrar dene.'))
     }
     setBusy(false)
   }
@@ -104,9 +105,9 @@ export default function Paywall({ open, onClose, feature }) {
     setError('')
     try {
       if (await restoreGold()) await markGold()
-      else setError('Geri yüklenecek satın alma bulunamadı.')
+      else setError(t('Geri yüklenecek satın alma bulunamadı.'))
     } catch {
-      setError('Geri yükleme başarısız — tekrar dene.')
+      setError(t('Geri yükleme başarısız — tekrar dene.'))
     }
     setBusy(false)
   }
@@ -118,14 +119,14 @@ export default function Paywall({ open, onClose, feature }) {
       {done ? (
         <div className="py-6 text-center">
           <div className="text-4xl">👑</div>
-          <p className="mt-3 text-lg font-bold text-[#F5C84B]">Gold aktif!</p>
-          <p className="mt-1 text-sm text-text-muted">Tüm ayrıcalıkların açıldı. Afiyet olsun.</p>
+          <p className="mt-3 text-lg font-bold text-[#F5C84B]">{t('Gold aktif!')}</p>
+          <p className="mt-1 text-sm text-text-muted">{t('Tüm ayrıcalıkların açıldı. Afiyet olsun.')}</p>
           <button
             type="button"
             onClick={onClose}
             className="btn-chip mt-5 w-full rounded-xl border border-border py-3 font-medium text-text"
           >
-            Devam et
+            {t('Devam et')}
           </button>
         </div>
       ) : (
@@ -153,7 +154,7 @@ export default function Paywall({ open, onClose, feature }) {
           {/* planlar — yıllık vurgulu ve varsayılan */}
           {plans == null ? (
             <div className="rounded-2xl border border-border py-6 text-center text-sm text-text-muted">
-              Planlar yükleniyor…
+              {t('Planlar yükleniyor…')}
             </div>
           ) : (
             <div className="grid grid-cols-2 gap-2">
@@ -176,7 +177,7 @@ export default function Paywall({ open, onClose, feature }) {
                     <div className="text-xs font-medium text-text-muted">{plan.title}</div>
                     <div className="mt-1 text-lg font-bold tabular-nums text-text">{plan.priceString}</div>
                     <div className="text-[11px] tabular-nums text-text-muted">
-                      {plan.per ?? (plan.title === 'Aylık' ? 'her ay yenilenir' : '')}
+                      {plan.per ?? (plan.identifier.includes('monthly') || plan.identifier === '$rc_monthly' ? t('her ay yenilenir') : '')}
                     </div>
                   </button>
                 )
@@ -193,11 +194,11 @@ export default function Paywall({ open, onClose, feature }) {
             onClick={handleBuy}
             className="btn-primary w-full rounded-2xl bg-gradient-to-r from-[#F5C84B] to-[#E0A93B] py-3.5 font-semibold text-black disabled:opacity-40"
           >
-            {busy ? 'İşleniyor…' : "Gold'a Yükselt"}
+            {busy ? t('İşleniyor…') : t("Gold'a Yükselt")}
           </motion.button>
 
           {placeholderMode && (
-            <p className="text-center text-xs text-text-muted">🚀 Satın alma çok yakında aktifleşecek.</p>
+            <p className="text-center text-xs text-text-muted">{t('🚀 Satın alma çok yakında aktifleşecek.')}</p>
           )}
 
           <button
@@ -206,30 +207,29 @@ export default function Paywall({ open, onClose, feature }) {
             onClick={handleRestore}
             className="btn-chip w-full py-2 text-center text-xs font-medium text-text-muted disabled:opacity-40"
           >
-            Satın almaları geri yükle
+            {t('Satın almaları geri yükle')}
           </button>
 
           {!purchasesAvailable() && (
-            <p className="text-center text-xs text-text-muted">Satın alma iOS/Android uygulamasında yapılır.</p>
+            <p className="text-center text-xs text-text-muted">{t('Satın alma iOS/Android uygulamasında yapılır.')}</p>
           )}
 
           {/* Apple 3.1.2: yenileme koşulu + yasal linkler satın alma ekranında görünmeli */}
           <div className="space-y-1.5 border-t border-border pt-3 text-center">
             <p className="text-[11px] leading-relaxed text-text-muted">
-              Abonelik, iptal edilmediği sürece dönem sonunda otomatik yenilenir. Dilediğin an App Store / Google
-              Play hesap ayarlarından iptal edebilirsin.
+              {t('Abonelik, iptal edilmediği sürece dönem sonunda otomatik yenilenir. Dilediğin an App Store / Google Play hesap ayarlarından iptal edebilirsin.')}
             </p>
             <p className="text-[11px] text-text-muted">
               <Link to="/yasal/kvkk" className="underline underline-offset-2">
-                Gizlilik (KVKK)
+                {t('Gizlilik (KVKK)')}
               </Link>
               {' · '}
               <Link to="/yasal/kullanim-sartlari" className="underline underline-offset-2">
-                Kullanım Şartları
+                {t('Kullanım Şartları')}
               </Link>
               {' · '}
               <Link to="/yasal/mesafeli-satis" className="underline underline-offset-2">
-                Mesafeli Satış
+                {t('Mesafeli Satış')}
               </Link>
             </p>
           </div>

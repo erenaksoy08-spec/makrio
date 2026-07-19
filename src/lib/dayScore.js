@@ -1,3 +1,5 @@
+import { t } from './i18n'
+
 // Günlük puan: 10 üzerinden.
 // Kalori 3.5 · Protein 2.5 · Karb+Yağ 2 · Su 2
 
@@ -47,12 +49,12 @@ export function scoreDay(intake, goals) {
   return { total, cal, pro, carbsFat, water }
 }
 
-export function scoreLabel(t) {
-  if (t >= 9) return 'Mükemmel'
-  if (t >= 7) return 'Harika'
-  if (t >= 5) return 'İyi'
-  if (t >= 3) return 'Orta'
-  return 'Zayıf'
+export function scoreLabel(total) {
+  if (total >= 9) return t('Mükemmel')
+  if (total >= 7) return t('Harika')
+  if (total >= 5) return t('İyi')
+  if (total >= 3) return t('Orta')
+  return t('Zayıf')
 }
 
 export function scoreColor(t) {

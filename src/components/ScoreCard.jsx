@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react'
 import { scoreLabel, scoreColor, fmtScore } from '../lib/dayScore'
+import { t } from '../lib/i18n'
 
 const BREAKDOWN = [
-  { key: 'cal', label: 'Kalori', max: 3.5 },
-  { key: 'pro', label: 'Protein', max: 2.5 },
-  { key: 'carbsFat', label: 'Makro', max: 2 },
-  { key: 'water', label: 'Su', max: 2 },
+  { key: 'cal', label: t('Kalori'), max: 3.5 },
+  { key: 'pro', label: t('Protein'), max: 2.5 },
+  { key: 'carbsFat', label: t('Makro'), max: 2 },
+  { key: 'water', label: t('Su'), max: 2 },
 ]
 
 export default function ScoreCard({ score, idle = false }) {
@@ -47,9 +48,9 @@ export default function ScoreCard({ score, idle = false }) {
 
       <div className="min-w-0 flex-1">
         <div className="flex items-center justify-between">
-          <span className="text-sm text-text-muted">Günün Puanı</span>
+          <span className="text-sm text-text-muted">{t('Günün Puanı')}</span>
           <span className="text-sm font-semibold" style={{ color }}>
-            {idle ? 'Gün yeni başlıyor' : scoreLabel(score.total)}
+            {idle ? t('Gün yeni başlıyor') : scoreLabel(score.total)}
           </span>
         </div>
         <div className="mt-2 grid grid-cols-4 gap-1.5">

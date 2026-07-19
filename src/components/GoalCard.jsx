@@ -1,15 +1,16 @@
 import { useState } from 'react'
 import Sheet from './Sheet'
 import GoalEditor from './GoalEditor'
+import { t, getIntlLocale } from '../lib/i18n'
 
 const GOAL_META = {
-  lose: { label: 'Kilo verme', icon: '📉' },
-  gain: { label: 'Kilo alma', icon: '📈' },
-  maintain: { label: 'Formu koruma', icon: '⚖️' },
+  lose: { label: t('Kilo verme'), icon: '📉' },
+  gain: { label: t('Kilo alma'), icon: '📈' },
+  maintain: { label: t('Formu koruma'), icon: '⚖️' },
 }
 
 function fmtShort(d) {
-  return new Intl.DateTimeFormat('tr-TR', { day: 'numeric', month: 'short', year: 'numeric' }).format(d)
+  return new Intl.DateTimeFormat(getIntlLocale(), { day: 'numeric', month: 'short', year: 'numeric' }).format(d)
 }
 
 export default function GoalCard({ goal, calories, currentWeight, targetWeight, rate, onSaved }) {
@@ -36,7 +37,7 @@ export default function GoalCard({ goal, calories, currentWeight, targetWeight, 
         className="btn-card flex h-full flex-col rounded-3xl border border-white/[0.06] bg-surface p-4 text-left"
       >
         <div className="flex w-full items-center justify-between">
-          <span className="text-sm text-text-muted">Hedef</span>
+          <span className="text-sm text-text-muted">{t('Hedef')}</span>
           <span className="text-base">{meta.icon}</span>
         </div>
 
@@ -47,21 +48,21 @@ export default function GoalCard({ goal, calories, currentWeight, targetWeight, 
               <span className="text-sm text-text-muted">kg</span>
             </div>
             <div className="mt-0.5 text-xs tabular-nums text-text-muted">
-              {Number(rate).toLocaleString('tr-TR')} kg/hf
+              {Number(rate).toLocaleString(getIntlLocale())} {t('kg/hf')}
             </div>
             {endDate && <div className="text-xs text-text-muted">🎯 {fmtShort(endDate)}</div>}
           </div>
         ) : (
           <div className="mt-2 flex-1">
             <div className="text-base font-semibold text-text">{meta.label}</div>
-            {calories ? <div className="text-xs tabular-nums text-text-muted">{calories} kcal/gün</div> : null}
+            {calories ? <div className="text-xs tabular-nums text-text-muted">{calories} {t('kcal/gün')}</div> : null}
           </div>
         )}
 
-        <div className="mt-2 text-xs font-medium text-accent">Düzenle ›</div>
+        <div className="mt-2 text-xs font-medium text-accent">{t('Düzenle')} ›</div>
       </button>
 
-      <Sheet open={open} onClose={() => handleClose(false)} title="Hedefini Ayarla" variant="center">
+      <Sheet open={open} onClose={() => handleClose(false)} title={t('Hedefini Ayarla')} variant="center">
         <GoalEditor currentWeight={currentWeight} onClose={handleClose} />
       </Sheet>
     </>

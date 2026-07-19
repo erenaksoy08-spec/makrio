@@ -6,24 +6,25 @@ import { supabase } from '../lib/supabase'
 import { purchasesAvailable } from '../lib/purchases'
 import Paywall from '../components/Paywall'
 import GoldPricing from '../components/GoldPricing'
+import { t } from '../lib/i18n'
 
-const GOAL_LABELS = { lose: 'Kilo verme', gain: 'Kilo alma', maintain: 'Formu koruma' }
-const GENDER_LABELS = { female: 'Kadın', male: 'Erkek' }
+const GOAL_LABELS = { lose: t('Kilo verme'), gain: t('Kilo alma'), maintain: t('Formu koruma') }
+const GENDER_LABELS = { female: t('Kadın'), male: t('Erkek') }
 
 // Hedef kartı kimlikleri — hedefe göre renk, ikon ve motto.
 const GOAL_META = {
-  lose: { icon: '📉', accent: '#57C97E', desc: 'Kalori açığıyla hafifle, formuna kavuş.' },
-  gain: { icon: '📈', accent: '#FF8A5B', desc: 'Fazla kaloriyle güçlen, kütle kazan.' },
-  maintain: { icon: '⚖️', accent: '#4FC3F7', desc: 'Dengeni koru, rutinini sürdür.' },
+  lose: { icon: '📉', accent: '#57C97E', desc: t('Kalori açığıyla hafifle, formuna kavuş.') },
+  gain: { icon: '📈', accent: '#FF8A5B', desc: t('Fazla kaloriyle güçlen, kütle kazan.') },
+  maintain: { icon: '⚖️', accent: '#4FC3F7', desc: t('Dengeni koru, rutinini sürdür.') },
 }
 
 const GOLD_PERKS = [
-  { icon: '∞', text: 'Sınırsız yemek kaydı' },
-  { icon: '📊', text: 'Detaylı haftalık & aylık raporlar' },
-  { icon: '🏆', text: 'Arkadaş Ligi\'ne erişim' },
-  { icon: '🎁', text: 'Özel ilerleme ödülleri' },
-  { icon: '🛍️', text: 'Uygulama Tasarım Mağazası\'na erişim' },
-  { icon: '🚫', text: 'Reklamsız deneyim' },
+  { icon: '∞', text: t('Sınırsız yemek kaydı') },
+  { icon: '📊', text: t('Detaylı haftalık & aylık raporlar') },
+  { icon: '🏆', text: t("Arkadaş Ligi'ne erişim") },
+  { icon: '🎁', text: t('Özel ilerleme ödülleri') },
+  { icon: '🛍️', text: t("Uygulama Tasarım Mağazası'na erişim") },
+  { icon: '🚫', text: t('Reklamsız deneyim') },
 ]
 
 function GoldCard({ isGold }) {
@@ -49,19 +50,19 @@ function GoldCard({ isGold }) {
           </span>
           {isGold && (
             <span className="ml-auto rounded-full bg-[#F5C84B]/20 px-2.5 py-0.5 text-xs font-semibold text-[#F5C84B]">
-              Aktif ✓
+              {t('Aktif ✓')}
             </span>
           )}
         </div>
 
-        <p className="mt-1 text-xs text-text-muted">Potansiyelini sonuna kadar kullan.</p>
+        <p className="mt-1 text-xs text-text-muted">{t('Potansiyelini sonuna kadar kullan.')}</p>
 
         <button
           type="button"
           onClick={() => setExpanded((v) => !v)}
           className="mt-3 flex items-center gap-1.5 text-xs font-semibold text-[#F5C84B]"
         >
-          Neler dahil?
+          {t('Neler dahil?')}
           <span className={`inline-block transition-transform ${expanded ? 'rotate-180' : ''}`}>▾</span>
         </button>
         {expanded && (
@@ -88,7 +89,7 @@ function GoldCard({ isGold }) {
               onClick={() => (purchasesAvailable() ? setPaywall(true) : setInfo(true))}
               className="btn-primary mt-3 w-full rounded-xl bg-gradient-to-r from-[#F5C84B] to-[#E0A93B] py-3 font-semibold text-black"
             >
-              Gold'a Yükselt
+              {t("Gold'a Yükselt")}
             </motion.button>
             <Paywall open={paywall} onClose={() => setPaywall(false)} />
             {info && (
@@ -97,7 +98,7 @@ function GoldCard({ isGold }) {
                 animate={{ opacity: 1, y: 0 }}
                 className="mt-2 text-center text-xs text-[#F5C84B]"
               >
-                🚀 Ödeme altyapısı çok yakında aktifleşecek!
+                {t('🚀 Ödeme altyapısı çok yakında aktifleşecek!')}
               </motion.p>
             )}
           </>
@@ -128,7 +129,7 @@ export default function Profile() {
 
   return (
     <div className="mx-auto max-w-md space-y-4 px-4 py-6">
-      <h1 className="text-2xl font-semibold text-text">Profil</h1>
+      <h1 className="text-2xl font-semibold text-text">{t('Profil')}</h1>
 
       {/* account */}
       <div className="flex items-center gap-3 rounded-2xl border border-white/5 bg-surface p-4">
@@ -148,11 +149,11 @@ export default function Profile() {
       <div className="grid grid-cols-2 gap-3">
         <div className="rounded-2xl border border-white/5 bg-surface p-4">
           <div className="text-2xl font-bold tabular-nums text-text">🔥 {streak}</div>
-          <div className="text-xs text-text-muted">Güncel seri</div>
+          <div className="text-xs text-text-muted">{t('Güncel seri')}</div>
         </div>
         <div className="rounded-2xl border border-white/5 bg-surface p-4">
           <div className="text-2xl font-bold tabular-nums text-text">🏆 {longest}</div>
-          <div className="text-xs text-text-muted">En uzun seri</div>
+          <div className="text-xs text-text-muted">{t('En uzun seri')}</div>
         </div>
       </div>
 
@@ -163,10 +164,10 @@ export default function Profile() {
           const a = meta.accent
           const targetWeight = profile?.preferences?.targetWeight
           const stats = [
-            (latestWeight ?? profile.weight_kg) && { value: latestWeight ?? profile.weight_kg, unit: 'kg', label: 'Kilo' },
-            profile.height_cm && { value: profile.height_cm, unit: 'cm', label: 'Boy' },
-            profile.age && { value: profile.age, unit: '', label: 'Yaş' },
-            profile.gender && { value: GENDER_LABELS[profile.gender] ?? profile.gender, unit: '', label: 'Cinsiyet' },
+            (latestWeight ?? profile.weight_kg) && { value: latestWeight ?? profile.weight_kg, unit: 'kg', label: t('Kilo') },
+            profile.height_cm && { value: profile.height_cm, unit: 'cm', label: t('Boy') },
+            profile.age && { value: profile.age, unit: '', label: t('Yaş') },
+            profile.gender && { value: GENDER_LABELS[profile.gender] ?? profile.gender, unit: '', label: t('Cinsiyet') },
           ].filter(Boolean)
 
           return (
@@ -196,7 +197,7 @@ export default function Profile() {
                   {meta.icon}
                 </span>
                 <div className="min-w-0">
-                  <div className="text-[10px] font-semibold uppercase tracking-[0.16em] text-text-muted">Hedefin</div>
+                  <div className="text-[10px] font-semibold uppercase tracking-[0.16em] text-text-muted">{t('Hedefin')}</div>
                   <div className="text-lg font-bold tracking-tight text-text">
                     {GOAL_LABELS[profile.goal] ?? profile.goal}
                   </div>
@@ -238,8 +239,8 @@ export default function Profile() {
         <div className="flex items-center gap-3">
           <span className="flex h-10 w-10 items-center justify-center rounded-full bg-accent/15 text-lg">⭐</span>
           <div>
-            <div className="text-sm font-medium text-text">İlerleme & Ödüller</div>
-            <div className="text-xs text-text-muted">Serini sürdür, ödülleri aç</div>
+            <div className="text-sm font-medium text-text">{t('İlerleme & Ödüller')}</div>
+            <div className="text-xs text-text-muted">{t('Serini sürdür, ödülleri aç')}</div>
           </div>
         </div>
         <span className="text-text-muted">›</span>
@@ -263,8 +264,8 @@ export default function Profile() {
             </svg>
           </span>
           <div>
-            <div className="text-sm font-medium text-text">Ayarlar</div>
-            <div className="text-xs text-text-muted">Veri sıfırlama ve hesap</div>
+            <div className="text-sm font-medium text-text">{t('Ayarlar')}</div>
+            <div className="text-xs text-text-muted">{t('Veri sıfırlama ve hesap')}</div>
           </div>
         </div>
         <span className="text-text-muted">›</span>
@@ -275,7 +276,7 @@ export default function Profile() {
         onClick={signOut}
         className="btn-chip w-full rounded-2xl border border-border px-3 py-3 font-medium text-red-400"
       >
-        Çıkış yap
+        {t('Çıkış yap')}
       </button>
     </div>
   )

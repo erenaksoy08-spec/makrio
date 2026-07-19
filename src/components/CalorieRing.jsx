@@ -3,6 +3,7 @@ import { useCountUp } from '../hooks/useCountUp'
 import usePixelTheme from '../hooks/usePixelTheme'
 import useBlokTheme from '../hooks/useBlokTheme'
 import { useAuth } from '../contexts/AuthContext'
+import { t } from '../lib/i18n'
 
 export default function CalorieRing({ consumed, goal, color = '#3DA5FF', shape = 'circle' }) {
   const pixelTheme = usePixelTheme()
@@ -235,7 +236,7 @@ export default function CalorieRing({ consumed, goal, color = '#3DA5FF', shape =
           className="uppercase text-text-muted"
           style={{ fontSize: captionFontSize * 0.92, lineHeight: 1.4, marginTop: 5, letterSpacing: '0.14em' }}
         >
-          {over > 0 ? 'kcal aşıldı' : 'kcal kaldı'}
+          {over > 0 ? t('kcal aşıldı') : t('kcal kaldı')}
         </span>
       </div>
     </div>

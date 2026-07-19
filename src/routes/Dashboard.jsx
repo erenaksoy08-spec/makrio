@@ -16,6 +16,7 @@ import { Skeleton } from '../components/SkeletonLoader'
 import usePixelTheme from '../hooks/usePixelTheme'
 import { PixelFlame, PixelGreetingIcon } from '../components/pixelSprites'
 import { badgeTierFrom } from '../lib/rewards'
+import { t } from '../lib/i18n'
 
 export default function Dashboard() {
   const { user, profile, refreshProfile } = useAuth()
@@ -168,12 +169,12 @@ export default function Dashboard() {
   const hour = new Date().getHours()
   const greeting =
     hour >= 5 && hour < 12
-      ? { text: 'Günaydın', emoji: '☀️', period: 'morning' }
+      ? { text: t('Günaydın'), emoji: '☀️', period: 'morning' }
       : hour >= 12 && hour < 17
-        ? { text: 'İyi Günler', emoji: '🌤️', period: 'afternoon' }
+        ? { text: t('İyi Günler'), emoji: '🌤️', period: 'afternoon' }
         : hour >= 17 && hour < 22
-          ? { text: 'İyi Akşamlar', emoji: '🌇', period: 'evening' }
-          : { text: 'İyi Geceler', emoji: '🌙', period: 'night' }
+          ? { text: t('İyi Akşamlar'), emoji: '🌇', period: 'evening' }
+          : { text: t('İyi Geceler'), emoji: '🌙', period: 'night' }
   const firstName = profile?.name?.trim().split(/\s+/)[0]
 
   return (
@@ -215,9 +216,9 @@ export default function Dashboard() {
       </div>
 
       <div className="space-y-5 rounded-3xl border border-white/[0.06] bg-surface p-5">
-        <MacroBar label="Protein" consumed={consumed.protein_g} goal={goalProtein} color="#FF8A5B" delay={0} spiral={spiralBars} />
-        <MacroBar label="Yağ" consumed={consumed.fat_g} goal={goalFat} color="#F2C94C" delay={60} spiral={spiralBars} />
-        <MacroBar label="Karbonhidrat" consumed={consumed.carbs_g} goal={goalCarbs} color="#6FCF97" delay={120} spiral={spiralBars} />
+        <MacroBar label={t('Protein')} consumed={consumed.protein_g} goal={goalProtein} color="#FF8A5B" delay={0} spiral={spiralBars} />
+        <MacroBar label={t('Yağ')} consumed={consumed.fat_g} goal={goalFat} color="#F2C94C" delay={60} spiral={spiralBars} />
+        <MacroBar label={t('Karbonhidrat')} consumed={consumed.carbs_g} goal={goalCarbs} color="#6FCF97" delay={120} spiral={spiralBars} />
       </div>
 
       <ScoreCard score={dayScore} idle={consumed.calories === 0 && waterConsumed === 0} />

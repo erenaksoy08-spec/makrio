@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import Sheet from './Sheet'
 import WeightTracker from './WeightTracker'
+import { t } from '../lib/i18n'
 
 function Sparkline({ values, color }) {
   if (values.length < 2) return <div className="h-7" />
@@ -47,7 +48,7 @@ export default function WeightCard({ logs, goal, onAdd }) {
         className="btn-card flex h-full flex-col justify-between rounded-3xl border border-white/[0.06] bg-surface p-4 text-left"
       >
         <div className="flex items-start justify-between">
-          <span className="text-sm text-text-muted">Kilo</span>
+          <span className="text-sm text-text-muted">{t('Kilo')}</span>
           {delta != null && delta !== 0 && (
             <span className="text-xs font-semibold tabular-nums" style={{ color: deltaColor }}>
               {delta > 0 ? '↑' : '↓'} {Math.abs(delta)}
@@ -63,7 +64,7 @@ export default function WeightCard({ logs, goal, onAdd }) {
         </div>
       </button>
 
-      <Sheet open={open} onClose={() => setOpen(false)} title="Kilo Takibi">
+      <Sheet open={open} onClose={() => setOpen(false)} title={t('Kilo Takibi')}>
         <WeightTracker logs={logs} goal={goal} onAdd={onAdd} />
       </Sheet>
     </>

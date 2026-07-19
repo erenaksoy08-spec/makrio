@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
+import { t } from '../lib/i18n'
 
 export default function ResetPassword() {
   const [mode, setMode] = useState('request')
@@ -30,10 +31,10 @@ export default function ResetPassword() {
 
     setLoading(false)
     if (resetError) {
-      setError('Bir hata oluştu, tekrar dene.')
+      setError(t('Bir hata oluştu, tekrar dene.'))
       return
     }
-    setInfo('Şifre sıfırlama bağlantısı e-postana gönderildi.')
+    setInfo(t('Şifre sıfırlama bağlantısı e-postana gönderildi.'))
   }
 
   async function handleUpdate(e) {
@@ -42,11 +43,11 @@ export default function ResetPassword() {
     setInfo('')
 
     if (newPassword.length < 6) {
-      setError('Şifre en az 6 karakter olmalı.')
+      setError(t('Şifre en az 6 karakter olmalı.'))
       return
     }
     if (newPassword !== newPasswordConfirm) {
-      setError('Şifreler eşleşmiyor.')
+      setError(t('Şifreler eşleşmiyor.'))
       return
     }
 
@@ -55,21 +56,21 @@ export default function ResetPassword() {
     setLoading(false)
 
     if (updateError) {
-      setError('Şifre güncellenemedi, tekrar dene.')
+      setError(t('Şifre güncellenemedi, tekrar dene.'))
       return
     }
-    setInfo('Şifren güncellendi. Şimdi giriş yapabilirsin.')
+    setInfo(t('Şifren güncellendi. Şimdi giriş yapabilirsin.'))
   }
 
   if (mode === 'update') {
     return (
       <div className="flex min-h-svh items-center justify-center px-4">
         <form onSubmit={handleUpdate} className="w-full max-w-sm space-y-4">
-          <h1 className="mb-2 text-2xl font-medium text-text">Yeni Şifre Belirle</h1>
+          <h1 className="mb-2 text-2xl font-medium text-text">{t('Yeni Şifre Belirle')}</h1>
 
           <div className="space-y-1">
             <label htmlFor="newPassword" className="text-sm text-text-muted">
-              Yeni şifre
+              {t('Yeni şifre')}
             </label>
             <input
               id="newPassword"
@@ -84,7 +85,7 @@ export default function ResetPassword() {
 
           <div className="space-y-1">
             <label htmlFor="newPasswordConfirm" className="text-sm text-text-muted">
-              Yeni şifre (tekrar)
+              {t('Yeni şifre (tekrar)')}
             </label>
             <input
               id="newPasswordConfirm"
@@ -105,12 +106,12 @@ export default function ResetPassword() {
             disabled={loading}
             className="btn-primary w-full rounded-lg bg-accent px-3 py-2 font-medium text-black disabled:opacity-50"
           >
-            {loading ? 'Güncelleniyor...' : 'Şifreyi Güncelle'}
+            {loading ? t('Güncelleniyor...') : t('Şifreyi Güncelle')}
           </button>
 
           <div className="text-sm">
             <Link to="/giris" className="text-text-muted hover:text-accent">
-              Girişe dön
+              {t('Girişe dön')}
             </Link>
           </div>
         </form>
@@ -121,12 +122,12 @@ export default function ResetPassword() {
   return (
     <div className="flex min-h-svh items-center justify-center px-4">
       <form onSubmit={handleRequest} className="w-full max-w-sm space-y-4">
-        <h1 className="mb-2 text-2xl font-medium text-text">Şifre Sıfırla</h1>
-        <p className="text-sm text-text-muted">E-posta adresine bir sıfırlama bağlantısı göndereceğiz.</p>
+        <h1 className="mb-2 text-2xl font-medium text-text">{t('Şifre Sıfırla')}</h1>
+        <p className="text-sm text-text-muted">{t('E-posta adresine bir sıfırlama bağlantısı göndereceğiz.')}</p>
 
         <div className="space-y-1">
           <label htmlFor="email" className="text-sm text-text-muted">
-            E-posta
+            {t('E-posta')}
           </label>
           <input
             id="email"
@@ -147,12 +148,12 @@ export default function ResetPassword() {
           disabled={loading}
           className="btn-primary w-full rounded-lg bg-accent px-3 py-2 font-medium text-black disabled:opacity-50"
         >
-          {loading ? 'Gönderiliyor...' : 'Bağlantı Gönder'}
+          {loading ? t('Gönderiliyor...') : t('Bağlantı Gönder')}
         </button>
 
         <div className="text-sm">
           <Link to="/giris" className="text-text-muted hover:text-accent">
-            Girişe dön
+            {t('Girişe dön')}
           </Link>
         </div>
       </form>

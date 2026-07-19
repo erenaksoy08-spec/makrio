@@ -9,13 +9,14 @@ import StarIcon from './StarIcon'
 import { PixelNavIcon } from './pixelSprites'
 import { BlokNavIcon } from './blokSprites'
 import { SuperNavIcon } from './superSprites'
+import { t } from '../lib/i18n'
 
 const ITEMS = [
-  { to: '/', label: 'Ana Sayfa', Icon: HomeIcon, pixelName: 'home', end: true, activeColor: 'var(--color-text)' },
-  { to: '/gunluk', label: 'Günlük', Icon: DailyIcon, pixelName: 'daily', activeColor: 'var(--color-text)' },
-  { to: '/gecmis', label: 'Geçmiş', Icon: HistoryIcon, pixelName: 'history', activeColor: '#fb923c' },
-  { to: '/ilerleme', label: 'İlerleme', Icon: StarIcon, pixelName: 'star', activeColor: '#FFD54A' },
-  { to: '/profil', label: 'Profil', Icon: ProfileIcon, pixelName: 'profile', activeColor: 'var(--color-text)' },
+  { to: '/', label: t('Ana Sayfa'), Icon: HomeIcon, pixelName: 'home', end: true, activeColor: 'var(--color-text)' },
+  { to: '/gunluk', label: t('Günlük'), Icon: DailyIcon, pixelName: 'daily', activeColor: 'var(--color-text)' },
+  { to: '/gecmis', label: t('Geçmiş'), Icon: HistoryIcon, pixelName: 'history', activeColor: '#fb923c' },
+  { to: '/ilerleme', label: t('İlerleme'), Icon: StarIcon, pixelName: 'star', activeColor: '#FFD54A' },
+  { to: '/profil', label: t('Profil'), Icon: ProfileIcon, pixelName: 'profile', activeColor: 'var(--color-text)' },
 ]
 
 export default function BottomNav() {

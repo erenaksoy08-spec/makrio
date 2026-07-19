@@ -9,6 +9,7 @@ import { getPushState, subscribePush, unsubscribePush } from '../lib/push'
 import { purchasesAvailable } from '../lib/purchases'
 import Paywall from '../components/Paywall'
 import GoldPricing from '../components/GoldPricing'
+import { t, getLocale, setLocale } from '../lib/i18n'
 
 /* ---------- ikonlar ---------- */
 
@@ -47,6 +48,12 @@ const I = {
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
       <path d="M4 18 8.5 6h1L14 18M5.8 14h6.4" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
       <path d="M15 18l2.6-7h.8l2.6 7M16 15.8h4" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  ),
+  globe: (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="8.5" stroke="currentColor" strokeWidth="1.7" />
+      <path d="M3.5 12h17M12 3.5c2.4 2.3 3.6 5.2 3.6 8.5s-1.2 6.2-3.6 8.5c-2.4-2.3-3.6-5.2-3.6-8.5s1.2-6.2 3.6-8.5z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
     </svg>
   ),
   star: (
@@ -131,7 +138,7 @@ function Toggle({ on, onChange, label }) {
 
 /* ---------- Genel: Hesap ---------- */
 
-const GENDER_LABELS = { female: 'Kadın', male: 'Erkek' }
+const GENDER_LABELS = { female: t('Kadın'), male: t('Erkek') }
 
 function AccountSheet({ open, onClose }) {
   const { user, profile, refreshProfile } = useAuth()
@@ -162,7 +169,7 @@ function AccountSheet({ open, onClose }) {
       .update({ name: name.trim() || null, age: Number(age) || null, height_cm: Number(height) || null })
       .eq('id', user.id)
     setBusy(false)
-    setMsg(error ? { text: 'Kaydedilemedi — tekrar dene.', ok: false } : { text: 'Bilgilerin güncellendi.', ok: true })
+    setMsg(error ? { text: t('Kaydedilemedi — tekrar dene.'), ok: false } : { text: t('Bilgilerin güncellendi.'), ok: true })
     if (!error) refreshProfile()
   }
 
@@ -173,14 +180,14 @@ function AccountSheet({ open, onClose }) {
     setBusy(false)
     setMsg(
       error
-        ? { text: 'E-posta değiştirilemedi — tekrar dene.', ok: false }
-        : { text: 'Doğrulama bağlantısı iki adrese de gönderildi.', ok: true },
+        ? { text: t('E-posta değiştirilemedi — tekrar dene.'), ok: false }
+        : { text: t('Doğrulama bağlantısı iki adrese de gönderildi.'), ok: true },
     )
   }
 
   async function changePassword() {
-    if (pw.length < 6) return setMsg({ text: 'Şifre en az 6 karakter olmalı.', ok: false })
-    if (pw !== pw2) return setMsg({ text: 'Şifreler eşleşmiyor.', ok: false })
+    if (pw.length < 6) return setMsg({ text: t('Şifre en az 6 karakter olmalı.'), ok: false })
+    if (pw !== pw2) return setMsg({ text: t('Şifreler eşleşmiyor.'), ok: false })
     setBusy(true)
     const { error } = await supabase.auth.updateUser({ password: pw })
     setBusy(false)
@@ -188,25 +195,25 @@ function AccountSheet({ open, onClose }) {
       setPw('')
       setPw2('')
     }
-    setMsg(error ? { text: 'Şifre değiştirilemedi — tekrar dene.', ok: false } : { text: 'Şifren güncellendi.', ok: true })
+    setMsg(error ? { text: t('Şifre değiştirilemedi — tekrar dene.'), ok: false } : { text: t('Şifren güncellendi.'), ok: true })
   }
 
   const inputCls =
     'w-full rounded-xl border border-border bg-bg px-3 py-2.5 text-sm text-text outline-none focus:border-accent/60'
 
   return (
-    <Sheet open={open} onClose={onClose} title="Hesap">
+    <Sheet open={open} onClose={onClose} title={t('Hesap')}>
       <div className="space-y-5 pb-1">
         {/* kişisel bilgiler */}
         <div className="space-y-2">
-          <div className="text-xs font-semibold uppercase tracking-[0.12em] text-text-muted">Kişisel bilgiler</div>
+          <div className="text-xs font-semibold uppercase tracking-[0.12em] text-text-muted">{t('Kişisel bilgiler')}</div>
           <label className="block text-xs text-text-muted">
-            Ad
+            {t('Ad')}
             <input value={name} onChange={(e) => setName(e.target.value)} className={`mt-1 ${inputCls}`} />
           </label>
           <div className="grid grid-cols-2 gap-2">
             <label className="block text-xs text-text-muted">
-              Yaş
+              {t('Yaş')}
               <input
                 type="number"
                 inputMode="numeric"
@@ -216,7 +223,7 @@ function AccountSheet({ open, onClose }) {
               />
             </label>
             <label className="block text-xs text-text-muted">
-              Boy (cm)
+              {t('Boy (cm)')}
               <input
                 type="number"
                 inputMode="numeric"
@@ -228,8 +235,9 @@ function AccountSheet({ open, onClose }) {
           </div>
           {profile?.gender && (
             <p className="text-xs text-text-muted">
-              Cinsiyet: <span className="text-text">{GENDER_LABELS[profile.gender] ?? profile.gender}</span> — kalori
-              hesabının temeli olduğu için buradan değiştirilemez.
+              {t('Cinsiyet')}: <span className="text-text">{GENDER_LABELS[profile.gender] ?? profile.gender}</span>
+              {' — '}
+              {t('kalori hesabının temeli olduğu için buradan değiştirilemez.')}
             </p>
           )}
           <button
@@ -238,19 +246,19 @@ function AccountSheet({ open, onClose }) {
             onClick={saveInfo}
             className="btn-chip w-full rounded-xl border border-border py-2.5 text-sm font-medium text-text disabled:opacity-40"
           >
-            Bilgileri kaydet
+            {t('Bilgileri kaydet')}
           </button>
         </div>
 
         {/* e-posta */}
         <div className="space-y-2 border-t border-border pt-4">
-          <div className="text-xs font-semibold uppercase tracking-[0.12em] text-text-muted">E-posta</div>
+          <div className="text-xs font-semibold uppercase tracking-[0.12em] text-text-muted">{t('E-posta')}</div>
           <p className="text-xs text-text-muted">
-            Mevcut: <span className="text-text">{user.email}</span>
+            {t('Mevcut:')} <span className="text-text">{user.email}</span>
           </p>
           <input
             type="email"
-            placeholder="Yeni e-posta adresi"
+            placeholder={t('Yeni e-posta adresi')}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className={inputCls}
@@ -261,17 +269,17 @@ function AccountSheet({ open, onClose }) {
             onClick={changeEmail}
             className="btn-chip w-full rounded-xl border border-border py-2.5 text-sm font-medium text-text disabled:opacity-40"
           >
-            E-postayı değiştir
+            {t('E-postayı değiştir')}
           </button>
         </div>
 
         {/* şifre */}
         <div className="space-y-2 border-t border-border pt-4">
-          <div className="text-xs font-semibold uppercase tracking-[0.12em] text-text-muted">Şifre değiştir</div>
+          <div className="text-xs font-semibold uppercase tracking-[0.12em] text-text-muted">{t('Şifre değiştir')}</div>
           <input
             type="password"
             autoComplete="new-password"
-            placeholder="Yeni şifre"
+            placeholder={t('Yeni şifre')}
             value={pw}
             onChange={(e) => setPw(e.target.value)}
             className={inputCls}
@@ -279,7 +287,7 @@ function AccountSheet({ open, onClose }) {
           <input
             type="password"
             autoComplete="new-password"
-            placeholder="Yeni şifre (tekrar)"
+            placeholder={t('Yeni şifre (tekrar)')}
             value={pw2}
             onChange={(e) => setPw2(e.target.value)}
             className={inputCls}
@@ -290,7 +298,7 @@ function AccountSheet({ open, onClose }) {
             onClick={changePassword}
             className="btn-chip w-full rounded-xl border border-border py-2.5 text-sm font-medium text-text disabled:opacity-40"
           >
-            Şifreyi güncelle
+            {t('Şifreyi güncelle')}
           </button>
         </div>
 
@@ -310,7 +318,7 @@ function SubscriptionSheet({ open, onClose }) {
   const [paywall, setPaywall] = useState(false)
 
   return (
-    <Sheet open={open} onClose={onClose} title="Abonelik">
+    <Sheet open={open} onClose={onClose} title={t('Abonelik')}>
       <div className="space-y-4 pb-1">
         <div className="rounded-2xl border border-[#E8B84B]/40 bg-gradient-to-br from-[#3a2e12] to-surface p-4">
           <div className="flex items-center gap-2">
@@ -321,13 +329,13 @@ function SubscriptionSheet({ open, onClose }) {
                 isGold ? 'bg-[#F5C84B]/20 text-[#F5C84B]' : 'bg-white/10 text-text-muted'
               }`}
             >
-              {isGold ? 'Aktif ✓' : 'Pasif'}
+              {isGold ? t('Aktif ✓') : t('Pasif')}
             </span>
           </div>
           <p className="mt-2 text-xs leading-relaxed text-text-muted">
             {isGold
-              ? 'Tüm Gold ayrıcalıkların açık: sınırsız kayıt, raporlar, Arkadaş Ligi, mağaza ve reklamsız deneyim.'
-              : "Sınırsız kayıt, detaylı raporlar, Arkadaş Ligi ve Tasarım Mağazası için Gold'a geç."}
+              ? t('Tüm Gold ayrıcalıkların açık: sınırsız kayıt, raporlar, Arkadaş Ligi, mağaza ve reklamsız deneyim.')
+              : t("Sınırsız kayıt, detaylı raporlar, Arkadaş Ligi ve Tasarım Mağazası için Gold'a geç.")}
           </p>
         </div>
         {!isGold && <GoldPricing />}
@@ -337,15 +345,15 @@ function SubscriptionSheet({ open, onClose }) {
             onClick={() => setPaywall(true)}
             className="btn-primary w-full rounded-xl bg-gradient-to-r from-[#F5C84B] to-[#E0A93B] py-3 font-semibold text-black"
           >
-            Gold'a Yükselt
+            {t("Gold'a Yükselt")}
           </button>
         )}
         <p className="text-center text-xs text-text-muted">
           {isGold
-            ? 'Abonelik yönetimi (iptal / plan değişikliği) App Store / Play Store abonelik ayarlarından yapılır.'
+            ? t('Abonelik yönetimi (iptal / plan değişikliği) App Store / Play Store abonelik ayarlarından yapılır.')
             : purchasesAvailable()
-              ? 'Abonelik App Store / Play Store hesabına bağlanır; istediğin an iptal edebilirsin.'
-              : '🚀 Ödeme altyapısı çok yakında aktifleşecek!'}
+              ? t('Abonelik App Store / Play Store hesabına bağlanır; istediğin an iptal edebilirsin.')
+              : t('🚀 Ödeme altyapısı çok yakında aktifleşecek!')}
         </p>
         <Paywall open={paywall} onClose={() => setPaywall(false)} />
       </div>
@@ -357,7 +365,7 @@ function SubscriptionSheet({ open, onClose }) {
 
 function IntegrationsSheet({ open, onClose }) {
   return (
-    <Sheet open={open} onClose={onClose} title="Entegrasyonlar">
+    <Sheet open={open} onClose={onClose} title={t('Entegrasyonlar')}>
       <div className="space-y-3 pb-1">
         <div className="flex items-center gap-3 rounded-2xl border border-border p-4">
           <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-white/[0.05] text-xl">
@@ -365,13 +373,13 @@ function IntegrationsSheet({ open, onClose }) {
           </span>
           <div className="min-w-0 flex-1">
             <div className="text-sm font-medium text-text">Apple Health</div>
-            <div className="text-xs text-text-muted">Adım, kilo ve egzersiz verilerini eşitle</div>
+            <div className="text-xs text-text-muted">{t('Adım, kilo ve egzersiz verilerini eşitle')}</div>
           </div>
           <span className="shrink-0 rounded-full bg-white/[0.06] px-2.5 py-1 text-[11px] font-semibold text-text-muted">
-            Yakında
+            {t('Yakında')}
           </span>
         </div>
-        <p className="text-center text-xs text-text-muted">Yeni entegrasyonlar geldikçe burada listelenecek.</p>
+        <p className="text-center text-xs text-text-muted">{t('Yeni entegrasyonlar geldikçe burada listelenecek.')}</p>
       </div>
     </Sheet>
   )
@@ -379,7 +387,7 @@ function IntegrationsSheet({ open, onClose }) {
 
 /* ---------- Seçenekler: İzinler ---------- */
 
-const PERM_LABELS = { granted: 'Verildi', denied: 'Reddedildi', prompt: 'Henüz sorulmadı' }
+const PERM_LABELS = { granted: t('Verildi'), denied: t('Reddedildi'), prompt: t('Henüz sorulmadı') }
 
 function PermissionsSheet({ open, onClose }) {
   const [cam, setCam] = useState(null)
@@ -396,12 +404,12 @@ function PermissionsSheet({ open, onClose }) {
   }, [open])
 
   const rows = [
-    { label: 'Kamera', desc: 'Barkod taramak için kullanılır', state: cam },
-    { label: 'Bildirimler', desc: 'Sabah günaydın mesajı için kullanılır', state: notif },
+    { label: t('Kamera'), desc: t('Barkod taramak için kullanılır'), state: cam },
+    { label: t('Bildirimler'), desc: t('Sabah günaydın mesajı için kullanılır'), state: notif },
   ]
 
   return (
-    <Sheet open={open} onClose={onClose} title="İzinler">
+    <Sheet open={open} onClose={onClose} title={t('İzinler')}>
       <div className="space-y-3 pb-1">
         {rows.map((r) => (
           <div key={r.label} className="flex items-center justify-between rounded-2xl border border-border p-4">
@@ -418,13 +426,12 @@ function PermissionsSheet({ open, onClose }) {
                     : 'bg-white/[0.06] text-text-muted'
               }`}
             >
-              {PERM_LABELS[r.state] ?? 'Bilinmiyor'}
+              {PERM_LABELS[r.state] ?? t('Bilinmiyor')}
             </span>
           </div>
         ))}
         <p className="text-center text-xs leading-relaxed text-text-muted">
-          İzinler ilgili özelliği ilk kullandığında sorulur. Reddettiysen tarayıcı/işletim sistemi ayarlarından
-          açabilirsin.
+          {t('İzinler ilgili özelliği ilk kullandığında sorulur. Reddettiysen tarayıcı/işletim sistemi ayarlarından açabilirsin.')}
         </p>
       </div>
     </Sheet>
@@ -451,46 +458,46 @@ function NotificationsSheet({ open, onClose }) {
     try {
       setState(state === 'on' ? await unsubscribePush() : await subscribePush(user.id))
     } catch {
-      setError('Ayarlanamadı — internet bağlantını kontrol edip tekrar dene.')
+      setError(t('Ayarlanamadı — internet bağlantını kontrol edip tekrar dene.'))
     }
     setBusy(false)
   }
 
   return (
-    <Sheet open={open} onClose={onClose} title="Bildirimler">
+    <Sheet open={open} onClose={onClose} title={t('Bildirimler')}>
       <div className="space-y-4 pb-1">
         <div className="flex items-center gap-3 rounded-2xl border border-border p-4">
           <span className="text-xl">☀️</span>
           <div className="min-w-0 flex-1">
-            <div className="text-sm font-medium text-text">Günaydın mesajı</div>
+            <div className="text-sm font-medium text-text">{t('Günaydın mesajı')}</div>
             <div className="text-xs leading-relaxed text-text-muted">
-              Her sabah 05.00'te, uygulamadaki selamlama "Günaydın"a dönerken tek bir güne başlama mesajı.
+              {t('Her sabah 05.00\'te, uygulamadaki selamlama "Günaydın"a dönerken tek bir güne başlama mesajı.')}
             </div>
           </div>
           {state === 'unsupported' ? (
             <span className="shrink-0 rounded-full bg-white/[0.06] px-2.5 py-1 text-[11px] font-semibold text-text-muted">
-              Desteklenmiyor
+              {t('Desteklenmiyor')}
             </span>
           ) : state === 'denied' ? (
             <span className="shrink-0 rounded-full bg-red-500/15 px-2.5 py-1 text-[11px] font-semibold text-red-400">
-              İzin kapalı
+              {t('İzin kapalı')}
             </span>
           ) : (
             <span className={busy || state === 'loading' ? 'pointer-events-none opacity-50' : ''}>
-              <Toggle on={state === 'on'} label="Günaydın bildirimi" onChange={toggle} />
+              <Toggle on={state === 'on'} label={t('Günaydın bildirimi')} onChange={toggle} />
             </span>
           )}
         </div>
 
         {state === 'denied' && (
           <p className="text-center text-xs text-text-muted">
-            Bildirim izni reddedilmiş — tarayıcı/işletim sistemi ayarlarından Makrio'ya izin verip tekrar dene.
+            {t("Bildirim izni reddedilmiş — tarayıcı/işletim sistemi ayarlarından Makrio'ya izin verip tekrar dene.")}
           </p>
         )}
         {error && <p className="text-center text-xs text-red-400">{error}</p>}
 
         <p className="text-center text-xs text-text-muted">
-          Hepsi bu kadar — seni bildirime boğmayacağız. Başka bildirim yok.
+          {t('Hepsi bu kadar — seni bildirime boğmayacağız. Başka bildirim yok.')}
         </p>
       </div>
     </Sheet>
@@ -502,8 +509,8 @@ function NotificationsSheet({ open, onClose }) {
 const RESET_CATEGORIES = [
   {
     key: 'gunluk',
-    title: 'Günlük Geçmişi',
-    desc: 'Yemek, su ve takviye kayıtların',
+    title: t('Günlük Geçmişi'),
+    desc: t('Yemek, su ve takviye kayıtların'),
     icon: I.journal,
     tables: [
       { name: 'food_logs', col: 'date' },
@@ -513,26 +520,26 @@ const RESET_CATEGORIES = [
   },
   {
     key: 'kilo',
-    title: 'Kilo Geçmişi',
-    desc: 'Tartı kayıtların ve kilo grafiğin',
+    title: t('Kilo Geçmişi'),
+    desc: t('Tartı kayıtların ve kilo grafiğin'),
     icon: I.weight,
     tables: [{ name: 'weight_logs', col: 'logged_at' }],
   },
   {
     key: 'hedef',
-    title: 'Hedef Geçmişi',
-    desc: 'Kalori ve makro hedef kayıtların',
-    warn: 'Aktif hedefin de seçtiğin aralıktaysa silinir; sonrasında hedefini yeniden ayarlaman gerekir.',
+    title: t('Hedef Geçmişi'),
+    desc: t('Kalori ve makro hedef kayıtların'),
+    warn: t('Aktif hedefin de seçtiğin aralıktaysa silinir; sonrasında hedefini yeniden ayarlaman gerekir.'),
     icon: I.target,
     tables: [{ name: 'user_goals', col: 'updated_at' }],
   },
 ]
 
 const PERIODS = [
-  { key: '1ay', label: 'Son 1 ay', months: 1 },
-  { key: '3ay', label: 'Son 3 ay', months: 3 },
-  { key: '6ay', label: 'Son 6 ay', months: 6 },
-  { key: 'tum', label: 'Tümü', months: null },
+  { key: '1ay', label: t('Son 1 ay'), months: 1 },
+  { key: '3ay', label: t('Son 3 ay'), months: 3 },
+  { key: '6ay', label: t('Son 6 ay'), months: 6 },
+  { key: 'tum', label: t('Tümü'), months: null },
 ]
 
 function cutoffFor(months) {
@@ -565,7 +572,7 @@ function ResetSheet({ category, onClose, userId }) {
       }),
     ).then((results) => {
       const err = results.find((r) => r.error)
-      if (err) setError('Kayıt sayısı alınamadı — tekrar dene.')
+      if (err) setError(t('Kayıt sayısı alınamadı — tekrar dene.'))
       else setCount(results.reduce((sum, r) => sum + (r.count ?? 0), 0))
     })
   }, [category, period, userId])
@@ -587,7 +594,7 @@ function ResetSheet({ category, onClose, userId }) {
     )
     setBusy(false)
     if (results.some((r) => r.error)) {
-      setError('Silme tamamlanamadı — internet bağlantını kontrol edip tekrar dene.')
+      setError(t('Silme tamamlanamadı — internet bağlantını kontrol edip tekrar dene.'))
       setArmed(false)
       return
     }
@@ -611,21 +618,21 @@ function ResetSheet({ category, onClose, userId }) {
             <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-accent/15 text-xl text-accent">
               ✓
             </div>
-            <p className="mt-3 font-medium text-text">{done} kayıt silindi</p>
-            <p className="mt-1 text-sm text-text-muted">Bu işlem geri alınamaz; yeni kayıtların etkilenmez.</p>
+            <p className="mt-3 font-medium text-text">{t('{n} kayıt silindi', { n: done })}</p>
+            <p className="mt-1 text-sm text-text-muted">{t('Bu işlem geri alınamaz; yeni kayıtların etkilenmez.')}</p>
             <button
               type="button"
               onClick={close}
               className="btn-chip mt-5 w-full rounded-xl border border-border py-3 font-medium text-text"
             >
-              Tamam
+              {t('Tamam')}
             </button>
           </div>
         ) : (
           <div className="space-y-4 pb-1">
             <p className="text-sm text-text-muted">
-              Hangi aralıktaki kayıtlar silinsin? Bu işlem{' '}
-              <span className="font-semibold text-text">geri alınamaz</span>.
+              {t('Hangi aralıktaki kayıtlar silinsin? Bu işlem')}{' '}
+              <span className="font-semibold text-text">{t('geri alınamaz')}</span>.
             </p>
 
             <div className="grid grid-cols-2 gap-2">
@@ -654,14 +661,15 @@ function ResetSheet({ category, onClose, userId }) {
             {period && (
               <div className="rounded-xl border border-border bg-bg px-4 py-3 text-center text-sm tabular-nums text-text-muted">
                 {count == null && !error ? (
-                  'Kayıtlar sayılıyor…'
+                  t('Kayıtlar sayılıyor…')
                 ) : error ? (
                   <span className="text-red-400">{error}</span>
                 ) : count === 0 ? (
-                  'Bu aralıkta silinecek kayıt yok.'
+                  t('Bu aralıkta silinecek kayıt yok.')
                 ) : (
                   <>
-                    <span className="font-semibold text-text">{count} kayıt</span> kalıcı olarak silinecek
+                    <span className="font-semibold text-text">{t('{n} kayıt', { n: count })}</span>{' '}
+                    {t('kalıcı olarak silinecek')}
                   </>
                 )}
               </div>
@@ -676,10 +684,10 @@ function ResetSheet({ category, onClose, userId }) {
                 armed ? 'bg-red-500 text-white' : 'border border-red-500/40 bg-red-500/10 text-red-400'
               }`}
             >
-              {busy ? 'Siliniyor…' : armed ? 'Eminim — kalıcı olarak sil' : 'Sil'}
+              {busy ? t('Siliniyor…') : armed ? t('Eminim — kalıcı olarak sil') : t('Sil')}
             </motion.button>
             {armed && !busy && (
-              <p className="text-center text-xs text-text-muted">Onaylamak için tekrar dokun. Vazgeçmek için kapat.</p>
+              <p className="text-center text-xs text-text-muted">{t('Onaylamak için tekrar dokun. Vazgeçmek için kapat.')}</p>
             )}
           </div>
         ))}
@@ -690,9 +698,14 @@ function ResetSheet({ category, onClose, userId }) {
 /* ---------- sayfa ---------- */
 
 const FONT_SIZES = [
-  { key: 'kucuk', label: 'Küçük' },
-  { key: 'normal', label: 'Normal' },
-  { key: 'buyuk', label: 'Büyük' },
+  { key: 'kucuk', label: t('Küçük') },
+  { key: 'normal', label: t('Normal') },
+  { key: 'buyuk', label: t('Büyük') },
+]
+
+const LANGS = [
+  { key: 'tr', label: 'Türkçe' },
+  { key: 'en', label: 'English' },
 ]
 
 export default function Settings() {
@@ -710,38 +723,67 @@ export default function Settings() {
     refreshProfile()
   }
 
+  // Dil değişimi: tercihi kaydet, sonra tam yenile — modül seviyesindeki
+  // metinler (sözlük t() ile modül init'te çözülür) ancak böyle tazelenir.
+  async function changeLanguage(lang) {
+    if (lang === getLocale()) return
+    await supabase.rpc('update_preferences', { p_preferences: { ...prefs, language: lang } })
+    setLocale(lang)
+    window.location.reload()
+  }
+
   return (
     <div className="mx-auto max-w-md space-y-5 px-4 py-6">
       <div className="flex items-center gap-3">
         <Link
           to="/profil"
-          aria-label="Profile dön"
+          aria-label={t('Profile dön')}
           className="btn-icon flex h-9 w-9 items-center justify-center rounded-full border border-border text-text-muted"
         >
           ‹
         </Link>
-        <h1 className="text-2xl font-semibold text-text">Ayarlar</h1>
+        <h1 className="text-2xl font-semibold text-text">{t('Ayarlar')}</h1>
       </div>
 
-      <Section title="Genel">
-        <Row first icon={I.account} title="Hesap" desc="Kişisel bilgiler, e-posta, şifre" onClick={() => setSheet('hesap')} />
+      <Section title={t('Genel')}>
+        <Row first icon={I.account} title={t('Hesap')} desc={t('Kişisel bilgiler, e-posta, şifre')} onClick={() => setSheet('hesap')} />
         <Row
           icon={I.subscription}
-          title="Abonelik"
-          desc={isGold ? 'Makrio Gold — aktif' : 'Makrio Gold'}
+          title={t('Abonelik')}
+          desc={isGold ? t('Makrio Gold — aktif') : 'Makrio Gold'}
           onClick={() => setSheet('abonelik')}
         />
-        <Row icon={I.integrations} title="Entegrasyonlar" desc="Apple Health yakında" onClick={() => setSheet('entegrasyon')} />
+        <Row icon={I.integrations} title={t('Entegrasyonlar')} desc={t('Apple Health yakında')} onClick={() => setSheet('entegrasyon')} />
       </Section>
 
-      <Section title="Seçenekler">
-        <Row first icon={I.permissions} title="İzinler" desc="Kamera ve bildirim izinleri" onClick={() => setSheet('izinler')} />
-        <Row icon={I.bell} title="Bildirimler" desc="Sadece günaydın mesajı" onClick={() => setSheet('bildirimler')} />
+      <Section title={t('Seçenekler')}>
+        <Row first icon={I.permissions} title={t('İzinler')} desc={t('Kamera ve bildirim izinleri')} onClick={() => setSheet('izinler')} />
+        <Row icon={I.bell} title={t('Bildirimler')} desc={t('Sadece günaydın mesajı')} onClick={() => setSheet('bildirimler')} />
+        <div className="flex items-center gap-3 border-t border-border px-4 py-3.5">
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/[0.04] text-text-muted">
+            {I.globe}
+          </span>
+          <span className="min-w-0 flex-1 text-sm font-medium text-text">{t('Dil')}</span>
+          <div className="flex gap-1 rounded-full border border-border p-0.5">
+            {LANGS.map((l) => (
+              <button
+                key={l.key}
+                type="button"
+                onClick={() => changeLanguage(l.key)}
+                className={`rounded-full px-2.5 py-1 text-xs font-medium ${
+                  getLocale() === l.key ? 'bg-accent text-black' : 'text-text-muted'
+                }`}
+              >
+                {l.label}
+              </button>
+            ))}
+          </div>
+        </div>
         <div className="flex items-center gap-3 border-t border-border px-4 py-3.5">
           <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/[0.04] text-text-muted">
             {I.fontSize}
           </span>
-          <span className="min-w-0 flex-1 text-sm font-medium text-text">Yazı Büyüklüğü</span>
+          <span className="min-w-0 flex-1 text-sm font-medium text-text">{t('Yazı Büyüklüğü')}</span>
           <div className="flex gap-1 rounded-full border border-border p-0.5">
             {FONT_SIZES.map((f) => (
               <button
@@ -759,12 +801,12 @@ export default function Settings() {
         </div>
         <Row
           icon={I.star}
-          title="İlerleme Sayfası"
-          desc={progressOff ? 'Kapalı — yalnızca takibe odaklan' : 'Açık — seri, görevler ve ödüller'}
+          title={t('İlerleme Sayfası')}
+          desc={progressOff ? t('Kapalı — yalnızca takibe odaklan') : t('Açık — seri, görevler ve ödüller')}
           trailing={
             <Toggle
               on={!progressOff}
-              label="İlerleme sayfasını aç/kapat"
+              label={t('İlerleme sayfasını aç/kapat')}
               onChange={() => savePref({ progressTab: progressOff ? 'on' : 'off' })}
             />
           }
@@ -772,8 +814,8 @@ export default function Settings() {
       </Section>
 
       <Section
-        title="Veri Yönetimi"
-        footer="Silme işlemleri yalnızca senin hesabındaki kayıtları etkiler ve geri alınamaz."
+        title={t('Veri Yönetimi')}
+        footer={t('Silme işlemleri yalnızca senin hesabındaki kayıtları etkiler ve geri alınamaz.')}
       >
         {RESET_CATEGORIES.map((c, i) => (
           <Row
@@ -787,7 +829,7 @@ export default function Settings() {
         ))}
       </Section>
 
-      <Section title="Diğer">
+      <Section title={t('Diğer')}>
         {Object.entries(LEGAL_PAGES).map(([slug, page], i) => (
           <Link
             key={slug}

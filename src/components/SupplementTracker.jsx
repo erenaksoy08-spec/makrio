@@ -5,6 +5,7 @@ import { useAuth } from '../contexts/AuthContext'
 import { todayStr } from '../lib/date'
 import Sheet from './Sheet'
 import { SUPPLEMENT_CATALOG, SUPPLEMENT_CATEGORIES, normalizeTr } from '../lib/supplementCatalog'
+import { t } from '../lib/i18n'
 
 const SUPP_GREEN = '#6FCF97'
 
@@ -252,8 +253,8 @@ export default function SupplementTracker() {
             💊
           </span>
           <div>
-            <div className="text-[15px] font-semibold text-text">Takviyeler</div>
-            <div className="text-[10px] uppercase tracking-[0.14em] text-text-muted">Günlük rutin</div>
+            <div className="text-[15px] font-semibold text-text">{t('Takviyeler')}</div>
+            <div className="text-[10px] uppercase tracking-[0.14em] text-text-muted">{t('Günlük rutin')}</div>
           </div>
         </div>
         {supps.length > 0 && (
@@ -265,7 +266,7 @@ export default function SupplementTracker() {
                 : { borderColor: 'rgba(255,255,255,0.08)', backgroundColor: 'rgba(255,255,255,0.04)', color: 'var(--color-text-muted)' }
             }
           >
-            {allDone ? '✓ Tamamlandı' : `${takenCount}/${supps.length}`}
+            {allDone ? t('✓ Tamamlandı') : `${takenCount}/${supps.length}`}
           </span>
         )}
       </div>
@@ -388,7 +389,7 @@ export default function SupplementTracker() {
             className="btn-chip mt-3 flex w-full items-center justify-center gap-1.5 rounded-2xl border border-dashed py-2.5 text-sm text-text-muted transition-colors hover:text-text"
             style={{ borderColor: `${SUPP_GREEN}30` }}
           >
-            <span style={{ color: SUPP_GREEN }}>+</span> Takviye ekle
+            <span style={{ color: SUPP_GREEN }}>+</span> {t('Takviye ekle')}
           </button>
         </>
       )}
@@ -400,7 +401,7 @@ export default function SupplementTracker() {
           setPickerOpen(false)
           setPicked(null)
         }}
-        title={picked ? (picked.editing ? 'Takviyeyi Düzenle' : 'Detaylar') : 'Takviye Seç'}
+        title={picked ? (picked.editing ? t('Takviyeyi Düzenle') : t('Detaylar')) : t('Takviye Seç')}
       >
         {picked ? (
           <div className="space-y-4">
@@ -428,7 +429,7 @@ export default function SupplementTracker() {
                     <BrandChip brand={picked.catalog.brand} />
                   </div>
                   <div className="text-[10px] uppercase tracking-[0.14em] text-text-muted">
-                    {picked.catalog.cat ?? 'Takviye'}
+                    {picked.catalog.cat ?? t('Takviye')}
                   </div>
                 </div>
               </div>
@@ -439,8 +440,8 @@ export default function SupplementTracker() {
 
             <div className="flex items-center justify-between rounded-2xl border border-white/[0.07] bg-white/[0.02] px-4 py-3">
               <div>
-                <div className="text-sm font-medium text-text">Alma saati</div>
-                <div className="text-[11px] text-text-muted">Opsiyonel — rutinin için</div>
+                <div className="text-sm font-medium text-text">{t('Alma saati')}</div>
+                <div className="text-[11px] text-text-muted">{t('Opsiyonel — rutinin için')}</div>
               </div>
               <div className="flex items-center gap-2">
                 <input
@@ -458,13 +459,13 @@ export default function SupplementTracker() {
             </div>
 
             <div className="rounded-2xl border border-white/[0.07] bg-white/[0.02] px-4 py-3">
-              <div className="text-sm font-medium text-text">Günlük not</div>
-              <div className="text-[11px] text-text-muted">Miktar ve detaylar — her gün aynı görünür</div>
+              <div className="text-sm font-medium text-text">{t('Günlük not')}</div>
+              <div className="text-[11px] text-text-muted">{t('Miktar ve detaylar — her gün aynı görünür')}</div>
               <textarea
                 rows={2}
                 value={formNote}
                 onChange={(e) => setFormNote(e.target.value)}
-                placeholder="örn. 2 kapsül, yemekten sonra"
+                placeholder={t('örn. 2 kapsül, yemekten sonra')}
                 className="mt-2 w-full resize-none rounded-xl border border-white/[0.09] bg-bg px-3 py-2 text-sm text-text outline-none placeholder:text-text-muted focus:border-white/25"
               />
             </div>
@@ -486,7 +487,7 @@ export default function SupplementTracker() {
                   background: 'linear-gradient(115deg, transparent 40%, rgba(255,255,255,0.4) 50%, transparent 60%)',
                 }}
               />
-              <span className="relative">{saving ? 'Kaydediliyor...' : picked.editing ? 'Kaydet' : 'Listeme ekle'}</span>
+              <span className="relative">{saving ? t('Kaydediliyor...') : picked.editing ? t('Kaydet') : t('Listeme ekle')}</span>
             </motion.button>
 
             <div className="flex items-center justify-center">
@@ -528,7 +529,7 @@ export default function SupplementTracker() {
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Takviye ara... (örn. magnezyum)"
+                placeholder={t('Takviye ara... (örn. magnezyum)')}
                 className="w-full rounded-2xl border border-white/[0.09] bg-white/[0.04] py-3 pl-10 pr-3.5 text-[15px] text-text outline-none transition-colors placeholder:text-text-muted focus:border-white/25"
               />
             </div>
@@ -589,7 +590,7 @@ export default function SupplementTracker() {
                 </div>
               ))}
               {grouped.length === 0 && (
-                <p className="py-6 text-center text-sm text-text-muted">Katalogda bulunamadı.</p>
+                <p className="py-6 text-center text-sm text-text-muted">{t('Katalogda bulunamadı.')}</p>
               )}
             </div>
           </div>

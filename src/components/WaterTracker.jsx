@@ -4,6 +4,7 @@ import SmileyWater, { DropletBuddy } from './SmileyWater'
 import usePixelTheme from '../hooks/usePixelTheme'
 import { useAuth } from '../contexts/AuthContext'
 import { GLASS_ML, BOTTLE_ML, waterLimit } from '../lib/water'
+import { t, getIntlLocale } from '../lib/i18n'
 
 const WATER_BLUE = '#29B6F6'
 const SHAKER_ML = 1500
@@ -24,7 +25,7 @@ export default function WaterTracker({ consumed_ml, goal_ml, weightKg, onAdd, on
     ? Math.min(10, Math.max(1, Math.ceil(goal_ml / SHAKER_ML)))
     : Math.min(16, Math.max(4, Math.round(goal_ml / GLASS_ML))) || 8
   const glassSize = gym ? SHAKER_ML : Math.round(goal_ml / numGlasses) || GLASS_ML
-  const unitLabel = gym ? 'matara' : 'bardak'
+  const unitLabel = gym ? t('matara') : t('bardak')
   const inGoal = Math.min(consumed_ml, goal_ml)
   // Son kabın kapasitesi hedefin kalanı kadar (böylece hedefte tam dolu görünür).
   const unitFraction = (i) => {
@@ -44,7 +45,7 @@ export default function WaterTracker({ consumed_ml, goal_ml, weightKg, onAdd, on
   return (
     <div className="space-y-5 rounded-3xl border border-white/[0.06] bg-surface p-5">
       <div className="flex items-center justify-between">
-        <span className="text-lg text-text-muted">Su</span>
+        <span className="text-lg text-text-muted">{t('Su')}</span>
         <div className="flex items-center gap-2">
           <button
             type="button"
@@ -81,10 +82,10 @@ export default function WaterTracker({ consumed_ml, goal_ml, weightKg, onAdd, on
           <span className="text-lg font-normal text-text-muted">
             {smiley
               ? overLimit
-                ? 'bugünlük yeter 💙'
+                ? t('bugünlük yeter 💙')
                 : consumed_ml >= goal_ml
-                  ? 'hedef doldu! 🎉'
-                  : 'hedef'
+                  ? t('hedef doldu! 🎉')
+                  : t('hedef')
               : `/ ${numGlasses} ${unitLabel}`}
           </span>
         </div>
@@ -93,7 +94,7 @@ export default function WaterTracker({ consumed_ml, goal_ml, weightKg, onAdd, on
           {overflow > 0 && (
             <span className="font-medium" style={{ color: WATER_BLUE }}>
               {' '}
-              · hedef üstü +{(overflow / 1000).toFixed(1).replace('.', ',')} L
+              · {t('hedef üstü')} +{(overflow / 1000).toLocaleString(getIntlLocale(), { minimumFractionDigits: 1, maximumFractionDigits: 1 })} L
             </span>
           )}
         </div>
@@ -188,17 +189,17 @@ export default function WaterTracker({ consumed_ml, goal_ml, weightKg, onAdd, on
               </motion.span>
 
               <div className="min-w-0">
-                <div className="text-[13px] font-semibold text-text">Güvenli su sınırını aştın</div>
+                <div className="text-[13px] font-semibold text-text">{t('Güvenli su sınırını aştın')}</div>
                 <p className="mt-1 text-xs leading-relaxed text-text-muted">
-                  Bugün{' '}
+                  {t('Bugün')}{' '}
                   <span className="font-semibold tabular-nums text-text">
-                    {(consumed_ml / 1000).toFixed(1).replace('.', ',')} L
+                    {(consumed_ml / 1000).toLocaleString(getIntlLocale(), { minimumFractionDigits: 1, maximumFractionDigits: 1 })} L
                   </span>{' '}
-                  içtin — kilona göre önerilen üst sınır{' '}
+                  {t('içtin — kilona göre önerilen üst sınır')}{' '}
                   <span className="font-semibold tabular-nums" style={{ color: '#F2994A' }}>
-                    {(limit / 1000).toFixed(1).replace('.', ',')} L
+                    {(limit / 1000).toLocaleString(getIntlLocale(), { minimumFractionDigits: 1, maximumFractionDigits: 1 })} L
                   </span>
-                  . Fazlası sodyum dengeni bozabilir; bugünlük yavaşlamak iyi olur.
+                  . {t('Fazlası sodyum dengeni bozabilir; bugünlük yavaşlamak iyi olur.')}
                 </p>
               </div>
             </div>

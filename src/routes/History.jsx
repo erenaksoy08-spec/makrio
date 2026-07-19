@@ -8,6 +8,7 @@ import WeeklyBarChart from '../components/WeeklyBarChart'
 import { Skeleton } from '../components/SkeletonLoader'
 import MealPeriodIcon from '../components/MealPeriodIcon'
 import { scoreDay, scoreColor, fmtScore } from '../lib/dayScore'
+import { t } from '../lib/i18n'
 
 export default function History() {
   const { user } = useAuth()
@@ -126,12 +127,12 @@ export default function History() {
     <div className="mx-auto max-w-md space-y-4 px-4 py-6">
       <div className="flex items-end justify-between">
         <div>
-          <h1 className="text-2xl font-semibold text-text">Geçmiş</h1>
-          <div className="text-sm text-text-muted">Son 7 gün</div>
+          <h1 className="text-2xl font-semibold text-text">{t('Geçmiş')}</h1>
+          <div className="text-sm text-text-muted">{t('Son 7 gün')}</div>
         </div>
         <div className="text-right">
           <div className="text-xl font-bold tabular-nums text-text">{dailyAvg}</div>
-          <div className="text-[11px] text-text-muted">günlük ort. kcal</div>
+          <div className="text-[11px] text-text-muted">{t('günlük ort. kcal')}</div>
         </div>
       </div>
 
@@ -145,9 +146,9 @@ export default function History() {
         />
         <div className="mt-2 grid grid-cols-3 gap-2 border-t border-border pt-3">
           {[
-            { label: 'Protein', color: '#FF8A5B', value: selMacros.protein_g },
-            { label: 'Yağ', color: '#F2C94C', value: selMacros.fat_g },
-            { label: 'Karb', color: '#6FCF97', value: selMacros.carbs_g },
+            { label: t('Protein'), color: '#FF8A5B', value: selMacros.protein_g },
+            { label: t('Yağ'), color: '#F2C94C', value: selMacros.fat_g },
+            { label: t('Karb'), color: '#6FCF97', value: selMacros.carbs_g },
           ].map((l) => (
             <div
               key={l.label}
@@ -199,7 +200,7 @@ export default function History() {
           <div className="min-w-0">
             <div className="flex items-center gap-2">
               <span className="text-base font-semibold text-text">
-                {selectedDay === today ? 'Bugün' : formatDayLabel(selectedDay)}
+                {selectedDay === today ? t('Bugün') : formatDayLabel(selectedDay)}
               </span>
               {scores[selectedDay] && (
                 <span
@@ -220,7 +221,7 @@ export default function History() {
                 style={{ color: goalDiff > 0 ? '#EB5757' : '#6FCF97' }}
               >
                 {goalDiff > 0 ? '+' : ''}
-                {goalDiff} kcal hedef
+                {goalDiff} {t('kcal hedef')}
               </div>
             )}
           </div>
@@ -229,7 +230,7 @@ export default function History() {
         {suppTotal > 0 && (
           <div className="mt-3 flex items-center gap-2 rounded-xl bg-white/[0.03] px-3 py-2">
             <span>💊</span>
-            <span className="text-sm text-text-muted">Takviyeler</span>
+            <span className="text-sm text-text-muted">{t('Takviyeler')}</span>
             <span className="ml-auto text-sm font-semibold tabular-nums text-text">
               {suppByDay[selectedDay] ?? 0}/{suppTotal}
             </span>
@@ -237,7 +238,7 @@ export default function History() {
         )}
 
         {selectedLogs.length === 0 ? (
-          <p className="mt-4 text-center text-sm text-text-muted">Bu güne ait kayıt yok.</p>
+          <p className="mt-4 text-center text-sm text-text-muted">{t('Bu güne ait kayıt yok.')}</p>
         ) : (
           <ul className="mt-3 space-y-1.5 border-t border-border pt-3">
             {selectedLogs.map((log, i) => {
@@ -268,7 +269,7 @@ export default function History() {
                   <div className="shrink-0 text-right">
                     <div className="text-sm font-medium tabular-nums text-text">{Math.round(log.calories)} kcal</div>
                     <div className="text-xs tabular-nums text-text-muted">
-                      {Math.round(log.protein_g ?? 0)}P {Math.round(log.fat_g ?? 0)}Y {Math.round(log.carbs_g ?? 0)}K
+                      {Math.round(log.protein_g ?? 0)}{t('P')} {Math.round(log.fat_g ?? 0)}{t('Y')} {Math.round(log.carbs_g ?? 0)}{t('K')}
                     </div>
                   </div>
                 </motion.li>
@@ -280,7 +281,7 @@ export default function History() {
 
       {grandTotal === 0 && (
         <p className="px-1 text-center text-sm text-text-muted">
-          Son 7 günde kayıt yok. İlk kaydını ekleyerek başla.
+          {t('Son 7 günde kayıt yok. İlk kaydını ekleyerek başla.')}
         </p>
       )}
     </div>

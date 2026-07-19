@@ -4,23 +4,24 @@ import { motion } from 'framer-motion'
 import { purchasesAvailable } from '../lib/purchases'
 import Paywall from './Paywall'
 import GoldPricing from './GoldPricing'
+import { t } from '../lib/i18n'
 
 const GOLD = '#F5C84B'
 const GOLD_DEEP = '#E0A93B'
 
 // Hangi kapıdan gelindiyse ona özel mesaj (varsayılan: kayıt limiti).
 const FEATURE_TEXTS = {
-  limit: { headline: 'Bugünün ücretsiz kayıtları doldu', sub: 'Günde 3 kayıt ücretsiz. Gold ile sınır yok — takibin hiç durmasın.' },
-  league: { headline: "Arkadaş Ligi Gold'a özel", sub: 'Arkadaşlarınla yarışmak ve haftalık panoya girmek için Gold gerekiyor.' },
-  store: { headline: "Tasarım Mağazası Gold'a özel", sub: 'Temaları, halkaları ve tasarımları açmak için Gold gerekiyor.' },
+  limit: { headline: t('Bugünün ücretsiz kayıtları doldu'), sub: t('Günde 3 kayıt ücretsiz. Gold ile sınır yok — takibin hiç durmasın.') },
+  league: { headline: t("Arkadaş Ligi Gold'a özel"), sub: t('Arkadaşlarınla yarışmak ve haftalık panoya girmek için Gold gerekiyor.') },
+  store: { headline: t("Tasarım Mağazası Gold'a özel"), sub: t('Temaları, halkaları ve tasarımları açmak için Gold gerekiyor.') },
 }
 
 const PERKS = [
-  { icon: '♾️', text: 'Sınırsız yemek kaydı' },
-  { icon: '🏆', text: "Arkadaş Ligi'ne erişim" },
-  { icon: '🎁', text: 'Özel ilerleme ödülleri' },
-  { icon: '🛍️', text: "Uygulama Tasarım Mağazası'na erişim" },
-  { icon: '🚫', text: 'Reklamsız deneyim' },
+  { icon: '♾️', text: t('Sınırsız yemek kaydı') },
+  { icon: '🏆', text: t("Arkadaş Ligi'ne erişim") },
+  { icon: '🎁', text: t('Özel ilerleme ödülleri') },
+  { icon: '🛍️', text: t("Uygulama Tasarım Mağazası'na erişim") },
+  { icon: '🚫', text: t('Reklamsız deneyim') },
 ]
 
 // Gold kapısı — ceza değil, davet gibi hissettirir. `feature` hangi kapıdan
@@ -132,7 +133,7 @@ export default function GoldGate({ onClose, feature = 'limit' }) {
                 background: 'linear-gradient(115deg, transparent 40%, rgba(255,255,255,0.45) 50%, transparent 60%)',
               }}
             />
-            <span className="relative">👑 Gold'a Yükselt</span>
+            <span className="relative">👑 {t("Gold'a Yükselt")}</span>
           </button>
         ) : (
           <Link
@@ -149,13 +150,13 @@ export default function GoldGate({ onClose, feature = 'limit' }) {
                 background: 'linear-gradient(115deg, transparent 40%, rgba(255,255,255,0.45) 50%, transparent 60%)',
               }}
             />
-            <span className="relative">👑 Gold'a Yükselt</span>
+            <span className="relative">👑 {t("Gold'a Yükselt")}</span>
           </Link>
         )}
         <Paywall open={paywall} onClose={() => setPaywall(false)} feature={feature} />
 
         <button type="button" onClick={onClose} className="btn-chip mt-2.5 px-4 py-1.5 text-xs" style={{ color: '#B7AC93' }}>
-          Şimdi değil
+          {t('Şimdi değil')}
         </button>
       </motion.div>
     </motion.div>

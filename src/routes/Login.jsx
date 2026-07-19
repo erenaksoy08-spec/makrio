@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { supabase } from '../lib/supabase'
+import { t } from '../lib/i18n'
 
 function BrandMark() {
   return (
@@ -92,8 +93,8 @@ export default function Login() {
       // Ağ hatasını kimlik hatası gibi etiketleme — kullanıcı şifresinden şüphelenmesin.
       setError(
         signInError.message?.includes('Invalid login credentials')
-          ? 'E-posta veya şifre hatalı.'
-          : 'Bağlanılamadı — internet bağlantını kontrol edip tekrar dene.',
+          ? t('E-posta veya şifre hatalı.')
+          : t('Bağlanılamadı — internet bağlantını kontrol edip tekrar dene.'),
       )
       return
     }
@@ -118,7 +119,7 @@ export default function Login() {
         >
           <BrandMark />
           <h1 className="mt-4 text-3xl font-bold tracking-tight text-text">Makrio</h1>
-          <p className="mt-1 text-sm text-text-muted">Kalori ve makro takibinin akıllı hali</p>
+          <p className="mt-1 text-sm text-text-muted">{t('Kalori ve makro takibinin akıllı hali')}</p>
         </motion.div>
 
         {/* kart */}
@@ -133,7 +134,7 @@ export default function Login() {
           <Field
             id="email"
             type="email"
-            label="E-posta"
+            label={t('E-posta')}
             autoComplete="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -142,7 +143,7 @@ export default function Login() {
           <Field
             id="password"
             type="password"
-            label="Şifre"
+            label={t('Şifre')}
             autoComplete="current-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -158,12 +159,12 @@ export default function Login() {
             className="btn-primary w-full rounded-2xl bg-white py-3.5 font-semibold text-black disabled:opacity-50"
             style={{ boxShadow: '0 8px 24px rgba(0,0,0,0.45), inset 0 -1px 0 rgba(0,0,0,0.12)' }}
           >
-            {loading ? 'Giriş yapılıyor...' : 'Giriş Yap'}
+            {loading ? t('Giriş yapılıyor...') : t('Giriş Yap')}
           </motion.button>
 
           <div className="pt-1 text-center">
             <Link to="/sifre-sifirla" className="text-xs text-text-muted hover:text-accent">
-              Şifremi unuttum
+              {t('Şifremi unuttum')}
             </Link>
           </div>
         </motion.form>
@@ -175,9 +176,9 @@ export default function Login() {
           transition={{ delay: 0.15, duration: 0.35 }}
           className="mt-6 text-center text-sm text-text-muted"
         >
-          Makrio&apos;da yeni misin?{' '}
+          {t("Makrio'da yeni misin?")}{' '}
           <Link to="/hosgeldin" className="font-semibold text-accent">
-            Hemen başla →
+            {t('Hemen başla')} →
           </Link>
         </motion.div>
       </div>

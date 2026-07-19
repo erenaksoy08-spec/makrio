@@ -1,8 +1,10 @@
+import { t, getIntlLocale } from './i18n'
+
 export const MEAL_TYPES = [
-  { value: 'morning', label: 'Sabah', color: '#FDBA74' },
-  { value: 'noon', label: 'Öğle', color: '#FACC15' },
-  { value: 'evening', label: 'Akşam', color: '#FB7185' },
-  { value: 'night', label: 'Gece', color: '#818CF8' },
+  { value: 'morning', label: t('Sabah'), color: '#FDBA74' },
+  { value: 'noon', label: t('Öğle'), color: '#FACC15' },
+  { value: 'evening', label: t('Akşam'), color: '#FB7185' },
+  { value: 'night', label: t('Gece'), color: '#818CF8' },
 ]
 
 const LEGACY_TO_NEW = { breakfast: 'morning', lunch: 'noon', dinner: 'evening', snack: 'night' }
@@ -41,6 +43,6 @@ export function logDisplayTime(mealType, createdAt) {
   const h = d.getHours()
   const inPeriod = start < end ? h >= start && h < end : h >= start || h < end
   return inPeriod
-    ? d.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })
+    ? d.toLocaleTimeString(getIntlLocale(), { hour: '2-digit', minute: '2-digit', hourCycle: 'h23' })
     : `${String(start).padStart(2, '0')}:00`
 }

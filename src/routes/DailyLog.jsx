@@ -23,6 +23,7 @@ import { isGold, FREE_LOG_LIMIT } from '../lib/gold'
 import { scoreFood } from '../lib/foodScore'
 import FoodReportCard from '../components/FoodReportCard'
 import KarneSheet from '../components/KarneSheet'
+import { t } from '../lib/i18n'
 
 // Aktif ("Şimdi") öğün ikonu için gün zamanına özel renk.
 const NOW_COLORS = {
@@ -66,7 +67,7 @@ function QuickAddButton({ state, onClick }) {
       type="button"
       onClick={onClick}
       disabled={state === 'saving'}
-      aria-label="Hızlı ekle"
+      aria-label={t('Hızlı ekle')}
       className={`btn-icon relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full border text-lg transition-colors ${
         state === 'done' ? 'border-white bg-white text-black' : 'border-white/[0.12] text-text'
       }`}
@@ -647,7 +648,7 @@ export default function DailyLog() {
 
       setSubmitting(false)
       if (updateError) {
-        setError('Güncellenemedi, tekrar dene.')
+        setError(t('Güncellenemedi, tekrar dene.'))
         return
       }
       setSaved(true)
@@ -699,7 +700,7 @@ export default function DailyLog() {
 
     const { name_tr, calories_per_100g, protein_per_100g, carbs_per_100g, fat_per_100g } = customForm
     if (!name_tr || !calories_per_100g) {
-      setCustomError('İsim ve kalori zorunlu.')
+      setCustomError(t('İsim ve kalori zorunlu.'))
       return
     }
 
@@ -777,9 +778,9 @@ export default function DailyLog() {
 
   if (creatingCustom) {
     const macroInputs = [
-      { key: 'protein_per_100g', label: 'Protein', color: '#FF8A5B' },
-      { key: 'fat_per_100g', label: 'Yağ', color: '#F2C94C' },
-      { key: 'carbs_per_100g', label: 'Karb', color: '#6FCF97' },
+      { key: 'protein_per_100g', label: t('Protein'), color: '#FF8A5B' },
+      { key: 'fat_per_100g', label: t('Yağ'), color: '#F2C94C' },
+      { key: 'carbs_per_100g', label: t('Karb'), color: '#6FCF97' },
     ]
     const macroKcal = Math.round(
       (Number(customForm.protein_per_100g) || 0) * 4 +
@@ -806,12 +807,12 @@ export default function DailyLog() {
 
         <div>
           <h1 className="text-2xl font-semibold tracking-tight text-text">
-            {customBarcode ? 'Yeni Ürün Tanımla' : 'Özel Yemek Ekle'}
+            {customBarcode ? t('Yeni Ürün Tanımla') : t('Özel Yemek Ekle')}
           </h1>
           <p className="mt-1 text-sm text-text-muted">
             {customBarcode
-              ? 'Etiketteki değerleri gir — bu ürünü ilk sen tanımlıyorsun.'
-              : 'Bir kez kaydet, sonra aramadan tek dokunuşla ekle.'}
+              ? t('Etiketteki değerleri gir — bu ürünü ilk sen tanımlıyorsun.')
+              : t('Bir kez kaydet, sonra aramadan tek dokunuşla ekle.')}
           </p>
         </div>
 
@@ -838,7 +839,7 @@ export default function DailyLog() {
             <span className="text-sm text-text-muted">kcal</span>
           </div>
           <div className={`mt-1.5 truncate text-sm font-medium ${customForm.name_tr ? 'text-text' : 'text-text-muted opacity-60'}`}>
-            {customForm.name_tr || 'Yemeğin adı'}
+            {customForm.name_tr || t('Yemeğin adı')}
             {customBrand.trim() && <span className="text-text-muted"> · {customBrand.trim()}</span>}
           </div>
           <div className="mt-3 flex items-center justify-center gap-2">
@@ -881,7 +882,7 @@ export default function DailyLog() {
               <input
                 type="text"
                 autoFocus={!customForm.name_tr}
-                placeholder="örn. Annemin böreği"
+                placeholder={t('örn. Annemin böreği')}
                 value={customForm.name_tr}
                 onChange={(e) => setCustomForm((f) => ({ ...f, name_tr: e.target.value }))}
                 className="min-w-0 flex-1 bg-transparent text-[15px] text-text outline-none placeholder:text-text-muted"
@@ -893,7 +894,7 @@ export default function DailyLog() {
                 <span className="w-14 shrink-0 text-xs font-medium text-text-muted">Marka</span>
                 <input
                   type="text"
-                  placeholder="opsiyonel — örn. Ülker"
+                  placeholder={t('opsiyonel — örn. Ülker')}
                   value={customBrand}
                   onChange={(e) => setCustomBrand(e.target.value)}
                   className="min-w-0 flex-1 bg-transparent text-[15px] text-text outline-none placeholder:text-text-muted"
@@ -981,7 +982,7 @@ export default function DailyLog() {
             className="btn-primary w-full rounded-2xl bg-white py-3.5 font-semibold text-black disabled:opacity-50"
             style={{ boxShadow: '0 8px 24px rgba(0,0,0,0.45), inset 0 -1px 0 rgba(0,0,0,0.12)' }}
           >
-            {customSaving ? 'Kaydediliyor...' : 'Kaydet ve Porsiyon Seç'}
+            {customSaving ? t('Kaydediliyor...') : t('Kaydet ve Porsiyon Seç')}
           </motion.button>
         </form>
       </motion.div>
@@ -991,9 +992,9 @@ export default function DailyLog() {
   if (view === 'detail' && selectedFood) {
     const presets = [50, 100, 150, 200, 250]
     const macroFields = [
-      { key: 'protein_g', label: 'Protein', color: '#FF8A5B' },
-      { key: 'fat_g', label: 'Yağ', color: '#F2C94C' },
-      { key: 'carbs_g', label: 'Karb', color: '#6FCF97' },
+      { key: 'protein_g', label: t('Protein'), color: '#FF8A5B' },
+      { key: 'fat_g', label: t('Yağ'), color: '#F2C94C' },
+      { key: 'carbs_g', label: t('Karb'), color: '#6FCF97' },
     ]
     const amountNum = Number(amount) || 0
     const step = (delta) => setAmount((prev) => String(Math.max(0, Math.min(2000, (Number(prev) || 0) + delta))))
@@ -1135,7 +1136,7 @@ export default function DailyLog() {
             {saved ? (
               'Kaydedildi ✓'
             ) : submitting ? (
-              editingId ? 'Güncelleniyor...' : 'Ekleniyor...'
+              editingId ? t('Güncelleniyor...') : t('Ekleniyor...')
             ) : (
               <>
                 <span>{editingId ? 'Kaydet' : 'Ekle'}</span>
@@ -1164,7 +1165,7 @@ export default function DailyLog() {
           <div className="flex items-center justify-between">
             <BackButton onClick={() => { setAddingIngredient(false); setQuery('') }} label="Tarif" />
             <span className="rounded-full border border-white/[0.08] bg-white/[0.04] px-3 py-1 text-[13px] text-text-muted">
-              Malzeme ekle
+              {t('Malzeme ekle')}
             </span>
           </div>
 
@@ -1176,7 +1177,7 @@ export default function DailyLog() {
             <input
               type="text"
               autoFocus
-              placeholder="Malzeme ara..."
+              placeholder={t('Malzeme ara...')}
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               className="w-full bg-transparent py-3.5 text-[15px] text-text outline-none placeholder:text-text-muted"
@@ -1188,7 +1189,7 @@ export default function DailyLog() {
 
           <div className="space-y-2">
             <span className="px-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-text-muted">
-              {searching ? `"${query.trim()}" sonuçları` : 'Son kullanılanlar'}
+              {searching ? t('"{q}" sonuçları', { q: query.trim() }) : t('Son kullanılanlar')}
             </span>
             {showSkeleton && (
               <>
@@ -1198,7 +1199,7 @@ export default function DailyLog() {
             )}
             {!showSkeleton && results.length === 0 && !loading && (
               <div className="rounded-3xl border border-white/[0.06] bg-surface px-5 py-8 text-center text-sm text-text-muted">
-                {searching ? `"${query.trim()}" bulunamadı` : 'Aramaya başla'}
+                {searching ? t('"{q}" bulunamadı', { q: query.trim() }) : t('Aramaya başla')}
               </div>
             )}
             {!showSkeleton &&
@@ -1216,7 +1217,7 @@ export default function DailyLog() {
                   <span className="min-w-0 flex-1">
                     <span className="block truncate text-[15px] text-text">{highlightMatch(food.name_tr, query)}</span>
                     <span className="text-xs tabular-nums text-text-muted">
-                      {Math.round(food.protein_per_100g ?? 0)}P {Math.round(food.fat_per_100g ?? 0)}Y{' '}
+                      {Math.round(food.protein_per_100g ?? 0)}{t('P')} {Math.round(food.fat_per_100g ?? 0)}{t('Y')}{' '}
                       {Math.round(food.carbs_per_100g ?? 0)}K / 100g
                       {searching && (
                         <span className="ml-2 font-bold" style={{ color: scoreFood(food).color }}>
@@ -1252,22 +1253,22 @@ export default function DailyLog() {
               onClick={() => deleteRecipe(recipeDraft.id)}
               className="btn-chip rounded-full border border-red-500/30 px-3 py-1 text-[13px] text-red-400"
             >
-              Tarifi sil
+              {t('Tarifi sil')}
             </button>
           )}
         </div>
 
         <div>
           <h1 className="text-2xl font-semibold tracking-tight text-text">
-            {recipes.some((r) => r.id === recipeDraft.id) ? 'Tarifi düzenle' : 'Yeni tarif'}
+            {recipes.some((r) => r.id === recipeDraft.id) ? t('Tarifi düzenle') : t('Yeni tarif')}
           </h1>
-          <p className="mt-1 text-sm text-text-muted">Malzemeleri ekle, tarifin toplamı otomatik hesaplansın.</p>
+          <p className="mt-1 text-sm text-text-muted">{t('Malzemeleri ekle, tarifin toplamı otomatik hesaplansın.')}</p>
         </div>
 
         <input
           type="text"
           autoFocus={!recipeDraft.name}
-          placeholder="Tarif adı (örn. Yulaflı kahvaltı kâsesi)"
+          placeholder={t('Tarif adı (örn. Yulaflı kahvaltı kâsesi)')}
           value={recipeDraft.name}
           onChange={(e) => setRecipeDraft((d) => ({ ...d, name: e.target.value }))}
           className="w-full rounded-2xl border border-white/[0.08] bg-white/[0.04] px-4 py-3.5 text-[15px] text-text outline-none transition-colors placeholder:text-text-muted focus:border-white/25"
@@ -1276,8 +1277,8 @@ export default function DailyLog() {
         {/* porsiyon sayısı */}
         <div className="flex items-center justify-between rounded-2xl border border-white/[0.06] bg-surface px-4 py-3">
           <div>
-            <div className="text-sm font-medium text-text">Kaç porsiyon çıkıyor?</div>
-            <div className="text-xs text-text-muted">Porsiyon başı değerler buna göre hesaplanır.</div>
+            <div className="text-sm font-medium text-text">{t('Kaç porsiyon çıkıyor?')}</div>
+            <div className="text-xs text-text-muted">{t('Porsiyon başı değerler buna göre hesaplanır.')}</div>
           </div>
           <div className="flex items-center gap-3">
             <button
@@ -1303,7 +1304,7 @@ export default function DailyLog() {
           <span className="px-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-text-muted">Malzemeler</span>
           {recipeDraft.items.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-white/[0.1] px-5 py-6 text-center text-sm text-text-muted">
-              Henüz malzeme yok
+              {t('Henüz malzeme yok')}
             </div>
           ) : (
             recipeDraft.items.map((it, i) => (
@@ -1314,8 +1315,8 @@ export default function DailyLog() {
                 <div className="min-w-0 flex-1">
                   <div className="truncate text-[14px] text-text">{it.food_name}</div>
                   <div className="text-xs tabular-nums text-text-muted">
-                    {it.calories} kcal · {Math.round(it.protein_g)}P {Math.round(it.fat_g)}Y{' '}
-                    {Math.round(it.carbs_g)}K
+                    {it.calories} kcal · {Math.round(it.protein_g)}{t('P')} {Math.round(it.fat_g)}{t('Y')}{' '}
+                    {Math.round(it.carbs_g)}{t('K')}
                   </div>
                 </div>
                 <div className="flex items-center gap-1 rounded-lg border border-white/[0.08] bg-white/[0.03] px-2 py-1">
@@ -1333,7 +1334,7 @@ export default function DailyLog() {
                 <button
                   type="button"
                   onClick={() => removeIngredient(i)}
-                  aria-label="Malzemeyi çıkar"
+                  aria-label={t('Malzemeyi çıkar')}
                   className="btn-icon flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-text-muted"
                 >
                   ✕
@@ -1364,14 +1365,14 @@ export default function DailyLog() {
               </div>
               <div className="text-right">
                 <div className="text-sm font-semibold tabular-nums text-text">{Math.round(draftTotals.calories / per)} kcal</div>
-                <div className="text-[11px] text-text-muted">porsiyon başı</div>
+                <div className="text-[11px] text-text-muted">{t('porsiyon başı')}</div>
               </div>
             </div>
             <div className="mt-4 grid grid-cols-3 gap-3 border-t border-white/[0.06] pt-4">
               {[
-                { label: 'Protein', v: draftTotals.protein_g, c: '#FF8A5B' },
-                { label: 'Yağ', v: draftTotals.fat_g, c: '#F2C94C' },
-                { label: 'Karb', v: draftTotals.carbs_g, c: '#6FCF97' },
+                { label: t('Protein'), v: draftTotals.protein_g, c: '#FF8A5B' },
+                { label: t('Yağ'), v: draftTotals.fat_g, c: '#F2C94C' },
+                { label: t('Karb'), v: draftTotals.carbs_g, c: '#6FCF97' },
               ].map((m) => (
                 <div key={m.label}>
                   <div className="flex items-center gap-1.5">
@@ -1435,7 +1436,7 @@ export default function DailyLog() {
             onClick={() => editRecipe(recipeDetail)}
             className="btn-chip shrink-0 rounded-full border border-white/[0.1] px-3 py-1.5 text-[13px] text-text-muted"
           >
-            Düzenle
+            {t('Düzenle')}
           </button>
         </div>
 
@@ -1443,22 +1444,22 @@ export default function DailyLog() {
         <div className="rounded-3xl border border-white/[0.06] bg-surface p-5">
           <div className="flex items-end justify-between">
             <div>
-              <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-text-muted">Porsiyon başı</div>
+              <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-text-muted">{t('Porsiyon başı')}</div>
               <div className="mt-1 flex items-baseline gap-2">
                 <span className="text-4xl font-bold tabular-nums text-text">{Math.round(total.calories / per)}</span>
                 <span className="text-sm text-text-muted">kcal</span>
               </div>
             </div>
             <div className="text-right text-xs text-text-muted">
-              Toplam
+              {t('Toplam')}
               <div className="text-sm font-semibold tabular-nums text-text">{total.calories} kcal</div>
             </div>
           </div>
           <div className="mt-4 grid grid-cols-3 gap-3 border-t border-white/[0.06] pt-4">
             {[
-              { label: 'Protein', v: total.protein_g / per, c: '#FF8A5B' },
-              { label: 'Yağ', v: total.fat_g / per, c: '#F2C94C' },
-              { label: 'Karb', v: total.carbs_g / per, c: '#6FCF97' },
+              { label: t('Protein'), v: total.protein_g / per, c: '#FF8A5B' },
+              { label: t('Yağ'), v: total.fat_g / per, c: '#F2C94C' },
+              { label: t('Karb'), v: total.carbs_g / per, c: '#6FCF97' },
             ].map((m) => (
               <div key={m.label}>
                 <div className="flex items-center gap-1.5">
@@ -1486,7 +1487,7 @@ export default function DailyLog() {
 
         {/* kaç porsiyon eklenecek */}
         <div className="flex items-center justify-between rounded-2xl border border-white/[0.06] bg-surface px-4 py-3">
-          <span className="text-sm font-medium text-text">Kaç porsiyon eklensin?</span>
+          <span className="text-sm font-medium text-text">{t('Kaç porsiyon eklensin?')}</span>
           <div className="flex items-center gap-3">
             <button
               type="button"
@@ -1529,7 +1530,7 @@ export default function DailyLog() {
     const listLabel = searching
       ? `"${query.trim()}" sonuçları`
       : tab === 'recent'
-        ? 'Son kullanılanlar'
+        ? t('Son kullanılanlar')
         : 'Favoriler'
 
     return (
@@ -1559,7 +1560,7 @@ export default function DailyLog() {
               <input
                 type="text"
                 autoFocus
-                placeholder="Yemek ara... (örn. menemen)"
+                placeholder={t('Yemek ara... (örn. menemen)')}
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 className="w-full bg-transparent py-3.5 text-[15px] text-text outline-none placeholder:text-text-muted"
@@ -1571,7 +1572,7 @@ export default function DailyLog() {
                 <button
                   type="button"
                   onClick={() => setQuery('')}
-                  aria-label="Aramayı temizle"
+                  aria-label={t('Aramayı temizle')}
                   className="btn-icon flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white/[0.08] text-[11px] text-text-muted"
                 >
                   ✕
@@ -1583,7 +1584,7 @@ export default function DailyLog() {
             <button
               type="button"
               onClick={() => setScanning(true)}
-              aria-label="Barkod tara"
+              aria-label={t('Barkod tara')}
               className="btn-icon relative flex w-[52px] shrink-0 items-center justify-center overflow-hidden rounded-2xl border text-text transition-colors"
               style={{
                 borderColor: 'rgba(61,165,255,0.28)',
@@ -1609,9 +1610,9 @@ export default function DailyLog() {
         {!searching && (
           <div className="grid grid-cols-3 rounded-2xl border border-white/[0.06] bg-surface p-1">
             {[
-              { key: 'recent', label: 'Son' },
-              { key: 'favorites', label: 'Favoriler' },
-              { key: 'recipes', label: 'Tarifler' },
+              { key: 'recent', label: t('Son') },
+              { key: 'favorites', label: t('Favoriler') },
+              { key: 'recipes', label: t('Tarifler') },
             ].map((t) => (
               <button
                 key={t.key}
@@ -1659,16 +1660,16 @@ export default function DailyLog() {
 
             {recipes.length === 0 ? (
               <div className="rounded-3xl border border-white/[0.06] bg-surface px-5 py-9 text-center">
-                <p className="text-sm text-text">Henüz tarifin yok</p>
+                <p className="text-sm text-text">{t('Henüz tarifin yok')}</p>
                 <p className="mt-1 text-xs text-text-muted">
-                  Uygulamadaki yemekleri birleştirip kendi tariflerini oluştur, tek dokunuşla ekle.
+                  {t('Uygulamadaki yemekleri birleştirip kendi tariflerini oluştur, tek dokunuşla ekle.')}
                 </p>
               </div>
             ) : (
               <div className="space-y-2">
                 <div className="flex items-baseline justify-between px-1">
                   <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-text-muted">
-                    Tariflerin
+                    {t('Tariflerin')}
                   </span>
                   <span className="text-[11px] tabular-nums text-text-muted">{recipes.length}</span>
                 </div>
@@ -1738,7 +1739,7 @@ export default function DailyLog() {
               {searching ? (
                 <>
                   <p className="text-sm text-text">"{query.trim()}" bulunamadı</p>
-                  <p className="mt-1 text-xs text-text-muted">Besin değerlerini girerek kendin ekleyebilirsin.</p>
+                  <p className="mt-1 text-xs text-text-muted">{t('Besin değerlerini girerek kendin ekleyebilirsin.')}</p>
                   <button
                     type="button"
                     onClick={openCustomFood}
@@ -1749,13 +1750,13 @@ export default function DailyLog() {
                 </>
               ) : tab === 'favorites' ? (
                 <>
-                  <p className="text-sm text-text">Henüz favorin yok</p>
-                  <p className="mt-1 text-xs text-text-muted">Sık yediklerini yıldıza dokunarak buraya sabitle.</p>
+                  <p className="text-sm text-text">{t('Henüz favorin yok')}</p>
+                  <p className="mt-1 text-xs text-text-muted">{t('Sık yediklerini yıldıza dokunarak buraya sabitle.')}</p>
                 </>
               ) : (
                 <>
-                  <p className="text-sm text-text">Henüz kayıt yok</p>
-                  <p className="mt-1 text-xs text-text-muted">Aramaya başla — eklediklerin burada görünecek.</p>
+                  <p className="text-sm text-text">{t('Henüz kayıt yok')}</p>
+                  <p className="mt-1 text-xs text-text-muted">{t('Aramaya başla — eklediklerin burada görünecek.')}</p>
                 </>
               )}
             </motion.div>
@@ -1766,8 +1767,8 @@ export default function DailyLog() {
               // MacroFactor tarzı: özgün yemekler üstte, markalı ürünler ayrı bölümde.
               const sections = searching
                 ? [
-                    { key: 'generic', label: 'Temel Besinler', items: results.filter((f) => !f.brand) },
-                    { key: 'branded', label: 'Markalı Ürünler', items: results.filter((f) => f.brand) },
+                    { key: 'generic', label: t('Temel Besinler'), items: results.filter((f) => !f.brand) },
+                    { key: 'branded', label: t('Markalı Ürünler'), items: results.filter((f) => f.brand) },
                   ].filter((s) => s.items.length > 0)
                 : [{ key: 'all', label: null, items: results }]
               const showHeaders = searching && sections.some((s) => s.key === 'branded')
@@ -1854,7 +1855,7 @@ export default function DailyLog() {
                             }
                           }}
                           className="mt-1 inline-flex items-center gap-1 text-[10.5px] leading-none"
-                          aria-label="Besin Karnesi ayrıntısı"
+                          aria-label={t('Besin Karnesi ayrıntısı')}
                         >
                           <span className="font-bold tabular-nums" style={{ color: karne.color }}>
                             {karne.display}
@@ -1871,7 +1872,7 @@ export default function DailyLog() {
                   <button
                     type="button"
                     onClick={() => toggleFavorite(food.id)}
-                    aria-label={isFav ? 'Favorilerden çıkar' : 'Favorilere ekle'}
+                    aria-label={isFav ? t('Favorilerden çıkar') : t('Favorilere ekle')}
                     className={`btn-icon relative flex h-9 w-9 shrink-0 items-center justify-center after:absolute after:-inset-1.5 after:content-[''] ${isFav ? '' : 'text-text-muted'}`}
                   >
                     <StarIcon isActive={isFav} />
@@ -1913,15 +1914,15 @@ export default function DailyLog() {
 
   const remaining = goalCalories ? Math.max(0, goalCalories - Math.round(totalToday)) : null
   const macroSummary = [
-    { label: 'Protein', color: '#FF8A5B', consumed: consumedProtein, goal: goalProtein },
-    { label: 'Yağ', color: '#F2C94C', consumed: consumedFat, goal: goalFat },
-    { label: 'Karb', color: '#6FCF97', consumed: consumedCarbs, goal: goalCarbs },
+    { label: t('Protein'), color: '#FF8A5B', consumed: consumedProtein, goal: goalProtein },
+    { label: t('Yağ'), color: '#F2C94C', consumed: consumedFat, goal: goalFat },
+    { label: t('Karb'), color: '#6FCF97', consumed: consumedCarbs, goal: goalCarbs },
   ]
 
   const dayLabel = isToday
-    ? 'Bugün'
+    ? t('Bugün')
     : selectedDate === addDays(today, -1)
-      ? 'Dün'
+      ? t('Dün')
       : formatHeaderDate(selectedDate)
 
   return (
@@ -1933,7 +1934,7 @@ export default function DailyLog() {
         <button
           type="button"
           onClick={() => setSelectedDate((d) => addDays(d, -1))}
-          aria-label="Önceki gün"
+          aria-label={t('Önceki gün')}
           className="btn-icon flex h-10 w-10 items-center justify-center rounded-full border border-white/[0.08] bg-white/[0.04] text-text-muted transition-colors hover:text-text"
         >
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
@@ -1954,7 +1955,7 @@ export default function DailyLog() {
           >
             <span className="text-lg font-semibold tracking-tight text-text">{dayLabel}</span>
             <span className="text-[11px] text-text-muted">
-              {isToday ? formatHeaderDate(today) : 'Bugüne dön'}
+              {isToday ? formatHeaderDate(today) : t('Bugüne dön')}
             </span>
           </motion.button>
         </AnimatePresence>
@@ -1963,7 +1964,7 @@ export default function DailyLog() {
           type="button"
           disabled={isToday}
           onClick={() => setSelectedDate((d) => addDays(d, 1))}
-          aria-label="Sonraki gün"
+          aria-label={t('Sonraki gün')}
           className="btn-icon flex h-10 w-10 items-center justify-center rounded-full border border-white/[0.08] bg-white/[0.04] text-text-muted transition-colors hover:text-text disabled:opacity-30"
         >
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
@@ -1988,7 +1989,7 @@ export default function DailyLog() {
             {remaining != null && (
               <div className="text-right">
                 <div className="text-lg font-semibold leading-none tabular-nums text-text">{remaining}</div>
-                <div className="mt-1 text-[11px] text-text-muted">kalan</div>
+                <div className="mt-1 text-[11px] text-text-muted">{t('kalan')}</div>
               </div>
             )}
           </div>
@@ -2101,14 +2102,14 @@ export default function DailyLog() {
                           className="text-[10px] font-semibold uppercase tracking-[0.14em]"
                           style={{ color: nowColor }}
                         >
-                          Şimdi
+                          {t('Şimdi')}
                         </span>
                       )}
                     </div>
                     <div className="mt-0.5 text-xs tabular-nums text-text-muted">
                       {mealTotal > 0
-                        ? `${Math.round(mealTotal)} kcal · ${Math.round(mealProtein)}P ${Math.round(mealFat)}Y ${Math.round(mealCarbs)}K`
-                        : 'Henüz kayıt yok'}
+                        ? `${Math.round(mealTotal)} kcal · ${Math.round(mealProtein)}${t('P')} ${Math.round(mealFat)}${t('Y')} ${Math.round(mealCarbs)}${t('K')}`
+                        : t('Henüz kayıt yok')}
                     </div>
                   </div>
 
@@ -2150,8 +2151,8 @@ export default function DailyLog() {
                               {Math.round(log.calories)} kcal
                             </div>
                             <div className="text-[11px] tabular-nums text-text-muted">
-                              {Math.round(log.protein_g ?? 0)}P {Math.round(log.fat_g ?? 0)}Y{' '}
-                              {Math.round(log.carbs_g ?? 0)}K
+                              {Math.round(log.protein_g ?? 0)}{t('P')} {Math.round(log.fat_g ?? 0)}{t('Y')}{' '}
+                              {Math.round(log.carbs_g ?? 0)}{t('K')}
                             </div>
                           </span>
                         </div>

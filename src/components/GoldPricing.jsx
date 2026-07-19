@@ -1,6 +1,8 @@
 // Gold fiyat bloğu — iki EŞİT kutu yan yana (MacroFactor tarzı). Yıllık
 // avantajını rozet + üstü çizili toplam anlatır; aylık aynı boy ve ağırlıkta
 // kalır, ezilmez. `dark`: GoldGate'in koyu altın paneli için renk varyantı.
+import { t } from '../lib/i18n'
+
 const YEARLY = '₺599,99'
 const YEARLY_FULL = '₺959,88' // 12 × ₺79,99 — indirimin kanıtı
 const MONTHLY = '₺79,99'
@@ -18,17 +20,17 @@ export default function GoldPricing({ dark = false }) {
         style={{ borderColor: 'rgba(245, 200, 75, 0.6)', backgroundColor: 'rgba(245, 200, 75, 0.09)' }}
       >
         <span className="absolute -top-px left-2.5 rounded-b-md bg-gradient-to-r from-[#F8D64B] to-[#E0A93B] px-2 py-0.5 text-[9px] font-bold tracking-wide text-black">
-          %37 İNDİRİM
+          {t('%37 İNDİRİM')}
         </span>
         <div className="text-[11px] font-medium" style={{ color: muted }}>
-          Yıllık
+          {t('Yıllık')}
         </div>
         <div className="mt-0.5 text-xl font-bold tabular-nums" style={{ color: ink }}>
           {YEARLY}
         </div>
         <div className="text-[11px] tabular-nums" style={{ color: muted }}>
           <span className="line-through opacity-70">{YEARLY_FULL}</span>{' '}
-          <span className="font-semibold text-[#F5C84B]">≈ ₺50/ay</span>
+          <span className="font-semibold text-[#F5C84B]">{t('≈ ₺50/ay')}</span>
         </div>
       </div>
 
@@ -38,13 +40,13 @@ export default function GoldPricing({ dark = false }) {
         style={{ borderColor: monthlyBorder, backgroundColor: dark ? 'rgba(255,255,255,0.05)' : 'transparent' }}
       >
         <div className="text-[11px] font-medium" style={{ color: muted }}>
-          Aylık
+          {t('Aylık')}
         </div>
         <div className="mt-0.5 text-xl font-bold tabular-nums" style={{ color: ink }}>
           {MONTHLY}
         </div>
         <div className="text-[11px]" style={{ color: muted }}>
-          esnek — her ay yenilenir
+          {t('esnek — her ay yenilenir')}
         </div>
       </div>
     </div>
