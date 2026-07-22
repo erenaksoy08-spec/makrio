@@ -76,7 +76,9 @@ function themeBarStyle(theme = 'dark') {
 //  size    : px
 //  theme   : aktif tema (çubuk dokusunu belirler)
 //  bg      : icon modunda zemin degradesi ({top, bottom}); atlanırsa BRAND.iconBg
-export function logoSVGString({ variant = DEFAULT_VARIANT, mode = 'mark', size = 120, theme = 'dark', bg } = {}) {
+//  shape   : 'square' (varsayılan) | 'circle' (Android round launcher için daire kırpma)
+//  bare    : true ise <svg> sarmalayıcısız iç işaretleme döner (kompozisyon için)
+export function logoSVGString({ variant = DEFAULT_VARIANT, mode = 'mark', size = 120, theme = 'dark', bg, shape = 'square', bare = false } = {}) {
   const v = LOGO_VARIANTS[variant] ?? LOGO_VARIANTS[DEFAULT_VARIANT]
   const colors = [BRAND.macro.protein, BRAND.macro.carb, BRAND.macro.fat]
   const tops = v.heights.map((h) => BASE - h)
@@ -130,6 +132,16 @@ export function logoSVGString({ variant = DEFAULT_VARIANT, mode = 'mark', size =
     bgLayer = `<rect width="120" height="120" fill="url(#bgg)"/>`
   }
 
+  // Daire kırpma (Android round launcher) — tüm katmanları çembere kırpar.
+  let content = `${bgLayer}${arches}${bars}`
+  if (shape === 'circle') {
+    defs += `<clipPath id="clip"><circle cx="60" cy="60" r="60"/></clipPath>`
+    content = `<g clip-path="url(#clip)">${content}</g>`
+  }
+
+  const defsBlock = defs ? `<defs>${defs}</defs>` : ''
+  if (bare) return `${defsBlock}${content}`
+
   const crisp = st.crisp ? ' shape-rendering="crispEdges"' : ''
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 120 120"${crisp}>${defs ? `<defs>${defs}</defs>` : ''}${bgLayer}${arches}${bars}</svg>`
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 120 120"${crisp}>${defsBlock}${content}</svg>`
 }
