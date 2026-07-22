@@ -882,4 +882,15 @@ export default {
   'Değerler hatalı': 'Wrong values',
   'Mükerrer kayıt': 'Duplicate entry',
   'Bildirildi, teşekkürler ✓': 'Reported, thanks ✓',
+
+  // ---- Logo / tema bildirimi ----
+  'Logo güncellendi': 'Logo updated',
+  '{theme} temasına uyarlandı': 'Adapted to the {theme} theme',
+  'Varsayılan': 'Default',
+  'Açık': 'Light',
+  'Piksel': 'Pixel',
+  'Piksel Koyu': 'Pixel Dark',
+  'Piksel Renkli': 'Pixel Color',
+  'Gym': 'Gym',
+  'Blok': 'Blok',
 }

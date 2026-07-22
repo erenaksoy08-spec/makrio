@@ -16,6 +16,7 @@ import { Skeleton } from '../components/SkeletonLoader'
 import usePixelTheme from '../hooks/usePixelTheme'
 import { PixelFlame, PixelGreetingIcon } from '../components/pixelSprites'
 import { badgeTierFrom } from '../lib/rewards'
+import { Wordmark } from '../components/Logo'
 import { t } from '../lib/i18n'
 
 export default function Dashboard() {
@@ -179,6 +180,11 @@ export default function Dashboard() {
 
   return (
     <div className="mx-auto max-w-md space-y-5 px-4 py-6">
+      {/* Marka başlığı — tema-tepkili işaret (temayla birlikte çubuklar değişir) */}
+      <div className="flex justify-center">
+        <Wordmark size={20} className="opacity-95" />
+      </div>
+
       <div className="flex items-center justify-between">
         <div className="min-w-0">
           <div className="text-xs font-medium uppercase tracking-[0.14em] text-text-muted">

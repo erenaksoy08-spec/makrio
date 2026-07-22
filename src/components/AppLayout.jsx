@@ -1,8 +1,10 @@
-import { useEffect } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import BottomNav from './BottomNav'
+import LogoThemeToast from './LogoThemeToast'
 import { useAuth } from '../contexts/AuthContext'
+import { logoSVGString } from '../lib/brand'
 
 export default function AppLayout() {
   const location = useLocation()
@@ -17,6 +19,31 @@ export default function AppLayout() {
     return () => {
       delete document.documentElement.dataset.theme
     }
+  }, [theme])
+
+  // Logo her temada değişir: tarayıcı sekmesi favicon'unu da aktif temaya uyarla.
+  useEffect(() => {
+    const svg = logoSVGString({ variant: 'bars', mode: 'icon', size: 64, theme })
+    const href = `data:image/svg+xml,${encodeURIComponent(svg)}`
+    let link = document.querySelector("link[rel='icon']")
+    if (!link) {
+      link = document.createElement('link')
+      link.rel = 'icon'
+      document.head.appendChild(link)
+    }
+    link.type = 'image/svg+xml'
+    link.href = href
+  }, [theme])
+
+  // Tema (dolayısıyla logo) değişince bildirim göster — ilk yüklemede değil,
+  // yalnızca kullanıcı temayı değiştirdiğinde.
+  const [logoToast, setLogoToast] = useState(null)
+  const prevTheme = useRef(undefined)
+  useEffect(() => {
+    if (prevTheme.current !== undefined && prevTheme.current !== theme) {
+      setLogoToast(theme)
+    }
+    prevTheme.current = theme
   }, [theme])
 
   // Yazı büyüklüğü tercihi: rem tabanlı tüm metinler kök font boyutuyla ölçeklenir.
@@ -39,6 +66,9 @@ export default function AppLayout() {
 
   return (
     <div className="flex min-h-svh flex-col pb-20">
+      <AnimatePresence>
+        {logoToast && <LogoThemeToast theme={logoToast} onClose={() => setLogoToast(null)} />}
+      </AnimatePresence>
       <AnimatePresence mode="wait">
         <motion.div
           key={location.pathname}
