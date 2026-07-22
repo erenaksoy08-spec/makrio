@@ -19,6 +19,7 @@ import { useSmoothNumber } from '../hooks/useSmoothNumber'
 import GoldGate from '../components/GoldGate'
 import BarcodeScanner from '../components/BarcodeScanner'
 import ScanResult from '../components/ScanResult'
+import AiFoodEntry from '../components/AiFoodEntry'
 import { isGold, FREE_LOG_LIMIT } from '../lib/gold'
 import { scoreFood } from '../lib/foodScore'
 import FoodReportCard from '../components/FoodReportCard'
@@ -209,6 +210,13 @@ export default function DailyLog() {
   const [customBarcode, setCustomBarcode] = useState(null)
   const [customBrand, setCustomBrand] = useState('')
 
+  // Fotoğraf + açıklama ile AI girişi.
+  const [aiEntry, setAiEntry] = useState(false)
+
+  // Kürasyon: özel yemek kaydetmeden önce bulanık mükerrer kontrolü + bildirme.
+  const [dupCandidates, setDupCandidates] = useState(null) // benzer mevcut kayıtlar
+  const [flagState, setFlagState] = useState('') // '' | 'open' | 'saving' | 'done'
+
   // Seriyi güncelle; bugünün İLK kaydıysa kutlama animasyonunu tetikle.
   async function bumpStreak() {
     const wasFirstToday = (profile?.last_log_date ?? null) !== today
@@ -371,6 +379,7 @@ export default function DailyLog() {
     setCustomBarcode(null)
     setCustomBrand('')
     setCustomError('')
+    setDupCandidates(null)
     setCreatingCustom(true)
   }
 
@@ -435,6 +444,48 @@ export default function DailyLog() {
     setScanResult({ phase: 'notfound', code })
   }
 
+  // AI tahminini (kullanıcı onayı/düzenlemesi sonrası) doğrudan öğüne kaydet.
+  // foods tablosuna yazmaz — tek seferlik kayıt, food_logs'a gider.
+  async function saveAiEntry(entry) {
+    if (hitFreeLimit()) return false
+    const { data: canAdd } = await supabase.rpc('can_add_food_log', { p_date: selectedDate })
+    if (canAdd === false) {
+      setGoldGate(true)
+      return false
+    }
+    const { error: insertError } = await supabase.from('food_logs').insert({
+      user_id: user.id,
+      date: selectedDate,
+      meal_type: activeMeal,
+      food_id: null,
+      food_name: entry.name,
+      amount_g: entry.grams,
+      calories: entry.calories,
+      protein_g: entry.protein_g,
+      carbs_g: entry.carbs_g,
+      fat_g: entry.fat_g,
+    })
+    if (insertError) return false
+    if (isToday) bumpStreak()
+    navigator.vibrate?.(12)
+    setAiEntry(false)
+    loadLogs()
+    return true
+  }
+
+  // Topluluk kaydını "yanlış/şüpheli" olarak işaretle (kullanıcı başına 1 kez).
+  async function flagFood(reason) {
+    if (!selectedFood?.id) return
+    setFlagState('saving')
+    const { error: flagError } = await supabase.from('food_flags').insert({
+      food_id: selectedFood.id,
+      user_id: user.id,
+      reason,
+    })
+    // 23505: zaten bildirmiş — onu da "bildirildi" say.
+    setFlagState(!flagError || flagError.code === '23505' ? 'done' : '')
+  }
+
   // "Etiketten Tanımla": barkod ekli özel yemek formunu aç.
   function defineFromBarcode(code) {
     setScanResult(null)
@@ -442,6 +493,7 @@ export default function DailyLog() {
     setCustomBarcode(code)
     setCustomBrand('')
     setCustomError('')
+    setDupCandidates(null)
     setCreatingCustom(true)
   }
 
@@ -608,6 +660,7 @@ export default function DailyLog() {
     setEditingId(null)
     setAmount(food.default_serving_g || 100)
     setError('')
+    setFlagState('')
     setView('detail')
   }
 
@@ -694,8 +747,8 @@ export default function DailyLog() {
     await supabase.from('food_logs').delete().eq('id', id)
   }
 
-  async function handleCreateCustom(e) {
-    e.preventDefault()
+  async function handleCreateCustom(e, force = false) {
+    e?.preventDefault?.()
     setCustomError('')
 
     const { name_tr, calories_per_100g, protein_per_100g, carbs_per_100g, fat_per_100g } = customForm
@@ -705,6 +758,20 @@ export default function DailyLog() {
     }
 
     setCustomSaving(true)
+
+    // Kürasyon: kaydetmeden önce bulanık benzerlik kontrolü — benzer kayıt
+    // varsa öner, mükerrer girişi baştan engelle. (Barkodlu tanımlamada
+    // atlanır: barkod zaten ürünü tekilleştirir.)
+    if (!force && !customBarcode) {
+      const { data: sims } = await supabase.rpc('similar_foods', { p_name: name_tr })
+      if (sims && sims.length > 0) {
+        setDupCandidates(sims)
+        setCustomSaving(false)
+        return
+      }
+    }
+    setDupCandidates(null)
+
     const { data: nameSearch } = await supabase.rpc('normalize_tr', { input: name_tr })
 
     const { data: created, error: createError } = await supabase
@@ -772,6 +839,15 @@ export default function DailyLog() {
       </AnimatePresence>
       <AnimatePresence>
         {karneFood && <KarneSheet food={karneFood} onClose={() => setKarneFood(null)} />}
+      </AnimatePresence>
+      <AnimatePresence>
+        {aiEntry && (
+          <AiFoodEntry
+            mealLabel={activeMealMeta?.label}
+            onSave={saveAiEntry}
+            onClose={() => setAiEntry(false)}
+          />
+        )}
       </AnimatePresence>
     </>
   )
@@ -884,7 +960,10 @@ export default function DailyLog() {
                 autoFocus={!customForm.name_tr}
                 placeholder={t('örn. Annemin böreği')}
                 value={customForm.name_tr}
-                onChange={(e) => setCustomForm((f) => ({ ...f, name_tr: e.target.value }))}
+                onChange={(e) => {
+                  setDupCandidates(null)
+                  setCustomForm((f) => ({ ...f, name_tr: e.target.value }))
+                }}
                 className="min-w-0 flex-1 bg-transparent text-[15px] text-text outline-none placeholder:text-text-muted"
               />
             </label>
@@ -962,6 +1041,67 @@ export default function DailyLog() {
             </div>
           </div>
 
+          {/* kürasyon: bulanık eşleşen mevcut kayıtlar — mükerrer girişi önle */}
+          <AnimatePresence>
+            {dupCandidates && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                className="overflow-hidden"
+              >
+                <div
+                  className="rounded-3xl border p-4"
+                  style={{ borderColor: 'rgba(242,201,76,0.3)', background: 'rgba(242,201,76,0.05)' }}
+                >
+                  <div className="text-sm font-semibold text-text">{t('Benzer kayıtlar zaten var')}</div>
+                  <p className="mt-0.5 text-xs text-text-muted">{t('Birini seç ya da yine de yenisini oluştur.')}</p>
+                  <div className="mt-3 space-y-1.5">
+                    {dupCandidates.map((f) => (
+                      <button
+                        key={f.id}
+                        type="button"
+                        onClick={() => {
+                          setCreatingCustom(false)
+                          setDupCandidates(null)
+                          selectFood(f)
+                        }}
+                        className="btn-row flex w-full items-center gap-3 rounded-2xl border border-white/[0.07] bg-surface px-3.5 py-2.5 text-left"
+                      >
+                        <span className="min-w-0 flex-1">
+                          <span className="block truncate text-[14px] text-text">
+                            {f.name_tr}
+                            {f.brand && <span className="text-text-muted"> · {f.brand}</span>}
+                          </span>
+                          <span className="text-xs tabular-nums text-text-muted">{f.calories_per_100g} kcal / 100g</span>
+                        </span>
+                        {f.is_verified ? (
+                          <span
+                            className="shrink-0 rounded-full px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wide"
+                            style={{ backgroundColor: 'rgba(111,207,151,0.12)', color: '#6FCF97' }}
+                          >
+                            ✓ {t('Doğrulanmış')}
+                          </span>
+                        ) : (
+                          <span className="shrink-0 rounded-full border border-white/[0.12] px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-text-muted">
+                            {t('Topluluk')}
+                          </span>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={(e) => handleCreateCustom(e, true)}
+                    className="btn-chip mt-3 w-full rounded-2xl border border-white/[0.12] py-2.5 text-sm text-text-muted"
+                  >
+                    {t('Yine de yeni kayıt oluştur')}
+                  </button>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
           <AnimatePresence>
             {customError && (
               <motion.p
@@ -1020,11 +1160,18 @@ export default function DailyLog() {
           )}
           <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm">
             <span className="text-text-muted">{selectedFood.calories_per_100g} kcal / 100g</span>
-            {selectedFood.is_verified && (
-              <span className="inline-flex items-center gap-1 text-text-muted">
-                <span>✓</span> doğrulanmış
+            {selectedFood.is_verified ? (
+              <span
+                className="rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide"
+                style={{ backgroundColor: 'rgba(111,207,151,0.12)', color: '#6FCF97' }}
+              >
+                ✓ {t('Doğrulanmış')}
               </span>
-            )}
+            ) : selectedFood.id && !selectedFood.barcode ? (
+              <span className="rounded-full border border-white/[0.12] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-text-muted">
+                {t('Topluluk')}
+              </span>
+            ) : null}
           </div>
           <span className="inline-flex items-center gap-1.5 rounded-full border border-white/[0.08] bg-white/[0.04] px-3 py-1 text-[13px] text-text-muted">
             <MealPeriodIcon type={activeMeal} color="var(--icon-muted)" size={14} />
@@ -1034,6 +1181,42 @@ export default function DailyLog() {
 
         {/* besin karnesi — puan + bilgilendirme */}
         <FoodReportCard food={selectedFood} />
+
+        {/* kürasyon: topluluk kaydında basit işaretleme (moderasyon temeli) */}
+        {selectedFood.id && !selectedFood.is_verified && !editingId && (
+          <div className="rounded-2xl border border-white/[0.06] bg-surface px-4 py-3">
+            {flagState === 'done' ? (
+              <span className="text-xs text-text-muted">{t('Bildirildi, teşekkürler ✓')}</span>
+            ) : flagState === 'open' || flagState === 'saving' ? (
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-xs text-text-muted">{t('Sorun ne?')}</span>
+                {[
+                  { key: 'wrong_values', label: t('Değerler hatalı') },
+                  { key: 'duplicate', label: t('Mükerrer kayıt') },
+                  { key: 'other', label: t('Diğer') },
+                ].map((r) => (
+                  <button
+                    key={r.key}
+                    type="button"
+                    disabled={flagState === 'saving'}
+                    onClick={() => flagFood(r.key)}
+                    className="btn-chip rounded-full border border-white/[0.12] px-2.5 py-1 text-[11px] text-text disabled:opacity-50"
+                  >
+                    {r.label}
+                  </button>
+                ))}
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setFlagState('open')}
+                className="btn-chip flex items-center gap-1.5 text-xs text-text-muted"
+              >
+                ⚑ {t('Bu kayıtta sorun mu var? Bildir')}
+              </button>
+            )}
+          </div>
+        )}
 
         {/* sonuç — canlı besin değerleri */}
         {preview && <NutritionPreview preview={preview} macroFields={macroFields} amount={amountNum} />}
@@ -1603,6 +1786,31 @@ export default function DailyLog() {
                 <path d="M7.5 8.5v7M11 8.5v7M14 8.5v7M16.5 8.5v7" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" opacity="0.85" />
               </svg>
             </button>
+
+            {/* AI fotoğraf girişi — kamera + ışıltı karosu */}
+            <button
+              type="button"
+              onClick={() => setAiEntry(true)}
+              aria-label={t('Fotoğrafla ekle (AI)')}
+              className="btn-icon relative flex w-[52px] shrink-0 items-center justify-center overflow-hidden rounded-2xl border text-text transition-colors"
+              style={{
+                borderColor: 'rgba(167,139,250,0.3)',
+                background:
+                  'linear-gradient(180deg, rgba(167,139,250,0.1), rgba(167,139,250,0.02) 60%), rgba(255,255,255,0.03)',
+                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.07)',
+              }}
+            >
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M4 8.5A2.5 2.5 0 0 1 6.5 6h1.2l1-1.6A1.5 1.5 0 0 1 10 3.7h4a1.5 1.5 0 0 1 1.3.7l1 1.6h1.2A2.5 2.5 0 0 1 20 8.5v8a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 16.5v-8Z"
+                  stroke="#A78BFA"
+                  strokeWidth="1.8"
+                  strokeLinejoin="round"
+                />
+                <circle cx="12" cy="12.4" r="3.2" stroke="currentColor" strokeWidth="1.7" opacity="0.85" />
+                <path d="M18.9 1.6l.5 1.3 1.3.5-1.3.5-.5 1.3-.5-1.3-1.3-.5 1.3-.5.5-1.3Z" fill="#A78BFA" />
+              </svg>
+            </button>
           </div>
         )}
 
@@ -1823,7 +2031,20 @@ export default function DailyLog() {
                     <span className="min-w-0 flex-1">
                       <span className="block truncate text-[15px] text-text">
                         {highlightMatch(food.name_tr, query)}
-                        {food.is_verified && <span className="ml-1 text-text-muted">✓</span>}
+                        {/* kürasyon rozeti: küratörlü ✓ / topluluk eklemesi.
+                            Barkodlu kayıtlar güvenilir kaynaktan gelir, rozetsiz. */}
+                        {food.is_verified ? (
+                          <span
+                            className="ml-1.5 inline-block translate-y-[-1px] rounded-full px-1.5 py-[1.5px] align-middle text-[8.5px] font-semibold uppercase tracking-wide"
+                            style={{ backgroundColor: 'rgba(111,207,151,0.12)', color: '#6FCF97' }}
+                          >
+                            ✓ {t('Doğrulanmış')}
+                          </span>
+                        ) : !food.barcode ? (
+                          <span className="ml-1.5 inline-block translate-y-[-1px] rounded-full border border-white/[0.12] px-1.5 py-[1.5px] align-middle text-[8.5px] font-semibold uppercase tracking-wide text-text-muted">
+                            {t('Topluluk')}
+                          </span>
+                        ) : null}
                       </span>
                       {food.brand && (
                         <span className="mt-0.5 block truncate text-[10.5px] font-medium uppercase tracking-wide text-text-muted opacity-80">
