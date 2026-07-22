@@ -68,44 +68,35 @@ for (const variant of Object.keys(LOGO_VARIANTS)) {
 writeFileSync(resolve(root, 'public/favicon.svg'), logoSVGString({ variant: DEFAULT_VARIANT, mode: 'icon', size: 64 }))
 console.log('✓ public/favicon.svg')
 
-// ── Native app icon'lar (Capacitor iOS + Android) ─────────────────────────
-// Uygulama içi logo temayla değişir; OS ikonu birincil (bars, koyu) sabittir.
+// ── @capacitor/assets kaynak görselleri (assets/) ─────────────────────────
+// Bunlardan iOS + Android native ikon/splash setleri şu komutla üretilir:
+//   npx capacitor-assets generate --ios --android
+// (Uygulama içi logo temayla değişir; OS ikonu birincil bars/koyu ile sabittir.)
+const assetsDir = resolve(root, 'assets')
+mkdirSync(assetsDir, { recursive: true })
 
-// iOS: tek 1024×1024 (saydamsız kare) — Contents.json bunu referans alır.
-const iosDir = resolve(root, 'ios/App/App/Assets.xcassets/AppIcon.appiconset')
-if (existsSync(iosDir)) {
-  pngNoAlpha(iconSVG, 1024, resolve(iosDir, 'AppIcon-512@2x.png')) // alpha yok — zorunlu
+// icon-only: dolu ikon (iOS + Android legacy).
+png(iconSVG, 1024, resolve(assetsDir, 'icon-only.png'))
+
+// icon-background: adaptive arka plan (koyu degrade zemin — bars'sız).
+const bgSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 120 120"><defs><linearGradient id="bgg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${BRAND.iconBg.top}"/><stop offset="1" stop-color="${BRAND.iconBg.bottom}"/></linearGradient></defs><rect width="120" height="120" fill="url(#bgg)"/></svg>`
+png(bgSVG, 1024, resolve(assetsDir, 'icon-background.png'))
+
+// icon-foreground: yalnız işaret (saydam), tuvali dolduracak şekilde (mark ~%80).
+// capacitor-assets kendi %16.7 güvenli-alan inset'ini uygular; bu yüzden kaynak
+// DOLU verilir (mark merkezi 60,57 → viewBox merkezine oturur).
+const fgInner = logoSVGString({ variant: DEFAULT_VARIANT, mode: 'mark', theme: 'dark', bare: true })
+const fgSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="6 3 108 108">${fgInner}</svg>`
+pngT(fgSVG, 1024, resolve(assetsDir, 'icon-foreground.png'))
+
+// splash / splash-dark: 2732×2732, işaret ortada. Açık ve koyu mod.
+const markBare = logoSVGString({ variant: DEFAULT_VARIANT, mode: 'mark', theme: 'dark', bare: true })
+function splashSVG(bgColor, markW = 760) {
+  const s = markW / 120
+  const tx = 1366 - 60 * s // mark bbox merkezi (60,57) → tuval merkezi (1366,1366)
+  const ty = 1366 - 57 * s
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="2732" height="2732" viewBox="0 0 2732 2732"><rect width="2732" height="2732" fill="${bgColor}"/><g transform="translate(${tx},${ty}) scale(${s})">${markBare}</g></svg>`
 }
-
-// Android: adaptive icon.
-//  ic_launcher.png        legacy kare (bg + bars), 48dp
-//  ic_launcher_round.png  legacy daire, 48dp
-//  ic_launcher_foreground.png  adaptive ön katman (yalnız işaret, saydam), 108dp
-//  arka plan @color/ic_launcher_background → koyu (ikon zeminiyle uyumlu)
-const androidRes = resolve(root, 'android/app/src/main/res')
-if (existsSync(androidRes)) {
-  const roundSVG = logoSVGString({ variant: DEFAULT_VARIANT, mode: 'icon', size: 1024, shape: 'circle' })
-  // Adaptive foreground: işareti güvenli alana (merkez ~%66) ortalayarak göm.
-  // Mark bbox merkezi (60,57) → 156'lık pedli tuvalin merkezine (78,78) taşınır.
-  const fgInner = logoSVGString({ variant: DEFAULT_VARIANT, mode: 'mark', theme: 'dark', bare: true })
-  const fgSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="108" height="108" viewBox="0 0 156 156"><g transform="translate(18,21)">${fgInner}</g></svg>`
-
-  const densities = { mdpi: 1, hdpi: 1.5, xhdpi: 2, xxhdpi: 3, xxxhdpi: 4 }
-  for (const [d, m] of Object.entries(densities)) {
-    const dir = resolve(androidRes, `mipmap-${d}`)
-    if (!existsSync(dir)) continue
-    png(iconSVG, Math.round(48 * m), resolve(dir, 'ic_launcher.png'))
-    png(roundSVG, Math.round(48 * m), resolve(dir, 'ic_launcher_round.png'))
-    pngT(fgSVG, Math.round(108 * m), resolve(dir, 'ic_launcher_foreground.png'))
-  }
-
-  // Adaptive arka plan rengi — ikon zeminiyle uyumlu koyu (beyaz placeholder yerine).
-  const bgXml = resolve(androidRes, 'values/ic_launcher_background.xml')
-  if (existsSync(bgXml)) {
-    writeFileSync(
-      bgXml,
-      `<?xml version="1.0" encoding="utf-8"?>\n<resources>\n    <color name="ic_launcher_background">#101216</color>\n</resources>\n`,
-    )
-    console.log('✓ values/ic_launcher_background.xml → #101216')
-  }
-}
+png(splashSVG('#f4f2ee'), 2732, resolve(assetsDir, 'splash.png'))
+png(splashSVG(BRAND.iconBg.bottom), 2732, resolve(assetsDir, 'splash-dark.png'))
+console.log('✓ assets/ kaynakları hazır → çalıştır: npx capacitor-assets generate --ios --android')
