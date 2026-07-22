@@ -1,4 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion'
+import { t } from '../lib/i18n'
 
 // Yüksek tempo uyarısı — kilo verme hızı 1 kg/hafta ve üzerine çıkınca
 // hız kaydırıcısının altında yumuşakça belirir. Sessiz ve net: ince altın
@@ -24,11 +25,11 @@ export function SafeFloorNote({ show, floor }) {
               style={{ background: `linear-gradient(180deg, ${AMBER}, color-mix(in srgb, ${AMBER} 25%, transparent))` }}
             />
             <span>
-              Hız burada sınırlandı: günlük hedefin güvenli taban olan{' '}
+              {t('Hız burada sınırlandı: günlük hedefin güvenli taban olan ')}
               <span className="font-semibold" style={{ color: `color-mix(in srgb, ${AMBER} 70%, var(--color-text))` }}>
                 {floor} kcal
               </span>
-              &apos;nin altına inmemesi için.
+              {t("'nin altına inmemesi için.")}
             </span>
           </p>
         </motion.div>
@@ -64,14 +65,14 @@ export default function PaceWarning({ show }) {
                 className="text-[10.5px] font-semibold uppercase tracking-[0.14em]"
                 style={{ color: AMBER }}
               >
-                Yüksek Tempo
+                {t('Yüksek Tempo')}
               </p>
               <p className="mt-1 text-[11.5px] leading-relaxed text-text-muted">
-                1 kg/hafta ve üzeri uzun vadede sürdürülebilir değildir. Bu tempoyu{' '}
+                {t('1 kg/hafta ve üzeri uzun vadede sürdürülebilir değildir. Bu tempoyu ')}
                 <span className="font-semibold" style={{ color: `color-mix(in srgb, ${AMBER} 70%, var(--color-text))` }}>
-                  2–6 haftalık
-                </span>{' '}
-                bir blokla sınırlı tut, sonra yavaşla.
+                  {t('2–6 haftalık')}
+                </span>
+                {t(' bir blokla sınırlı tut, sonra yavaşla.')}
               </p>
             </div>
           </div>

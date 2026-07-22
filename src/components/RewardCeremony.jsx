@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import RewardMedallion from './RewardMedallion'
+import { t } from '../lib/i18n'
 
 const GOLD = '#F2C94C'
 
@@ -264,7 +265,7 @@ export default function RewardCeremony({
             className="mt-4 text-sm font-medium"
             style={{ color: '#F2A93B' }}
           >
-            ✨ Yeni bir ödül kazandın
+            {t('✨ Yeni bir ödül kazandın')}
           </motion.p>
         ) : (
           <motion.div
@@ -277,7 +278,7 @@ export default function RewardCeremony({
               className="rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] tabular-nums"
               style={{ backgroundColor: `${a}1f`, color: a, border: `1px solid ${a}40` }}
             >
-              {reward.days} günlük seri
+              {t('{n} günlük seri', { n: reward.days })}
             </span>
             <h2
               className="mt-3 text-2xl font-bold leading-snug"
@@ -288,9 +289,9 @@ export default function RewardCeremony({
                 color: 'transparent',
               }}
             >
-              {reward.title}
+              {t(reward.title)}
             </h2>
-            <p className="mt-1.5 text-sm leading-relaxed" style={{ color: '#B3ACA1' }}>{reward.description}</p>
+            <p className="mt-1.5 text-sm leading-relaxed" style={{ color: '#B3ACA1' }}>{t(reward.description)}</p>
 
             {reward.duo && mode !== 'locked' && manageable ? (
               <div className="mt-5 w-full">
@@ -327,9 +328,9 @@ export default function RewardCeremony({
                           className="text-[12px] font-semibold"
                           style={{ color: on ? item.accent : '#F2EFE6' }}
                         >
-                          {item.label}
+                          {t(item.label)}
                         </span>
-                        <span className="text-[10px] leading-tight" style={{ color: '#B3ACA1' }}>{item.desc}</span>
+                        <span className="text-[10px] leading-tight" style={{ color: '#B3ACA1' }}>{t(item.desc)}</span>
                         {on && (
                           <motion.span
                             initial={{ scale: 0 }}
@@ -347,10 +348,10 @@ export default function RewardCeremony({
                 </div>
                 <p className="mt-2.5 text-[11px] text-text-muted">
                   {saving
-                    ? 'Uygulanıyor...'
+                    ? t('Uygulanıyor...')
                     : activeValues.length > 0
-                      ? 'Kapatmak için seçili hediyeye tekrar dokun.'
-                      : 'Hediyeni seç — istersen ikisini birden aç.'}
+                      ? t('Kapatmak için seçili hediyeye tekrar dokun.')
+                      : t('Hediyeni seç — istersen ikisini birden aç.')}
                 </p>
               </div>
             ) : reward.id === 'pixel-theme' && mode !== 'locked' && manageable ? (
@@ -389,7 +390,7 @@ export default function RewardCeremony({
                           className="text-[11px] font-medium"
                           style={{ color: on ? a : '#B3ACA1' }}
                         >
-                          {v.label}
+                          {t(v.label)}
                         </span>
                         {on && (
                           <motion.span
@@ -408,20 +409,20 @@ export default function RewardCeremony({
                 </div>
                 <p className="mt-2.5 text-[11px] text-text-muted">
                   {saving
-                    ? 'Uygulanıyor...'
+                    ? t('Uygulanıyor...')
                     : activeVariant
-                      ? 'Kapatmak için seçili stile tekrar dokun.'
-                      : 'Bir stil seç, anında uygulansın.'}
+                      ? t('Kapatmak için seçili stile tekrar dokun.')
+                      : t('Bir stil seç, anında uygulansın.')}
                 </p>
               </div>
             ) : mode === 'locked' ? (
               <div className="mt-5 w-full">
                 <div className="mb-1.5 flex items-center justify-between text-xs">
                   <span style={{ color: '#B3ACA1' }}>
-                    {streak}/{reward.days} gün
+                    {t('{a}/{b} gün', { a: streak, b: reward.days })}
                   </span>
                   <span className="font-semibold" style={{ color: a }}>
-                    {reward.days - streak} gün kaldı
+                    {t('{n} gün kaldı', { n: reward.days - streak })}
                   </span>
                 </div>
                 <div className="h-2 w-full overflow-hidden rounded-full" style={{ backgroundColor: 'rgba(255,255,255,0.1)' }}>
@@ -433,7 +434,7 @@ export default function RewardCeremony({
                     transition={{ duration: 0.8, ease: [0.34, 1.1, 0.64, 1] }}
                   />
                 </div>
-                <p className="mt-3 text-xs" style={{ color: '#B3ACA1' }}>Serini sürdür, bu madalyon seni bekliyor.</p>
+                <p className="mt-3 text-xs" style={{ color: '#B3ACA1' }}>{t('Serini sürdür, bu madalyon seni bekliyor.')}</p>
               </div>
             ) : !manageable ? (
               /* alınmış ödül — kuşanma Envanter'den yapılır */
@@ -443,14 +444,14 @@ export default function RewardCeremony({
                     className="rounded-full border px-3 py-1.5 text-[11px] font-semibold"
                     style={{ borderColor: `${a}40`, backgroundColor: `${a}14`, color: a }}
                   >
-                    🎒 Envanterinde
+                    {t('🎒 Envanterinde')}
                   </span>
                   {active && (
                     <span
                       className="rounded-full px-3 py-1.5 text-[11px] font-bold text-black"
                       style={{ backgroundColor: a }}
                     >
-                      ✓ Kuşanılı
+                      {t('✓ Kuşanılı')}
                     </span>
                   )}
                 </div>
@@ -463,7 +464,7 @@ export default function RewardCeremony({
                     color: a,
                   }}
                 >
-                  Envanterde Yönet
+                  {t('Envanterde Yönet')}
                 </Link>
               </div>
             ) : (
@@ -499,18 +500,18 @@ export default function RewardCeremony({
                 )}
                 <span className="relative">
                   {saving
-                    ? 'Uygulanıyor...'
+                    ? t('Uygulanıyor...')
                     : active
-                      ? '✓ Etkin'
+                      ? t('✓ Etkin')
                       : reward.type === 'badge'
-                        ? 'Rozeti Tak'
-                        : 'Hemen Uygula'}
+                        ? t('Rozeti Tak')
+                        : t('Hemen Uygula')}
                 </span>
               </motion.button>
             )}
 
             <button type="button" onClick={onClose} className="btn-chip mt-3 px-4 py-1.5 text-sm" style={{ color: '#B3ACA1' }}>
-              {manageable && mode !== 'locked' ? '🎒 Envantere Gönder' : 'Kapat'}
+              {manageable && mode !== 'locked' ? t('🎒 Envantere Gönder') : t('Kapat')}
             </button>
           </motion.div>
         )}

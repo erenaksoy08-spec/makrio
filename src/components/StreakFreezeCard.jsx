@@ -10,6 +10,7 @@ import {
   totalEarnedFreezes,
 } from '../lib/streakFreezes'
 import StreakSaverIcon from './StreakSaverIcon'
+import { t } from '../lib/i18n'
 
 const SAVER = '#FB923C'
 
@@ -73,10 +74,10 @@ export default function StreakFreezeCard({ profile, refreshProfile }) {
         >
           <div className="flex items-center gap-2">
             <StreakSaverIcon size={20} />
-            <span className="text-sm font-semibold text-text">Serin bozuldu</span>
+            <span className="text-sm font-semibold text-text">{t('Serin bozuldu')}</span>
           </div>
           <p className="mt-1 text-xs text-text-muted">
-            24 saat içinde bir kurtarıcı harcayarak <b className="text-text">{peak} günlük</b> serini kurtarabilirsin.
+            {t('24 saat içinde bir kurtarıcı harcayarak ')}<b className="text-text">{t('{n} günlük', { n: peak })}</b>{t(' serini kurtarabilirsin.')}
           </p>
           <button
             type="button"
@@ -85,7 +86,7 @@ export default function StreakFreezeCard({ profile, refreshProfile }) {
             className="btn-primary mt-3 w-full rounded-xl py-2.5 text-sm font-semibold text-black disabled:opacity-50"
             style={{ backgroundColor: SAVER }}
           >
-            {restoring ? 'Kurtarılıyor...' : `Serini kurtar (${available} kurtarıcı)`}
+            {restoring ? t('Kurtarılıyor...') : t('Serini kurtar ({n} kurtarıcı)', { n: available })}
           </button>
         </motion.div>
       )}
@@ -102,16 +103,16 @@ export default function StreakFreezeCard({ profile, refreshProfile }) {
           <div className="min-w-0 flex-1">
             <div className="flex items-baseline gap-1.5">
               <span className="text-xl font-bold tabular-nums text-text">{available}</span>
-              <span className="text-sm text-text-muted">kurtarıcı hazır</span>
+              <span className="text-sm text-text-muted">{t('kurtarıcı hazır')}</span>
             </div>
-            <div className="text-xs text-text-muted">Seri bozulursa 24 saat içinde kullanılabilir</div>
+            <div className="text-xs text-text-muted">{t('Seri bozulursa 24 saat içinde kullanılabilir')}</div>
           </div>
           {nextMilestone && (
             <span className="shrink-0 text-right text-[11px] text-text-muted">
               <span className="block font-semibold" style={{ color: SAVER }}>
                 {nextMilestone.days - peak}g
               </span>
-              sonraki
+              {t('sonraki')}
             </span>
           )}
         </div>

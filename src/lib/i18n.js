@@ -46,3 +46,12 @@ export function t(text, vars) {
   if (vars) for (const [k, v] of Object.entries(vars)) out = out.replaceAll(`{${k}}`, String(v))
   return out
 }
+
+// Bağlamlı çeviri (gettext pgettext gibi): aynı Türkçe metnin iki farklı
+// İngilizce karşılığı olduğunda ayrıştırır. Türkçe her zaman metnin kendisini
+// gösterir; İngilizce önce "ctxmetin" anahtarına, yoksa düz metne bakar.
+export function tc(context, text, vars) {
+  let out = current === 'tr' ? text : (en[`${context}${text}`] ?? en[text] ?? text)
+  if (vars) for (const [k, v] of Object.entries(vars)) out = out.replaceAll(`{${k}}`, String(v))
+  return out
+}

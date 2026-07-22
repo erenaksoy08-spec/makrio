@@ -6,6 +6,7 @@ import { useAuth } from '../contexts/AuthContext'
 import { ACTIVITY_LEVELS, GOALS, computePlan, carbsForRemaining, maxSafeLossRate, calorieFloor } from '../lib/nutrition'
 import MacroTuner from '../components/MacroTuner'
 import PaceWarning, { SafeFloorNote } from '../components/PaceWarning'
+import { t, getIntlLocale } from '../lib/i18n'
 
 // Hesapsız (ilk giriş) akışında cevaplar tarayıcıda saklanır;
 // kayıt tamamlanınca temizlenir.
@@ -191,7 +192,7 @@ export default function Onboarding() {
       })
       .eq('id', userId)
 
-    if (profileError) return 'Profil kaydedilemedi, tekrar dene.'
+    if (profileError) return t('Profil kaydedilemedi, tekrar dene.')
 
     // preferences kolonu RLS nedeniyle doğrudan update edilemiyor; RPC ile yazılır.
     const nextPrefs = { ...(currentPrefs ?? {}) }
@@ -214,7 +215,7 @@ export default function Onboarding() {
         { onConflict: 'user_id' },
       )
 
-    if (goalsError) return 'Hedefler kaydedilemedi, tekrar dene.'
+    if (goalsError) return t('Hedefler kaydedilemedi, tekrar dene.')
     return null
   }
 
@@ -231,8 +232,8 @@ export default function Onboarding() {
         setSaving(false)
         setError(
           signUpError.message === 'User already registered'
-            ? 'Bu e-posta zaten kayıtlı. Alttaki bağlantıdan giriş yapabilirsin.'
-            : 'Hesap oluşturulamadı, tekrar dene.',
+            ? t('Bu e-posta zaten kayıtlı. Alttaki bağlantıdan giriş yapabilirsin.')
+            : t('Hesap oluşturulamadı, tekrar dene.'),
         )
         return
       }
@@ -240,7 +241,7 @@ export default function Onboarding() {
       // E-posta onayı gerekiyorsa cevaplar taslakta bekler; girişten sonra kaldığı yerden devam eder.
       if (!data.session) {
         setSaving(false)
-        setInfo('Hesabını onaylamak için e-postanı kontrol et. Onayladıktan sonra giriş yap — cevapların kayıtlı, seni bekliyor.')
+        setInfo(t('Hesabını onaylamak için e-postanı kontrol et. Onayladıktan sonra giriş yap — cevapların kayıtlı, seni bekliyor.'))
         return
       }
 
@@ -281,7 +282,7 @@ export default function Onboarding() {
         <div className="mb-5 flex items-center justify-between">
           <span className="text-sm font-bold uppercase tracking-[0.2em] text-accent">Makrio</span>
           <Link to="/giris" className="btn-chip text-sm text-text-muted">
-            Zaten üye misin? <span className="font-medium text-text">Giriş yap</span>
+            {t('Zaten üye misin? ')}<span className="font-medium text-text">{t('Giriş yap')}</span>
           </Link>
         </div>
       )}
@@ -320,11 +321,11 @@ export default function Onboarding() {
             {step === 1 && (
               <>
                 <div>
-                  <h1 className="text-3xl font-semibold text-text">Merhaba 👋</h1>
-                  <p className="mt-1 text-sm text-text-muted">Seni biraz tanıyalım.</p>
+                  <h1 className="text-3xl font-semibold text-text">{t('Merhaba 👋')}</h1>
+                  <p className="mt-1 text-sm text-text-muted">{t('Seni biraz tanıyalım.')}</p>
                 </div>
                 <div className="rounded-2xl border border-border bg-surface px-4 py-3">
-                  <div className="text-xs text-text-muted">Adın (opsiyonel)</div>
+                  <div className="text-xs text-text-muted">{t('Adın (opsiyonel)')}</div>
                   <input
                     type="text"
                     value={form.name}
@@ -334,7 +335,7 @@ export default function Onboarding() {
                   />
                 </div>
                 <div>
-                  <div className="mb-2 text-sm text-text-muted">Cinsiyet</div>
+                  <div className="mb-2 text-sm text-text-muted">{t('Cinsiyet')}</div>
                   <div className="grid grid-cols-2 gap-3">
                     {GENDERS.map((g) => (
                       <ChoiceCard
@@ -342,7 +343,7 @@ export default function Onboarding() {
                         active={form.gender === g.value}
                         onClick={() => update('gender', g.value)}
                         icon={g.icon}
-                        title={g.label}
+                        title={t(g.label)}
                       />
                     ))}
                   </div>
@@ -353,13 +354,13 @@ export default function Onboarding() {
             {step === 2 && (
               <>
                 <div>
-                  <h1 className="text-3xl font-semibold text-text">Vücut ölçülerin</h1>
-                  <p className="mt-1 text-sm text-text-muted">Hedeflerini doğru hesaplamak için.</p>
+                  <h1 className="text-3xl font-semibold text-text">{t('Vücut ölçülerin')}</h1>
+                  <p className="mt-1 text-sm text-text-muted">{t('Hedeflerini doğru hesaplamak için.')}</p>
                 </div>
-                <NumberField label="Yaş" value={form.age} onChange={(v) => update('age', v)} unit="yaş" placeholder="28" />
+                <NumberField label={t('Yaş')} value={form.age} onChange={(v) => update('age', v)} unit={t('yaş')} placeholder="28" />
                 <div className="grid grid-cols-2 gap-3">
-                  <NumberField label="Boy" value={form.height_cm} onChange={(v) => update('height_cm', v)} unit="cm" placeholder="175" />
-                  <NumberField label="Kilo" value={form.weight_kg} onChange={(v) => update('weight_kg', v)} unit="kg" placeholder="75" />
+                  <NumberField label={t('Boy')} value={form.height_cm} onChange={(v) => update('height_cm', v)} unit="cm" placeholder="175" />
+                  <NumberField label={t('Kilo')} value={form.weight_kg} onChange={(v) => update('weight_kg', v)} unit="kg" placeholder="75" />
                 </div>
               </>
             )}
@@ -367,9 +368,9 @@ export default function Onboarding() {
             {step === 3 && (
               <>
                 <div>
-                  <h1 className="text-3xl font-semibold text-text">Vücut yağ oranın</h1>
+                  <h1 className="text-3xl font-semibold text-text">{t('Vücut yağ oranın')}</h1>
                   <p className="mt-1 text-sm text-text-muted">
-                    Biliyorsan girebilirsin — bazal metabolizmanı çok daha hassas hesaplarız. Bilmiyorsan atla.
+                    {t('Biliyorsan girebilirsin — bazal metabolizmanı çok daha hassas hesaplarız. Bilmiyorsan atla.')}
                   </p>
                 </div>
                 <div className="rounded-2xl border border-border bg-surface p-5">
@@ -399,7 +400,7 @@ export default function Onboarding() {
                   }}
                   className="btn-chip w-full text-center text-sm text-text-muted"
                 >
-                  Emin değilim, atla →
+                  {t('Emin değilim, atla →')}
                 </button>
               </>
             )}
@@ -407,8 +408,8 @@ export default function Onboarding() {
             {step === 4 && (
               <>
                 <div>
-                  <h1 className="text-3xl font-semibold text-text">Aktivite seviyen</h1>
-                  <p className="mt-1 text-sm text-text-muted">Günlük hareketliliğin ne kadar?</p>
+                  <h1 className="text-3xl font-semibold text-text">{t('Aktivite seviyen')}</h1>
+                  <p className="mt-1 text-sm text-text-muted">{t('Günlük hareketliliğin ne kadar?')}</p>
                 </div>
                 <div className="space-y-2.5">
                   {ACTIVITY_LEVELS.map((a) => (
@@ -417,8 +418,8 @@ export default function Onboarding() {
                       active={form.activity_level === a.value}
                       onClick={() => update('activity_level', a.value)}
                       icon={ACTIVITY_ICONS[a.value]}
-                      title={a.label}
-                      desc={a.description}
+                      title={t(a.label)}
+                      desc={t(a.description)}
                     />
                   ))}
                 </div>
@@ -428,8 +429,8 @@ export default function Onboarding() {
             {step === 5 && (
               <>
                 <div>
-                  <h1 className="text-3xl font-semibold text-text">Hedefin ne?</h1>
-                  <p className="mt-1 text-sm text-text-muted">Sonra istediğin zaman değiştirebilirsin.</p>
+                  <h1 className="text-3xl font-semibold text-text">{t('Hedefin ne?')}</h1>
+                  <p className="mt-1 text-sm text-text-muted">{t('Sonra istediğin zaman değiştirebilirsin.')}</p>
                 </div>
                 <div className="space-y-2.5">
                   {GOALS.map((g) => (
@@ -446,8 +447,8 @@ export default function Onboarding() {
                         }))
                       }
                       icon={GOAL_ICONS[g.value]}
-                      title={g.label}
-                      desc={g.description}
+                      title={t(g.label)}
+                      desc={t(g.description)}
                     />
                   ))}
                 </div>
@@ -456,10 +457,10 @@ export default function Onboarding() {
                   <div className="rounded-2xl border border-border bg-surface px-4 py-3">
                     <div className="mb-2 flex items-center justify-between">
                       <span className="text-sm text-text-muted">
-                        Haftalık {form.goal === 'lose' ? 'verme' : 'alma'} hızın
+                        {t('Haftalık {kind} hızın', { kind: form.goal === 'lose' ? t('verme') : t('alma') })}
                       </span>
                       <span className="text-sm font-semibold tabular-nums text-text">
-                        {Number(form.rate).toLocaleString('tr-TR')} kg/hafta
+                        {Number(form.rate).toLocaleString(getIntlLocale())} {t('kg/hafta')}
                       </span>
                     </div>
                     <input
@@ -472,14 +473,14 @@ export default function Onboarding() {
                       className="w-full accent-[color:var(--color-accent)]"
                     />
                     <div className="mt-1 flex justify-between text-[10px] text-text-muted">
-                      <span>yavaş & sürdürülebilir</span>
-                      <span>hızlı</span>
+                      <span>{t('yavaş & sürdürülebilir')}</span>
+                      <span>{t('hızlı')}</span>
                     </div>
                     <PaceWarning show={form.goal === 'lose' && Math.min(Number(form.rate), rateMax) >= 1} />
                     <SafeFloorNote show={rateClamped} floor={calorieFloor(form.gender)} />
                     {autoPlan && (
                       <div className="mt-3 flex items-center justify-between border-t border-border pt-3">
-                        <span className="text-xs text-text-muted">Bu hızla günlük hedef</span>
+                        <span className="text-xs text-text-muted">{t('Bu hızla günlük hedef')}</span>
                         <span className="text-sm font-bold tabular-nums text-text">
                           {autoPlan.calories} <span className="text-xs font-normal text-text-muted">kcal</span>
                         </span>
@@ -493,24 +494,24 @@ export default function Onboarding() {
             {step === 6 && computedGoals && (
               <>
                 <div>
-                  <h1 className="text-3xl font-semibold text-text">Hazırsın! 🎯</h1>
+                  <h1 className="text-3xl font-semibold text-text">{t('Hazırsın! 🎯')}</h1>
                   <p className="mt-1 text-sm text-text-muted">
                     {form.bodyFat
-                      ? 'Vücut yağ oranınla (Katch-McArdle) hassas hesaplandı.'
-                      : 'Mifflin-St Jeor formülüyle hesaplandı.'}
+                      ? t('Vücut yağ oranınla (Katch-McArdle) hassas hesaplandı.')
+                      : t('Mifflin-St Jeor formülüyle hesaplandı.')}
                   </p>
                 </div>
                 <div className="rounded-2xl border border-accent/30 bg-accent/10 p-5 text-center">
-                  <div className="text-xs text-text-muted">Günlük kalori hedefin</div>
+                  <div className="text-xs text-text-muted">{t('Günlük kalori hedefin')}</div>
                   <div className="mt-0.5 text-4xl font-bold tabular-nums text-text">{computedGoals.calories}</div>
                   <div className="text-xs text-text-muted">kcal</div>
                 </div>
 
                 <div>
                   <div className="mb-2 flex items-center justify-between">
-                    <span className="text-sm font-medium text-text">Makrolar</span>
+                    <span className="text-sm font-medium text-text">{t('Makrolar')}</span>
                     <span className="text-xs text-text-muted">
-                      {form.manualMacros ? 'Elle ayarlandı' : 'İstersen elle ayarla'}
+                      {form.manualMacros ? t('Elle ayarlandı') : t('İstersen elle ayarla')}
                     </span>
                   </div>
                   <MacroTuner
@@ -528,15 +529,15 @@ export default function Onboarding() {
             {step === 7 && preAuth && (
               <>
                 <div>
-                  <h1 className="text-3xl font-semibold text-text">Son adım 🎉</h1>
+                  <h1 className="text-3xl font-semibold text-text">{t('Son adım 🎉')}</h1>
                   <p className="mt-1 text-sm text-text-muted">
-                    Planın hazır — kaydetmek için bir hesap yeter.
+                    {t('Planın hazır — kaydetmek için bir hesap yeter.')}
                   </p>
                 </div>
 
                 {computedGoals && (
                   <div className="flex items-center justify-between rounded-2xl border border-accent/25 bg-accent/10 px-4 py-3">
-                    <span className="text-sm text-text-muted">Günlük hedefin</span>
+                    <span className="text-sm text-text-muted">{t('Günlük hedefin')}</span>
                     <span className="text-lg font-bold tabular-nums text-text">
                       {computedGoals.calories} <span className="text-sm font-normal text-text-muted">kcal</span>
                     </span>
@@ -545,19 +546,19 @@ export default function Onboarding() {
 
                 <div className="space-y-3">
                   <div className="rounded-2xl border border-border bg-surface px-4 py-3">
-                    <div className="text-xs text-text-muted">E-posta</div>
+                    <div className="text-xs text-text-muted">{t('E-posta')}</div>
                     <input
                       type="email"
                       autoComplete="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      placeholder="sen@ornek.com"
+                      placeholder={t('sen@ornek.com')}
                       className="mt-1 w-full bg-transparent text-lg text-text outline-none placeholder:text-text-muted/30"
                     />
                   </div>
                   <div className="grid grid-cols-2 gap-3">
                     <div className="rounded-2xl border border-border bg-surface px-4 py-3">
-                      <div className="text-xs text-text-muted">Şifre</div>
+                      <div className="text-xs text-text-muted">{t('Şifre')}</div>
                       <input
                         type="password"
                         autoComplete="new-password"
@@ -568,7 +569,7 @@ export default function Onboarding() {
                       />
                     </div>
                     <div className="rounded-2xl border border-border bg-surface px-4 py-3">
-                      <div className="text-xs text-text-muted">Şifre (tekrar)</div>
+                      <div className="text-xs text-text-muted">{t('Şifre (tekrar)')}</div>
                       <input
                         type="password"
                         autoComplete="new-password"
@@ -580,7 +581,7 @@ export default function Onboarding() {
                     </div>
                   </div>
                   {password && passwordConfirm && password !== passwordConfirm && (
-                    <p className="text-xs text-red-400">Şifreler eşleşmiyor.</p>
+                    <p className="text-xs text-red-400">{t('Şifreler eşleşmiyor.')}</p>
                   )}
                 </div>
 
@@ -610,7 +611,7 @@ export default function Onboarding() {
                 strokeLinejoin="round"
               />
             </svg>
-            Geri
+            {t('Geri')}
           </button>
         )}
         {step < totalSteps ? (
@@ -621,7 +622,7 @@ export default function Onboarding() {
             onClick={goNext}
             className="btn-primary flex-1 rounded-xl bg-accent py-3 font-semibold text-black disabled:opacity-40"
           >
-            Devam
+            {t('Devam')}
           </motion.button>
         ) : (
           <motion.button
@@ -633,11 +634,11 @@ export default function Onboarding() {
           >
             {saving
               ? preAuth
-                ? 'Hesap oluşturuluyor...'
-                : 'Kaydediliyor...'
+                ? t('Hesap oluşturuluyor...')
+                : t('Kaydediliyor...')
               : preAuth
-                ? 'Hesabımı oluştur ve başla'
-                : 'Başla'}
+                ? t('Hesabımı oluştur ve başla')
+                : t('Başla')}
           </motion.button>
         )}
       </div>

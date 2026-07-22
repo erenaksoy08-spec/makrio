@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { motion } from 'framer-motion'
+import { t } from '../lib/i18n'
 
 // Barkod sonucu — tarayıcı kapanınca sahneye girer.
 // 'lookup'   : ürün aranıyor (nabız animasyonlu barkod)
@@ -55,7 +56,7 @@ export default function ScanResult({ result, onUse, onDefine, onRescan, onClose 
           </motion.span>
           <div className="text-center">
             <div className="text-sm font-semibold" style={{ color: IVORY }}>
-              Ürün aranıyor
+              {t('Ürün aranıyor')}
             </div>
             <div className="mt-1 text-xs tabular-nums" style={{ color: MUTED }}>
               {code}
@@ -135,9 +136,9 @@ export default function ScanResult({ result, onUse, onDefine, onRescan, onClose 
               <span className="font-bold" style={{ color: GREEN }}>
                 {food.calories_per_100g} kcal
               </span>
-              <span>{Math.round(food.protein_per_100g ?? 0)}P</span>
-              <span>{Math.round(food.fat_per_100g ?? 0)}Y</span>
-              <span>{Math.round(food.carbs_per_100g ?? 0)}K</span>
+              <span>{Math.round(food.protein_per_100g ?? 0)}{t('P')}</span>
+              <span>{Math.round(food.fat_per_100g ?? 0)}{t('Y')}</span>
+              <span>{Math.round(food.carbs_per_100g ?? 0)}{t('K')}</span>
               <span>/ 100g</span>
             </div>
           </motion.button>
@@ -148,7 +149,7 @@ export default function ScanResult({ result, onUse, onDefine, onRescan, onClose 
             className="mt-3 text-[11px]"
             style={{ color: MUTED }}
           >
-            Gram ekranı açılıyor...
+            {t('Gram ekranı açılıyor...')}
           </motion.p>
         </div>
       )}
@@ -185,11 +186,11 @@ export default function ScanResult({ result, onUse, onDefine, onRescan, onClose 
           </motion.span>
 
           <h2 className="mt-3 text-lg font-bold" style={{ color: IVORY }}>
-            Ürün henüz kayıtlı değil
+            {t('Ürün henüz kayıtlı değil')}
           </h2>
           <p className="mt-1.5 text-xs leading-relaxed" style={{ color: MUTED }}>
-            Bu barkod veritabanımızda ve açık gıda veritabanında yok. Etiketinden 30 saniyede tanımla —{' '}
-            <span style={{ color: AMBER }}>ilk ekleyen sen ol.</span>
+            {t('Bu barkod veritabanımızda ve açık gıda veritabanında yok. Etiketinden 30 saniyede tanımla — ')}
+            <span style={{ color: AMBER }}>{t('ilk ekleyen sen ol.')}</span>
           </p>
 
           <span
@@ -214,15 +215,15 @@ export default function ScanResult({ result, onUse, onDefine, onRescan, onClose 
               className="medal-sheen pointer-events-none absolute inset-0"
               style={{ background: 'linear-gradient(115deg, transparent 40%, rgba(255,255,255,0.45) 50%, transparent 60%)' }}
             />
-            <span className="relative">Etiketten Tanımla</span>
+            <span className="relative">{t('Etiketten Tanımla')}</span>
           </motion.button>
 
           <div className="mt-2.5 flex items-center justify-center gap-4">
             <button type="button" onClick={onRescan} className="btn-chip px-3 py-1.5 text-sm" style={{ color: IVORY }}>
-              ↻ Tekrar Tara
+              {t('↻ Tekrar Tara')}
             </button>
             <button type="button" onClick={onClose} className="btn-chip px-3 py-1.5 text-sm" style={{ color: MUTED }}>
-              Vazgeç
+              {t('Vazgeç')}
             </button>
           </div>
         </motion.div>

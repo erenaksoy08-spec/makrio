@@ -9,6 +9,7 @@ import BackButton from '../components/BackButton'
 import PlateIcon from '../components/PlateIcon'
 import PlateBalance from '../components/PlateBalance'
 import { STORE_ITEMS, CURRENCY, scoopBalance, ownsItem, GOLD_NAME_STYLE } from '../lib/store'
+import { t } from '../lib/i18n'
 
 // Vitrin'in kendi kimliği — uygulama temasından bağımsız gece butiği paleti.
 const GOLD = '#E8C15A'
@@ -141,7 +142,7 @@ function StoreContent() {
   const { profile, refreshProfile } = useAuth()
   const preferences = profile?.preferences ?? {}
   const balance = scoopBalance(preferences)
-  const firstName = profile?.name?.trim().split(/\s+/)[0] || 'Sen'
+  const firstName = profile?.name?.trim().split(/\s+/)[0] || t('Sen')
 
   const [saving, setSaving] = useState(false)
   const [confirmId, setConfirmId] = useState(null) // iki adımlı satın alma onayı
@@ -225,7 +226,7 @@ function StoreContent() {
       </div>
 
       <div className="flex items-center justify-between">
-        <BackButton to="/ilerleme" label="İlerleme" />
+        <BackButton to="/ilerleme" label={t('İlerleme')} />
         {/* kasa — oyun HUD'u bakiye sayacı */}
         <PlateBalance value={balance} />
       </div>
@@ -253,10 +254,10 @@ function StoreContent() {
             filter: 'drop-shadow(0 2px 10px rgba(232,193,90,0.25))',
           }}
         >
-          Vitrin
+          {t('Vitrin')}
         </h1>
         <p className="mt-2 text-[11px] tracking-[0.18em]" style={{ color: MUTED }}>
-          SEÇKİN PARÇALAR · {CURRENCY.toUpperCase()} İLE
+          {t('SEÇKİN PARÇALAR · {c} İLE', { c: t(CURRENCY).toUpperCase() })}
         </p>
         <div className="mx-auto mt-3 flex max-w-[180px] items-center gap-3">
           <span className="h-px flex-1" style={{ background: `linear-gradient(90deg, transparent, ${HAIRLINE})` }} />
@@ -328,7 +329,7 @@ function StoreContent() {
                     boxShadow: '0 2px 8px rgba(124,189,75,0.4), inset 0 1px 0 rgba(255,255,255,0.4)',
                   }}
                 >
-                  Fırsat
+                  {t('Fırsat')}
                 </motion.span>
               )}
 
@@ -337,7 +338,7 @@ function StoreContent() {
                 <span
                   className="absolute right-2 top-2 flex h-6 w-6 items-center justify-center rounded-full text-[10px]"
                   style={{ border: `1.2px dashed ${HAIRLINE}`, color: GOLD, transform: 'rotate(-10deg)' }}
-                  title="Koleksiyonunda"
+                  title={t('Koleksiyonunda')}
                 >
                   ✓
                 </span>
@@ -367,10 +368,10 @@ function StoreContent() {
               </div>
 
               <div className="mt-1.5 text-[7.5px] font-bold uppercase tracking-[0.24em]" style={{ color: `${a}CC` }}>
-                {item.category}
+                {t(item.category)}
               </div>
               <h2 className="mt-0.5 min-h-[30px] text-[12px] font-semibold leading-tight" style={{ color: IVORY }}>
-                {item.title}
+                {t(item.title)}
               </h2>
 
               {/* fiyat — her karoda altta */}
@@ -380,7 +381,7 @@ function StoreContent() {
                   {item.price}
                 </span>
                 <span className="text-[8px] uppercase tracking-wide" style={{ color: MUTED }}>
-                  Plaka
+                  {t('Plaka')}
                 </span>
               </div>
 
@@ -402,7 +403,7 @@ function StoreContent() {
                                 setJustBought(null)
                               }}
                               className="btn-chip h-6 w-6 rounded-md disabled:opacity-50"
-                              title={`${v.label} — hemen uygula`}
+                              title={t('{label} — hemen uygula', { label: t(v.label) })}
                               style={{
                                 backgroundColor: v.value,
                                 border: `1px solid ${HAIRLINE}`,
@@ -426,7 +427,7 @@ function StoreContent() {
                             boxShadow: `0 5px 16px ${GOLD}40`,
                           }}
                         >
-                          ⚡ Hemen Uygula
+                          {t('⚡ Hemen Uygula')}
                         </button>
                       )}
                       <button
@@ -435,7 +436,7 @@ function StoreContent() {
                         className="btn-chip w-full rounded-lg px-3 py-1.5 text-[9px] font-semibold uppercase tracking-[0.12em]"
                         style={{ border: `1px solid ${HAIRLINE}`, color: MUTED }}
                       >
-                        🎒 Envantere Gönder
+                        {t('🎒 Envantere Gönder')}
                       </button>
                     </div>
                   ) : (
@@ -449,7 +450,7 @@ function StoreContent() {
                         background: 'rgba(232,193,90,0.04)',
                       }}
                     >
-                      {equipped ? '✓ Kuşanılı · Envanterde' : '🎒 Envanterde'}
+                      {equipped ? t('✓ Kuşanılı · Envanterde') : t('🎒 Envanterde')}
                     </Link>
                   )
                 ) : (
@@ -473,7 +474,7 @@ function StoreContent() {
                           : { border: `1px solid ${HAIRLINE}`, color: GOLD, background: 'rgba(232,193,90,0.05)' }
                     }
                   >
-                    {denied ? 'Yetersiz' : confirming ? `Onayla · ${item.price}` : 'Satın Al'}
+                    {denied ? t('Yetersiz') : confirming ? t('Onayla · {price}', { price: item.price }) : t('Satın Al')}
                   </motion.button>
                 )}
               </div>
@@ -487,7 +488,7 @@ function StoreContent() {
         className="btn-chip block px-1 pt-1 text-center text-[10px] tracking-[0.14em]"
         style={{ color: GOLD }}
       >
-        {CURRENCY.toUpperCase()} KAZANMAK İÇİN GÖREVLER'E UĞRA 📜
+        {t('{c} KAZANMAK İÇİN GÖREVLER\'E UĞRA 📜', { c: t(CURRENCY).toUpperCase() })}
       </Link>
     </div>
   )

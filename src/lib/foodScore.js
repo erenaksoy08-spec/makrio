@@ -10,6 +10,8 @@
 //    tam tahıl, işlenmiş et, kızartma, şekerli atıştırmalık) ile puanlanır.
 // Aynı besin her zaman aynı puanı alır. Tavan 4.8 — hiçbir yemek mükemmel değildir.
 
+import { t } from './i18n'
+
 const BANDS = [
   { min: 4.0, color: '#6FCF97', verdict: 'Çok iyi' },
   { min: 3.0, color: '#C9D048', verdict: 'İyi' },
@@ -293,7 +295,7 @@ export function scoreFood(food) {
   score += clamp(m.pDensity / 12, 0, 1) * 1.6
   if (m.pDensity >= 12 && kcal <= 250) score += 0.4
   if (m.pDensity >= 6)
-    reasons.push({ text: `Protein yoğunluğu yüksek (100 kcal başına ${m.pDensity.toFixed(1)} g)`, good: true })
+    reasons.push({ text: t('Protein yoğunluğu yüksek (100 kcal başına {g} g)', { g: m.pDensity.toFixed(1) }), good: true })
   else if (m.pDensity < 3 && kcal > 150 && !has('staple') && !has('fruit'))
     reasons.push({ text: 'Protein içeriği düşük', good: false })
 
@@ -303,14 +305,14 @@ export function scoreFood(food) {
     if (kcal < 100) reasons.push({ text: 'Enerji yoğunluğu düşük — porsiyon dostu', good: true })
   } else if (kcal > 300 && !skip('skipEnergyPenalty')) {
     score -= clamp((kcal - 300) / 300, 0, 1) * 1.0
-    reasons.push({ text: `Enerji yoğunluğu yüksek (${Math.round(kcal)} kcal / 100 g)`, good: false })
+    reasons.push({ text: t('Enerji yoğunluğu yüksek ({k} kcal / 100 g)', { k: Math.round(kcal) }), good: false })
   }
 
   // 3) Yağ ağırlığı — kalorinin yarısından fazlası yağsa. Proteinli bütün
   //    gıdalar (yumurta, somon) ve sağlıklı yağ sınıfları muaf.
   if (m.fatPct > 0.55 && m.pDensity < 8 && fiber < 4 && !skip('dropFatPenalty')) {
     score -= clamp((m.fatPct - 0.55) / 0.35, 0, 1) * 0.8
-    reasons.push({ text: `Kalorisinin %${Math.round(clamp(m.fatPct, 0, 1) * 100)}'i yağdan`, good: false })
+    reasons.push({ text: t("Kalorisinin %{p}'i yağdan", { p: Math.round(clamp(m.fatPct, 0, 1) * 100) }), good: false })
   }
 
   // 4) Rafine karb profili — sade temel gıdalar ve tam tahıl/baklagil muaf;
@@ -332,7 +334,7 @@ export function scoreFood(food) {
   // 6) Lif bonusu.
   if (fiber >= 6) score += 0.5
   else if (fiber >= 3) score += 0.3
-  if (fiber >= 3) reasons.push({ text: `Lif içeriği iyi (${fiber} g / 100 g)`, good: true })
+  if (fiber >= 3) reasons.push({ text: t('Lif içeriği iyi ({f} g / 100 g)', { f: fiber }), good: true })
 
   // 7) Düşük kalorili bütün gıda (sebze/meyve profili).
   if (kcal > 5 && kcal < 60 && (p >= 0.2 || fiber >= 1)) {

@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { motion } from 'framer-motion'
 import usePixelTheme from '../hooks/usePixelTheme'
 import { PixelFlame } from './pixelSprites'
+import { t } from '../lib/i18n'
 
 const GOLD = '#F2A93B'
 const SPARKS = Array.from({ length: 10 })
@@ -90,7 +91,7 @@ export default function StreakCelebration({ streak, onClose }) {
           >
             {streak}
           </span>
-          <span className="text-2xl font-semibold text-white/90">gün</span>
+          <span className="text-2xl font-semibold text-white/90">{t('gün')}</span>
         </motion.div>
 
         <motion.div
@@ -99,8 +100,8 @@ export default function StreakCelebration({ streak, onClose }) {
           transition={{ delay: 0.35, duration: 0.3 }}
           className="mt-2 text-center"
         >
-          <div className="text-base font-semibold text-white">Seri sürüyor! 🔥</div>
-          <div className="mt-0.5 text-sm text-white/70">Bugünün ilk kaydı — devam et.</div>
+          <div className="text-base font-semibold text-white">{t('Seri sürüyor! 🔥')}</div>
+          <div className="mt-0.5 text-sm text-white/70">{t('Bugünün ilk kaydı — devam et.')}</div>
         </motion.div>
       </motion.div>
     </motion.div>

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
+import { t } from '../lib/i18n'
 
 // Barkod tarayıcı — hız öncelikli:
 //  * Destekleyen cihazlarda native BarcodeDetector (donanım hızında, anında okur)
@@ -123,8 +124,8 @@ export default function BarcodeScanner({ onDetect, onClose }) {
         if (!stopped) {
           setError(
             e?.name === 'NotAllowedError'
-              ? 'Kamera izni gerekli — tarayıcı ayarlarından izin ver.'
-              : 'Kamera açılamadı. Cihazında kamera olduğundan emin ol.',
+              ? t('Kamera izni gerekli — tarayıcı ayarlarından izin ver.')
+              : t('Kamera açılamadı. Cihazında kamera olduğundan emin ol.'),
           )
         }
       }
@@ -189,7 +190,7 @@ export default function BarcodeScanner({ onDetect, onClose }) {
           onClick={onClose}
           className="btn-icon flex h-10 w-10 items-center justify-center rounded-full text-white"
           style={{ background: 'rgba(10,12,16,0.55)', backdropFilter: 'blur(12px)' }}
-          aria-label="Kapat"
+          aria-label={t('Kapat')}
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
             <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
@@ -199,7 +200,7 @@ export default function BarcodeScanner({ onDetect, onClose }) {
           className="rounded-full px-4 py-2 text-[13px] font-semibold text-white"
           style={{ background: 'rgba(10,12,16,0.55)', backdropFilter: 'blur(12px)' }}
         >
-          Barkod Tara
+          {t('Barkod Tara')}
         </span>
         {torchAvailable ? (
           <button
@@ -211,7 +212,7 @@ export default function BarcodeScanner({ onDetect, onClose }) {
               color: torchOn ? '#1b1206' : '#fff',
               backdropFilter: 'blur(12px)',
             }}
-            aria-label="Fener"
+            aria-label={t('Fener')}
           >
             <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
               <path d="M13 2 5 13h5l-1 9 8-11h-5l1-9z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" fill={torchOn ? 'currentColor' : 'none'} />
@@ -228,7 +229,7 @@ export default function BarcodeScanner({ onDetect, onClose }) {
           className="rounded-full px-4 py-2 text-center text-[13px] text-white/85"
           style={{ background: 'rgba(10,12,16,0.55)', backdropFilter: 'blur(12px)' }}
         >
-          {error || (ready ? 'Barkodu pencereye getir — otomatik okunur' : 'Kamera açılıyor...')}
+          {error || (ready ? t('Barkodu pencereye getir — otomatik okunur') : t('Kamera açılıyor...'))}
         </span>
       </div>
     </motion.div>

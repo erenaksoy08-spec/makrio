@@ -7,6 +7,7 @@ import RewardMedallion from '../components/RewardMedallion'
 import RewardCeremony from '../components/RewardCeremony'
 import BackButton from '../components/BackButton'
 import Laurel from '../components/Laurel'
+import { t } from '../lib/i18n'
 
 // Şeref Salonu — seri ödüllerinin sergilendiği madalyon koleksiyonu.
 const GOLD = '#F2A93B'
@@ -44,7 +45,7 @@ function RewardTile({ reward, state, index, active, progress, intro, onClick }) 
           className="absolute -top-1.5 right-2 rounded-full px-1.5 py-0.5 text-[10px] font-bold text-black"
           style={{ backgroundColor: '#F2A93B' }}
         >
-          YENİ
+          {t('YENİ')}
         </motion.span>
       )}
 
@@ -64,7 +65,7 @@ function RewardTile({ reward, state, index, active, progress, intro, onClick }) 
         className="text-[11px] font-semibold tabular-nums"
         style={{ color: open ? a : sealed ? '#F2A93B' : '#9C8E76' }}
       >
-        {sealed ? 'Aç!' : `${reward.days} gün`}
+        {sealed ? t('Aç!') : t('{n} gün', { n: reward.days })}
       </span>
     </motion.button>
   )
@@ -160,7 +161,7 @@ export default function Hall() {
         />
       </div>
 
-      <BackButton to="/ilerleme" label="İlerleme" />
+      <BackButton to="/ilerleme" label={t('İlerleme')} />
 
       {/* salon girişi — defne çelengi arasında yazıt */}
       <motion.div
@@ -183,9 +184,9 @@ export default function Hall() {
                 filter: 'drop-shadow(0 2px 8px rgba(242,169,59,0.3))',
               }}
             >
-              Şeref Salonu
+              {t('Şeref Salonu')}
             </h1>
-            <p className="mt-1.5 text-[10px] tracking-[0.22em]" style={{ color: '#9C8E76' }}>SERİ ÖDÜLLERİ KOLEKSİYONU</p>
+            <p className="mt-1.5 text-[10px] tracking-[0.22em]" style={{ color: '#9C8E76' }}>{t('SERİ ÖDÜLLERİ KOLEKSİYONU')}</p>
           </div>
           <Laurel size={34} flip />
         </div>
@@ -193,7 +194,7 @@ export default function Hall() {
           className="mx-auto mt-3.5 flex w-fit items-center gap-1.5 rounded-full border px-3 py-1 text-[10px] font-bold tabular-nums"
           style={{ borderColor: `${GOLD}40`, backgroundColor: `${GOLD}10`, color: GOLD }}
         >
-          {unlockedCount}/{REWARDS.length} MADALYON AÇIK
+          {t('{n}/{m} MADALYON AÇIK', { n: unlockedCount, m: REWARDS.length })}
         </div>
       </motion.div>
 
@@ -221,11 +222,10 @@ export default function Hall() {
         style={{ borderColor: `${GOLD}26`, background: `${GOLD}0a` }}
       >
         <p className="text-xs leading-relaxed" style={{ color: '#F0E9DB' }}>
-          Her madalyon bir <span className="font-semibold" style={{ color: GOLD }}>seri ödülü</span>.
+          {t('Her madalyon bir ')}<span className="font-semibold" style={{ color: GOLD }}>{t('seri ödülü')}</span>{t('.')}
         </p>
         <p className="mt-1 text-[11px] leading-relaxed" style={{ color: '#9C8E76' }}>
-          Üst üste kayıt tuttukça serin uzar, yeni günlük eşiklerinde madalyonlar açılır. Her birine dokunup temanı,
-          rengini ya da rozetini kuşan.
+          {t('Üst üste kayıt tuttukça serin uzar, yeni günlük eşiklerinde madalyonlar açılır. Her birine dokunup temanı, rengini ya da rozetini kuşan.')}
         </p>
       </div>
 

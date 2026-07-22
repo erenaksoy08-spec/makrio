@@ -5,6 +5,8 @@ import { VitePWA } from 'vite-plugin-pwa'
 
 // https://vite.dev/config/
 export default defineConfig({
+  // Harness PORT atarsa onu kullan (5173 başka projede olabilir); yoksa Vite varsayılanı.
+  server: { port: Number(process.env.PORT) || 5173 },
   plugins: [
     react(),
     tailwindcss(),

@@ -12,6 +12,7 @@ import { scoopBalance } from '../lib/store'
 import { readyQuestCount } from '../lib/quests'
 import { inventoryCounts } from '../lib/inventory'
 import { todayStr } from '../lib/date'
+import { t } from '../lib/i18n'
 
 // Ödül sayfasının altın kimliği — global accent beyaza döndü, cafcaf burada yaşıyor.
 const GOLD = '#F2A93B'
@@ -50,8 +51,8 @@ export default function Progress() {
   return (
     <div className="mx-auto max-w-md space-y-5 px-4 py-6">
       <div>
-        <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-text-muted">Seri & Ödüller</div>
-        <h1 className="mt-0.5 text-2xl font-semibold tracking-tight text-text">İlerleme</h1>
+        <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-text-muted">{t('Seri & Ödüller')}</div>
+        <h1 className="mt-0.5 text-2xl font-semibold tracking-tight text-text">{t('İlerleme')}</h1>
       </div>
 
       {/* Üst sıra — solda seri közü, sağda envanter çantası */}
@@ -100,17 +101,17 @@ export default function Progress() {
             </span>
             <div className="flex items-baseline gap-1">
               <span className="text-[30px] font-bold leading-none tabular-nums tracking-tight text-text">{streak}</span>
-              <span className="text-sm text-text-muted">gün</span>
+              <span className="text-sm text-text-muted">{t('gün')}</span>
             </div>
           </div>
           <div className="mt-2.5 w-fit rounded-full border border-white/[0.08] bg-white/[0.03] px-2 py-0.5 text-[9px] font-semibold uppercase tracking-[0.14em] text-text-muted">
-            En uzun · {longest} gün
+            {t('En uzun · {n} gün', { n: longest })}
           </div>
 
           {nextReward ? (
             <div className="mt-auto pt-3">
               <div className="mb-1 flex items-center justify-between text-[10px]">
-                <span className="truncate text-text-muted">Sıradaki ödül</span>
+                <span className="truncate text-text-muted">{t('Sıradaki ödül')}</span>
                 <span className="shrink-0 font-semibold tabular-nums" style={{ color: GOLD }}>
                   {nextReward.days - streak}g
                 </span>
@@ -131,7 +132,7 @@ export default function Progress() {
           ) : (
             <div className="mt-auto pt-3">
               <div className="rounded-xl bg-white/[0.04] px-2 py-1.5 text-center text-[10px]" style={{ color: GOLD }}>
-                🎉 Tüm ödüller açık
+                {t('🎉 Tüm ödüller açık')}
               </div>
             </div>
           )}
@@ -170,13 +171,13 @@ export default function Progress() {
                 color: 'transparent',
               }}
             >
-              Envanter
+              {t('Envanter')}
             </span>
             <span
               className="rounded-full border px-2.5 py-0.5 text-[10px] font-bold tabular-nums"
               style={{ borderColor: 'rgba(201,161,90,0.4)', backgroundColor: 'rgba(201,161,90,0.08)', color: '#C9A15A' }}
             >
-              {bag.owned}/{bag.total} eşya
+              {bag.owned}/{bag.total} {t('eşya')}
             </span>
           </span>
         </Link>
@@ -262,7 +263,7 @@ export default function Progress() {
                   color: 'transparent',
                 }}
               >
-                Görevler
+                {t('Görevler')}
               </span>
               {questsReady > 0 && (
                 <motion.span
@@ -272,12 +273,12 @@ export default function Progress() {
                   className="medal-pulse rounded-full px-1.5 py-0.5 text-[8px] font-bold text-black"
                   style={{ backgroundColor: GOLD }}
                 >
-                  {questsReady} HAZIR
+                  {t('{n} HAZIR', { n: questsReady })}
                 </motion.span>
               )}
             </span>
             <span className="block truncate text-xs" style={{ color: '#8E86A3' }}>
-              Tamamla, Plaka kazan — günlük ve başarımlar
+              {t('Tamamla, Plaka kazan — günlük ve başarımlar')}
             </span>
           </span>
           <span className="shrink-0 text-lg" style={{ color: 'rgba(196,181,253,0.6)' }}>
@@ -355,7 +356,7 @@ export default function Progress() {
                   filter: 'drop-shadow(0 1px 1px rgba(0,0,0,0.5))',
                 }}
               >
-                Şeref Salonu
+                {t('Şeref Salonu')}
               </span>
               {sealedCount > 0 && (
                 <motion.span
@@ -365,12 +366,12 @@ export default function Progress() {
                   className="medal-pulse rounded-full px-1.5 py-0.5 text-[8px] font-bold text-black"
                   style={{ backgroundColor: GOLD }}
                 >
-                  YENİ
+                  {t('YENİ')}
                 </motion.span>
               )}
             </span>
             <span className="mt-0.5 block truncate text-[10px] font-medium uppercase tracking-[0.16em]" style={{ color: '#A08A5F' }}>
-              Seri Ödülleri Koleksiyonu
+              {t('Seri Ödülleri Koleksiyonu')}
             </span>
           </span>
 
@@ -415,8 +416,8 @@ export default function Progress() {
           {blokUi ? <BlokTrophy size={22} /> : <TrophyIcon isActive />}
         </span>
         <span className="min-w-0 flex-1">
-          <span className="block text-sm font-semibold text-text">Arkadaş Ligi</span>
-          <span className="block truncate text-xs text-text-muted">Arkadaşlarınla yarış — seri, puan ve rozetler</span>
+          <span className="block text-sm font-semibold text-text">{t('Arkadaş Ligi')}</span>
+          <span className="block truncate text-xs text-text-muted">{t('Arkadaşlarınla yarış — seri, puan ve rozetler')}</span>
         </span>
         {/* mini podyum — 2 · 1 · 3 */}
         <span className="flex shrink-0 items-end gap-[3px] pb-0.5" aria-hidden>
@@ -453,16 +454,16 @@ export default function Progress() {
                   color: 'transparent',
                 }}
               >
-                Vitrin
+                {t('Vitrin')}
               </span>
               <span
                 className="rounded-full px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-[0.1em]"
                 style={{ backgroundColor: 'rgba(167,139,250,0.18)', color: '#A78BFA', border: '1px solid rgba(167,139,250,0.4)' }}
               >
-                Yeni
+                {t('Yeni')}
               </span>
             </span>
-            <span className="block truncate text-xs" style={{ color: '#97907F' }}>Halkalar, zeminler, prestij — Plaka'yla kuşan</span>
+            <span className="block truncate text-xs" style={{ color: '#97907F' }}>{t("Halkalar, zeminler, prestij — Plaka'yla kuşan")}</span>
           </span>
           <span className="shrink-0">
             <PlateBalance value={scoopBalance(preferences)} size="sm" />
@@ -473,13 +474,13 @@ export default function Progress() {
       {/* Streak kurtarıcıları */}
       <div className="px-1 pt-1">
         <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-text-muted">
-          Streak Kurtarıcıları
+          {t('Streak Kurtarıcıları')}
         </span>
       </div>
       <StreakFreezeCard profile={profile} refreshProfile={refreshProfile} />
 
       <p className="px-1 pt-1 text-center text-xs text-text-muted">
-        Her gün kayıt tutarak serini sürdür, yeni ödüller yolda. ✨
+        {t('Her gün kayıt tutarak serini sürdür, yeni ödüller yolda. ✨')}
       </p>
     </div>
   )

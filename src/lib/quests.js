@@ -1,3 +1,5 @@
+import { t } from './i18n'
+
 // Görevler — Plaka kazanma motoru.
 // Durum preferences.quests içinde tutulur:
 //   daily: { date, periods: [], collected: { streak, periods } }  → her gün sıfırlanır
@@ -50,8 +52,8 @@ export function buildMilestones({ profile, today, friendsCount = null }) {
   list.push({
     id: 'gold-welcome',
     icon: '👑',
-    title: "Makrio Gold'a Hoş Geldin",
-    sub: 'Gold üyeliğe geç, hediyeni kap',
+    title: t("Makrio Gold'a Hoş Geldin"),
+    sub: t('Gold üyeliğe geç, hediyeni kap'),
     reward: 5,
     progress: isGold ? 1 : 0,
     target: 1,
@@ -62,8 +64,8 @@ export function buildMilestones({ profile, today, friendsCount = null }) {
   list.push({
     id: 'first-friend',
     icon: '🤝',
-    title: 'İlk Arkadaş',
-    sub: "Arkadaş Ligi'ne ilk arkadaşını ekle",
+    title: t('İlk Arkadaş'),
+    sub: t("Arkadaş Ligi'ne ilk arkadaşını ekle"),
     reward: 10,
     progress: friendsCount == null ? null : Math.min(1, friendsCount),
     target: 1,
@@ -75,8 +77,8 @@ export function buildMilestones({ profile, today, friendsCount = null }) {
     list.push({
       id: `streak-${days}`,
       icon: '🔥',
-      title: `${days} Günlük Seri`,
-      sub: `${days} gün üst üste kayıt tut`,
+      title: t('{n} Günlük Seri', { n: days }),
+      sub: t('{n} gün üst üste kayıt tut', { n: days }),
       reward,
       progress: Math.min(days, peak),
       target: days,
@@ -88,8 +90,8 @@ export function buildMilestones({ profile, today, friendsCount = null }) {
   list.push({
     id: 'bronze-claim',
     icon: '🥉',
-    title: 'Bronz Rozet',
-    sub: "Şeref Salonu'ndan bronz rozeti al",
+    title: t('Bronz Rozet'),
+    sub: t("Şeref Salonu'ndan bronz rozeti al"),
     reward: 25,
     progress: claimed.includes('bronze-badge') ? 1 : 0,
     target: 1,
@@ -111,8 +113,8 @@ export function buildDaily({ profile, today }) {
     {
       id: 'daily-streak',
       icon: '⚡',
-      title: 'Seriyi Uzat',
-      sub: 'Bugünün ilk kaydını at (+1 seri)',
+      title: t('Seriyi Uzat'),
+      sub: t('Bugünün ilk kaydını at (+1 seri)'),
       reward: DAILY_REWARDS.streak,
       progress: streakDoneToday ? 1 : 0,
       target: 1,
@@ -122,8 +124,8 @@ export function buildDaily({ profile, today }) {
     {
       id: 'daily-periods',
       icon: '🌗',
-      title: 'Dört Vakit',
-      sub: 'Sabah, öğle, akşam ve gece uygulamaya uğra',
+      title: t('Dört Vakit'),
+      sub: t('Sabah, öğle, akşam ve gece uygulamaya uğra'),
       reward: DAILY_REWARDS.periods,
       progress: Math.min(4, seen.length),
       target: 4,
@@ -147,8 +149,8 @@ export function buildRepeatables({ profile, today, friendsCount = null }) {
     {
       id: 'hall-claim',
       icon: '🎖️',
-      title: 'Madalyon Avcısı',
-      sub: "Şeref Salonu'ndan bir ödül aç",
+      title: t('Madalyon Avcısı'),
+      sub: t("Şeref Salonu'ndan bir ödül aç"),
       reward: REPEAT_REWARDS.hallClaim,
       available: Math.max(0, claimedCount - hallCollected),
       collectedCount: hallCollected,
@@ -156,8 +158,8 @@ export function buildRepeatables({ profile, today, friendsCount = null }) {
     {
       id: 'friend-each',
       icon: '🤝',
-      title: 'Takım Büyüyor',
-      sub: "Arkadaş Ligi'ne eklenen her arkadaş için",
+      title: t('Takım Büyüyor'),
+      sub: t("Arkadaş Ligi'ne eklenen her arkadaş için"),
       reward: REPEAT_REWARDS.friendEach,
       available: friendsCount == null ? null : Math.max(0, friendsCount - friendCollected),
       collectedCount: friendCollected,
@@ -165,8 +167,8 @@ export function buildRepeatables({ profile, today, friendsCount = null }) {
     {
       id: 'friend-bonus10',
       icon: '🎁',
-      title: 'Onluk Kadro',
-      sub: 'Her 10 arkadaş için ekstra bonus',
+      title: t('Onluk Kadro'),
+      sub: t('Her 10 arkadaş için ekstra bonus'),
       reward: REPEAT_REWARDS.friendBonus10,
       available: friendsCount == null ? null : Math.max(0, Math.floor(friendsCount / 10) - bonusCollected),
       collectedCount: bonusCollected,

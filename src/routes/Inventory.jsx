@@ -8,6 +8,7 @@ import { buildInventory, CATEGORY_ORDER } from '../lib/inventory'
 import { GOLD_NAME_STYLE, BRONZE_NAME_STYLE } from '../lib/store'
 import BackButton from '../components/BackButton'
 import BronzeBadge from '../components/BronzeBadge'
+import { t } from '../lib/i18n'
 
 // Envanter — deri sırt çantasının içi: dikişli paneller, çukur eşya yuvaları,
 // pirinç perçinler. Uygulamanın geri kalanına benzemez; RPG çantası gibi hissettirir.
@@ -212,7 +213,7 @@ export default function Inventory() {
         />
       </div>
 
-      <BackButton to="/ilerleme" label="İlerleme" />
+      <BackButton to="/ilerleme" label={t('İlerleme')} />
 
       {/* çanta ağzı — dikiş hatları arasında yazıt */}
       <motion.div
@@ -234,11 +235,11 @@ export default function Inventory() {
               filter: 'drop-shadow(0 2px 6px rgba(201,161,90,0.28))',
             }}
           >
-            Envanter
+            {t('Envanter')}
           </h1>
           <span className="h-0 flex-1" style={{ borderTop: `2px dashed ${BRASS_SOFT}0.4)` }} />
         </div>
-        <p className="mt-2 text-[10px] tracking-[0.22em]" style={{ color: '#A79B85' }}>KAZANDIĞIN HER ŞEY TEK ÇANTADA</p>
+        <p className="mt-2 text-[10px] tracking-[0.22em]" style={{ color: '#A79B85' }}>{t('KAZANDIĞIN HER ŞEY TEK ÇANTADA')}</p>
       </motion.div>
 
       {/* bölmeler — eşya tarzına göre dikişli deri panel + perçinler */}
@@ -265,7 +266,7 @@ export default function Inventory() {
               className="rounded-[5px] border px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-[0.18em]"
               style={{ borderColor: `${BRASS_SOFT}0.35)`, color: BRASS, backgroundColor: 'rgba(0,0,0,0.25)' }}
             >
-              {section.cat}
+              {t(section.cat)}
             </span>
             <span className="h-0 flex-1" style={{ borderTop: `1px dashed ${BRASS_SOFT}0.22)` }} />
             <span className="text-[9px] font-semibold tabular-nums" style={{ color: `${BRASS_SOFT}0.75)` }}>
@@ -288,10 +289,10 @@ export default function Inventory() {
       ))}
 
       <p className="px-1 pt-1 text-center text-[11px] leading-relaxed" style={{ color: '#A79B85' }}>
-        Yeni eşyalar <Link to="/salon" className="font-semibold" style={{ color: BRASS }}>Şeref Salonu</Link>
-        {"'nda seriyle açılır, "}
-        <Link to="/vitrin" className="font-semibold" style={{ color: BRASS }}>Vitrin</Link>
-        {"'den Plaka ile alınır."}
+        {t('Yeni eşyalar ')}<Link to="/salon" className="font-semibold" style={{ color: BRASS }}>{t('Şeref Salonu')}</Link>
+        {t("'nda seriyle açılır, ")}
+        <Link to="/vitrin" className="font-semibold" style={{ color: BRASS }}>{t('Vitrin')}</Link>
+        {t("'den Plaka ile alınır.")}
       </p>
 
       {/* eşya kartı — seçilen yuvanın detayı, dikişli deri yama */}
@@ -324,23 +325,25 @@ export default function Inventory() {
                 </span>
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
-                    <span className="truncate text-sm font-bold" style={{ color: '#F0EADC' }}>{selected.name}</span>
+                    <span className="truncate text-sm font-bold" style={{ color: '#F0EADC' }}>{t(selected.name)}</span>
                     {selected.owned && selected.equipped && (
                       <span
                         className="shrink-0 rounded-full px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-wider text-black"
                         style={{ backgroundColor: '#F2C94C' }}
                       >
-                        Kuşanıldı
+                        {t('Kuşanıldı')}
                       </span>
                     )}
                   </div>
                   <div className="mt-0.5 text-[9px] font-semibold uppercase tracking-[0.16em]" style={{ color: `${BRASS_SOFT}0.8)` }}>
-                    {selected.source === 'salon' ? `Şeref Salonu · ${selected.days} gün serisi` : `Vitrin · ${selected.price} Plaka`}
+                    {selected.source === 'salon'
+                      ? t('Şeref Salonu · {n} gün serisi', { n: selected.days })
+                      : t('Vitrin · {n} Plaka', { n: selected.price })}
                   </div>
-                  <p className="mt-1.5 text-[11px] leading-relaxed" style={{ color: '#A79B85' }}>{selected.desc}</p>
+                  <p className="mt-1.5 text-[11px] leading-relaxed" style={{ color: '#A79B85' }}>{t(selected.desc)}</p>
                   {selected.note && (
                     <p className="mt-1 text-[10px] italic leading-relaxed" style={{ color: `${BRASS_SOFT}0.65)` }}>
-                      {selected.note}
+                      {t(selected.note)}
                     </p>
                   )}
                 </div>
@@ -349,7 +352,7 @@ export default function Inventory() {
                   onClick={() => setSelId(null)}
                   className="btn-icon relative shrink-0 text-sm after:absolute after:-inset-2 after:content-['']"
                   style={{ color: '#A79B85' }}
-                  aria-label="Kapat"
+                  aria-label={t('Kapat')}
                 >
                   ✕
                 </button>
@@ -362,7 +365,9 @@ export default function Inventory() {
                   className="btn-chip mt-3 flex w-full items-center justify-center gap-1.5 rounded-xl border py-2.5 text-[11px] font-bold uppercase tracking-[0.14em]"
                   style={{ borderColor: `${BRASS_SOFT}0.35)`, color: BRASS, backgroundColor: 'rgba(0,0,0,0.25)' }}
                 >
-                  🔒 {selected.source === 'salon' ? `${selected.days} gün seriyle açılır — Salona git` : `${selected.price} Plaka — Vitrine git`}
+                  🔒 {selected.source === 'salon'
+                    ? t('{n} gün seriyle açılır — Salona git', { n: selected.days })
+                    : t('{n} Plaka — Vitrine git', { n: selected.price })}
                 </Link>
               ) : selected.variants ? (
                 <div className="mt-3 flex flex-wrap gap-2">
@@ -383,7 +388,7 @@ export default function Inventory() {
                         }}
                       >
                         <span className="h-3 w-3 rounded-full" style={{ backgroundColor: v.swatch ?? v.value, border: '1px solid rgba(255,255,255,0.2)' }} />
-                        {v.label}
+                        {t(v.label)}
                         {active && ' ✓'}
                       </button>
                     )
@@ -406,7 +411,7 @@ export default function Inventory() {
                         }
                   }
                 >
-                  {saving ? '· · ·' : selected.equipped ? 'Çıkar' : '⚔ Kuşan'}
+                  {saving ? '· · ·' : selected.equipped ? t('Çıkar') : t('⚔ Kuşan')}
                 </button>
               )}
             </div>

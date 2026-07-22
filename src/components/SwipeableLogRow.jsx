@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react'
 import { motion, useMotionValue, useTransform, animate } from 'framer-motion'
+import { t } from '../lib/i18n'
 
 const THRESHOLD = 90
 const REVEAL = 96
@@ -64,7 +65,7 @@ export default function SwipeableLogRow({ id, onDelete, onTap, children }) {
       <button
         type="button"
         onClick={remove}
-        aria-label="Kaydı sil"
+        aria-label={t('Kaydı sil')}
         className="absolute inset-y-0 left-0 flex w-28 items-center gap-1.5 bg-red-500 pl-4 text-sm font-semibold text-white"
       >
         <motion.span style={{ opacity: bgOpacity }} className="flex items-center gap-1.5">

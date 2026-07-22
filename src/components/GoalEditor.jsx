@@ -13,6 +13,7 @@ import {
 } from '../lib/nutrition'
 import MacroTuner from './MacroTuner'
 import PaceWarning, { SafeFloorNote } from './PaceWarning'
+import { t, getIntlLocale } from '../lib/i18n'
 
 const GOAL_OPTIONS = [
   { value: 'lose', label: 'Kilo ver' },
@@ -21,7 +22,7 @@ const GOAL_OPTIONS = [
 ]
 
 function fmtDate(d) {
-  return new Intl.DateTimeFormat('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' }).format(d)
+  return new Intl.DateTimeFormat(getIntlLocale(), { day: 'numeric', month: 'long', year: 'numeric' }).format(d)
 }
 
 function ProjectionChart({ points }) {
@@ -124,7 +125,7 @@ export default function GoalEditor({ currentWeight, onClose }) {
   }, [profile, goal, rate, target, start, hasBody, manualMacros, maintainAdjust])
 
   if (!hasBody) {
-    return <p className="py-6 text-center text-sm text-text-muted">Önce profil bilgilerini tamamla.</p>
+    return <p className="py-6 text-center text-sm text-text-muted">{t('Önce profil bilgilerini tamamla.')}</p>
   }
 
   const canSave = goal === 'maintain' || calc.valid
@@ -158,7 +159,7 @@ export default function GoalEditor({ currentWeight, onClose }) {
     )
     setSaving(false)
     if (pErr || prefErr || gErr) {
-      setError('Kaydedilemedi, tekrar dene.')
+      setError(t('Kaydedilemedi, tekrar dene.'))
       return
     }
     await refreshProfile()
@@ -183,7 +184,7 @@ export default function GoalEditor({ currentWeight, onClose }) {
               goal === g.value ? 'bg-white/10 text-text' : 'text-text-muted'
             }`}
           >
-            {g.label}
+            {t(g.label)}
           </button>
         ))}
       </div>
@@ -191,10 +192,10 @@ export default function GoalEditor({ currentWeight, onClose }) {
       {goal === 'maintain' && (
         <div className="rounded-xl border border-border px-4 py-3">
           <div className="mb-2 flex items-center justify-between">
-            <span className="text-sm text-text-muted">İnce ayar</span>
+            <span className="text-sm text-text-muted">{t('İnce ayar')}</span>
             <span className="text-sm font-semibold tabular-nums text-text">
               {Number(maintainAdjust) === 0
-                ? 'Dengede'
+                ? t('Dengede')
                 : `${Number(maintainAdjust) > 0 ? '+' : ''}${maintainAdjust} kcal`}
             </span>
           </div>
@@ -216,7 +217,7 @@ export default function GoalEditor({ currentWeight, onClose }) {
             <span>+150</span>
           </div>
           <p className="mt-2 text-[11px] leading-relaxed text-text-muted">
-            Koruma kalorisini küçük adımlarla kendine göre kaydır — günlük yakımın çevresinde ufak bir esneklik.
+            {t('Koruma kalorisini küçük adımlarla kendine göre kaydır — günlük yakımın çevresinde ufak bir esneklik.')}
           </p>
         </div>
       )}
@@ -225,7 +226,7 @@ export default function GoalEditor({ currentWeight, onClose }) {
         <>
           {/* target weight */}
           <div className="flex items-center justify-between rounded-xl border border-border px-4 py-3">
-            <span className="text-sm text-text-muted">Hedef kilo</span>
+            <span className="text-sm text-text-muted">{t('Hedef kilo')}</span>
             <div className="flex items-baseline gap-1">
               <input
                 type="number"
@@ -242,9 +243,9 @@ export default function GoalEditor({ currentWeight, onClose }) {
           {/* rate slider — manual */}
           <div className="rounded-xl border border-border px-4 py-3">
             <div className="mb-2 flex items-center justify-between">
-              <span className="text-sm text-text-muted">Haftalık hız</span>
+              <span className="text-sm text-text-muted">{t('Haftalık hız')}</span>
               <span className="text-sm font-semibold tabular-nums text-text">
-                {Number(rate).toLocaleString('tr-TR')} kg/hf
+                {Number(rate).toLocaleString(getIntlLocale())} {t('kg/hf')}
               </span>
             </div>
             <input
@@ -260,8 +261,8 @@ export default function GoalEditor({ currentWeight, onClose }) {
               className="w-full accent-[color:var(--color-accent)]"
             />
             <div className="mt-1 flex justify-between text-[10px] text-text-muted">
-              <span>yavaş</span>
-              <span>hızlı</span>
+              <span>{t('yavaş')}</span>
+              <span>{t('hızlı')}</span>
             </div>
             <PaceWarning show={goal === 'lose' && Math.min(Number(rate), rateMax) >= 1} />
             <SafeFloorNote
@@ -275,18 +276,18 @@ export default function GoalEditor({ currentWeight, onClose }) {
       {/* bmr / tdee */}
       <div className="grid grid-cols-2 gap-2">
         <div className="rounded-xl border border-border px-3 py-2.5">
-          <div className="text-[11px] uppercase tracking-wide text-text-muted">Bazal (BMR)</div>
+          <div className="text-[11px] uppercase tracking-wide text-text-muted">{t('Bazal (BMR)')}</div>
           <div className="text-sm font-semibold tabular-nums text-text">{calc.bmr} kcal</div>
         </div>
         <div className="rounded-xl border border-border px-3 py-2.5">
-          <div className="text-[11px] uppercase tracking-wide text-text-muted">Günlük yakım</div>
+          <div className="text-[11px] uppercase tracking-wide text-text-muted">{t('Günlük yakım')}</div>
           <div className="text-sm font-semibold tabular-nums text-text">{calc.tdee} kcal</div>
         </div>
       </div>
 
       {/* target calories — neutral */}
       <div className="rounded-2xl border border-border bg-bg p-4 text-center">
-        <div className="text-xs text-text-muted">Günlük kalori hedefin</div>
+        <div className="text-xs text-text-muted">{t('Günlük kalori hedefin')}</div>
         <div className="mt-0.5 text-3xl font-bold tabular-nums text-text">{calc.calories}</div>
         <div className="text-xs text-text-muted">kcal</div>
       </div>
@@ -294,8 +295,8 @@ export default function GoalEditor({ currentWeight, onClose }) {
       {/* manuel makro ayarı */}
       <div className="rounded-2xl border border-border p-4">
         <div className="mb-2.5 flex items-center justify-between">
-          <span className="text-sm font-medium text-text">Makrolar</span>
-          <span className="text-xs text-text-muted">{manualMacros ? 'Elle ayarlandı' : 'Otomatik'}</span>
+          <span className="text-sm font-medium text-text">{t('Makrolar')}</span>
+          <span className="text-xs text-text-muted">{manualMacros ? t('Elle ayarlandı') : t('Otomatik')}</span>
         </div>
         <MacroTuner
           calories={calc.calories}
@@ -312,27 +313,26 @@ export default function GoalEditor({ currentWeight, onClose }) {
       <div className="rounded-2xl border border-white/5 bg-bg p-4">
         {goal === 'maintain' ? (
           <p className="py-4 text-center text-sm text-text-muted">
-            Mevcut kilonu koruyacaksın.
+            {t('Mevcut kilonu koruyacaksın.')}
             {Number(maintainAdjust) !== 0 && (
               <span className="mt-1 block text-xs">
-                Günlük yakımın {Number(maintainAdjust) > 0 ? '+' : ''}
-                {maintainAdjust} kcal ince ayarlı.
+                {t('Günlük yakımın {v} kcal ince ayarlı.', { v: `${Number(maintainAdjust) > 0 ? '+' : ''}${maintainAdjust}` })}
               </span>
             )}
           </p>
         ) : !calc.valid ? (
           <p className="py-4 text-center text-sm text-text-muted">
-            Hedef kilo, güncel kilonun {goal === 'lose' ? 'altında' : 'üstünde'} olmalı.
+            {t('Hedef kilo, güncel kilonun {dir} olmalı.', { dir: goal === 'lose' ? t('altında') : t('üstünde') })}
           </p>
         ) : (
           <>
             <div className="mb-1 flex items-center justify-between">
-              <span className="text-sm text-text-muted">Tahmini bitiş</span>
+              <span className="text-sm text-text-muted">{t('Tahmini bitiş')}</span>
               <span className="text-sm font-semibold text-text">{fmtDate(calc.endDate)}</span>
             </div>
             <ProjectionChart points={calc.points} />
             <p className="mt-1 text-center text-xs text-text-muted">
-              {start} kg → {target} kg · ~{Math.round(calc.weeks)} hafta
+              {t('{start} kg → {target} kg · ~{n} hafta', { start, target, n: Math.round(calc.weeks) })}
             </p>
           </>
         )}
@@ -347,7 +347,7 @@ export default function GoalEditor({ currentWeight, onClose }) {
         onClick={handleSave}
         className="btn-primary w-full rounded-xl bg-accent py-3 font-semibold text-black disabled:opacity-40"
       >
-        {saving ? 'Kaydediliyor...' : 'Hedefi kaydet'}
+        {saving ? t('Kaydediliyor...') : t('Hedefi kaydet')}
       </motion.button>
     </div>
   )

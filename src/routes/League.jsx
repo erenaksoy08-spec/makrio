@@ -14,6 +14,7 @@ import { Skeleton } from '../components/SkeletonLoader'
 import BronzeBadge from '../components/BronzeBadge'
 import usePixelTheme from '../hooks/usePixelTheme'
 import { PixelFlame } from '../components/pixelSprites'
+import { t } from '../lib/i18n'
 
 // İlk üç sıranın tonu: altın, gümüş, bronz. Gerisi nötr.
 const RANK_TONES = ['#F2C94C', '#C9CDD3', '#E0A34E']
@@ -117,7 +118,7 @@ function LeagueBoard() {
     const { data, error } = await supabase.rpc('send_friend_request', { p_code: value })
     setSending(false)
     if (error) {
-      setNotice({ tone: 'err', text: 'Bir şeyler ters gitti, tekrar dene.' })
+      setNotice({ tone: 'err', text: t('Bir şeyler ters gitti, tekrar dene.') })
       return
     }
     if (data.ok) {
@@ -125,18 +126,18 @@ function LeagueBoard() {
       setNotice({
         tone: 'ok',
         text: data.accepted
-          ? `${data.name ?? 'Arkadaşın'} seni zaten eklemişti — artık arkadaşsınız! 🎉`
-          : `${data.name ?? 'Kullanıcıya'} istek gönderildi.`,
+          ? t('{name} seni zaten eklemişti — artık arkadaşsınız! 🎉', { name: data.name ?? t('Arkadaşın') })
+          : t('{name} istek gönderildi.', { name: data.name ?? t('Kullanıcıya') }),
       })
       loadAll()
     } else {
       const msgs = {
-        not_found: 'Bu koda sahip bir kullanıcı bulunamadı.',
-        self: 'Bu senin kendi kodun 🙂',
-        already_friends: `${data.name ?? 'Bu kişi'} zaten arkadaşın.`,
-        already_pending: `${data.name ?? 'Bu kişi'} için istek zaten gönderilmiş.`,
+        not_found: t('Bu koda sahip bir kullanıcı bulunamadı.'),
+        self: t('Bu senin kendi kodun 🙂'),
+        already_friends: t('{name} zaten arkadaşın.', { name: data.name ?? t('Bu kişi') }),
+        already_pending: t('{name} için istek zaten gönderilmiş.', { name: data.name ?? t('Bu kişi') }),
       }
-      setNotice({ tone: 'err', text: msgs[data.reason] ?? 'İstek gönderilemedi.' })
+      setNotice({ tone: 'err', text: msgs[data.reason] ?? t('İstek gönderilemedi.') })
     }
   }
 
@@ -151,7 +152,7 @@ function LeagueBoard() {
   }
 
   async function removeFriend(row) {
-    if (!window.confirm(`${row.name ?? 'Bu arkadaşı'} listeden çıkarılsın mı?`)) return
+    if (!window.confirm(t('{name} listeden çıkarılsın mı?', { name: row.name ?? t('Bu arkadaşı') }))) return
     await supabase.rpc('remove_friend', { p_friend: row.id })
     loadAll()
   }
@@ -175,11 +176,11 @@ function LeagueBoard() {
 
   return (
     <div className="mx-auto max-w-md space-y-5 px-4 py-6">
-      <BackButton to="/ilerleme" label="İlerleme" />
+      <BackButton to="/ilerleme" label={t('İlerleme')} />
 
       <div>
-        <div className="text-xs font-medium uppercase tracking-[0.14em] text-text-muted">REKABET</div>
-        <h1 className="mt-1 text-[26px] font-semibold tracking-tight text-text">Arkadaş Ligi 🏆</h1>
+        <div className="text-xs font-medium uppercase tracking-[0.14em] text-text-muted">{t('REKABET')}</div>
+        <h1 className="mt-1 text-[26px] font-semibold tracking-tight text-text">{t('Arkadaş Ligi 🏆')}</h1>
       </div>
 
       {loading ? (
@@ -194,7 +195,7 @@ function LeagueBoard() {
             <div className="flex items-center justify-between gap-3 p-4">
               <div className="min-w-0">
                 <div className="text-[10px] font-medium uppercase tracking-[0.14em] text-text-muted">
-                  Arkadaş Kodun
+                  {t('Arkadaş Kodun')}
                 </div>
                 <div className="mt-0.5 text-[22px] font-bold tracking-[0.24em] tabular-nums text-text">{code}</div>
               </div>
@@ -203,7 +204,7 @@ function LeagueBoard() {
                 onClick={copyCode}
                 className="btn-chip shrink-0 rounded-xl border border-border px-3.5 py-2 text-xs font-semibold text-text"
               >
-                {copied ? '✓ Kopyalandı' : 'Kopyala'}
+                {copied ? t('✓ Kopyalandı') : t('Kopyala')}
               </button>
             </div>
 
@@ -212,7 +213,7 @@ function LeagueBoard() {
                 <input
                   value={addCode}
                   onChange={(e) => setAddCode(e.target.value.toUpperCase())}
-                  placeholder="Arkadaş kodu"
+                  placeholder={t('Arkadaş kodu')}
                   maxLength={6}
                   autoCapitalize="characters"
                   autoCorrect="off"
@@ -224,7 +225,7 @@ function LeagueBoard() {
                   disabled={addCode.trim().length < 4 || sending}
                   className="btn-chip shrink-0 rounded-xl bg-white px-5 py-2.5 text-sm font-semibold text-black disabled:opacity-40"
                 >
-                  {sending ? '…' : 'Ekle'}
+                  {sending ? '…' : t('Ekle')}
                 </button>
               </div>
               <AnimatePresence>
@@ -245,11 +246,11 @@ function LeagueBoard() {
           {/* bekleyen istekler */}
           {(requests.incoming.length > 0 || requests.outgoing.length > 0) && (
             <div className="space-y-3 rounded-3xl border border-white/[0.06] bg-surface p-4">
-              <span className="text-[10px] font-medium uppercase tracking-[0.14em] text-text-muted">İstekler</span>
+              <span className="text-[10px] font-medium uppercase tracking-[0.14em] text-text-muted">{t('İstekler')}</span>
               {requests.incoming.map((r) => (
                 <div key={r.id} className="flex items-center justify-between gap-3">
                   <span className="min-w-0 truncate text-sm text-text">
-                    <span className="font-semibold">{r.name ?? 'İsimsiz'}</span> seni eklemek istiyor
+                    <span className="font-semibold">{r.name ?? t('İsimsiz')}</span>{t(' seni eklemek istiyor')}
                   </span>
                   <span className="flex shrink-0 gap-2">
                     <button
@@ -272,14 +273,14 @@ function LeagueBoard() {
               {requests.outgoing.map((r) => (
                 <div key={r.id} className="flex items-center justify-between gap-3">
                   <span className="min-w-0 truncate text-sm text-text-muted">
-                    <span className="font-semibold text-text">{r.name ?? 'İsimsiz'}</span> — istek bekliyor ⏳
+                    <span className="font-semibold text-text">{r.name ?? t('İsimsiz')}</span>{t(' — istek bekliyor ⏳')}
                   </span>
                   <button
                     type="button"
                     onClick={() => cancelOutgoing(r.id)}
                     className="btn-chip shrink-0 rounded-xl border border-border px-3 py-1.5 text-xs text-text-muted"
                   >
-                    İptal
+                    {t('İptal')}
                   </button>
                 </div>
               ))}
@@ -289,13 +290,13 @@ function LeagueBoard() {
           {/* liderlik tablosu — tek kart, bölücülü satırlar */}
           <div>
             <div className="flex items-baseline justify-between px-1 pb-2">
-              <span className="text-xs font-medium uppercase tracking-[0.14em] text-text-muted">Liderlik Tablosu</span>
-              <span className="text-xs tabular-nums text-text-muted">{ranked.length} kişi</span>
+              <span className="text-xs font-medium uppercase tracking-[0.14em] text-text-muted">{t('Liderlik Tablosu')}</span>
+              <span className="text-xs tabular-nums text-text-muted">{t('{n} kişi', { n: ranked.length })}</span>
             </div>
 
             {ranked.length <= 1 ? (
               <div className="rounded-3xl border border-dashed border-border p-6 text-center text-sm text-text-muted">
-                Henüz arkadaşın yok. Kodunu paylaş, lig dolsun! 🏁
+                {t('Henüz arkadaşın yok. Kodunu paylaş, lig dolsun! 🏁')}
               </div>
             ) : (
               <div className="overflow-hidden rounded-3xl border border-white/[0.06] bg-surface">
@@ -326,22 +327,22 @@ function LeagueBoard() {
                                 return { color: 'var(--color-text)' }
                               })()}
                             >
-                              {row.name ?? 'İsimsiz'}
+                              {row.name ?? t('İsimsiz')}
                             </span>
                             {isMe && (
                               <span className="shrink-0 rounded-full bg-accent/15 px-2 py-0.5 text-[10px] font-semibold text-accent">
-                                SEN
+                                {t('SEN')}
                               </span>
                             )}
                             {loggedToday && (
-                              <span className="shrink-0 h-1.5 w-1.5 rounded-full bg-[#6FCF97]" title="Bugün kayıt yaptı" />
+                              <span className="shrink-0 h-1.5 w-1.5 rounded-full bg-[#6FCF97]" title={t('Bugün kayıt yaptı')} />
                             )}
                           </span>
 
                           <span className="mt-1 flex items-center gap-1.5 text-xs text-text-muted">
                             {flame}
                             <span className="font-semibold tabular-nums text-text">{row.current_streak ?? 0}</span>
-                            <span>gün</span>
+                            <span>{t('gün')}</span>
                             {row.badges.length > 0 && (
                               <span className="ml-1 inline-flex gap-0.5 text-[11px] opacity-80">
                                 {row.badges.map((b) =>
@@ -383,7 +384,7 @@ function LeagueBoard() {
                           >
                             {fmtScore(row.score.total)}
                           </span>
-                          <span className="block text-[10px] text-text-muted">puan</span>
+                          <span className="block text-[10px] text-text-muted">{t('puan')}</span>
                         </span>
                       </button>
 
@@ -399,14 +400,14 @@ function LeagueBoard() {
                             <div className="space-y-2 px-4 pb-4">
                               <div className="grid grid-cols-3 gap-2 text-sm tabular-nums">
                                 <div className="rounded-2xl border border-white/[0.05] p-3">
-                                  <div className="text-[11px] text-text-muted">Protein</div>
+                                  <div className="text-[11px] text-text-muted">{t('Protein')}</div>
                                   <div className="font-semibold" style={{ color: '#FF8A5B' }}>
                                     {Math.round(row.protein_g)}
                                     {row.goal_protein_g ? `/${Math.round(row.goal_protein_g)}` : ''} g
                                   </div>
                                 </div>
                                 <div className="rounded-2xl border border-white/[0.05] p-3">
-                                  <div className="text-[11px] text-text-muted">Karb · Yağ</div>
+                                  <div className="text-[11px] text-text-muted">{t('Karb · Yağ')}</div>
                                   <div className="font-semibold text-text">
                                     <span style={{ color: '#6FCF97' }}>{Math.round(row.carbs_g)}g</span>
                                     {' · '}
@@ -414,7 +415,7 @@ function LeagueBoard() {
                                   </div>
                                 </div>
                                 <div className="rounded-2xl border border-white/[0.05] p-3">
-                                  <div className="text-[11px] text-text-muted">Su</div>
+                                  <div className="text-[11px] text-text-muted">{t('Su')}</div>
                                   <div className="font-semibold" style={{ color: '#29B6F6' }}>
                                     {Math.round(row.water_ml)}
                                     {row.goal_water_ml ? `/${Math.round(row.goal_water_ml)}` : ''} ml
@@ -436,10 +437,10 @@ function LeagueBoard() {
                                     🏅
                                   </span>
                                   <span className="text-[9px] font-semibold uppercase tracking-[0.12em] text-text-muted">
-                                    Rekor Seri
+                                    {t('Rekor Seri')}
                                   </span>
                                   <span className="text-[12px] font-bold tabular-nums" style={{ color: '#F2C94C' }}>
-                                    {row.longest_streak ?? 0} gün
+                                    {t('{n} gün', { n: row.longest_streak ?? 0 })}
                                   </span>
                                 </span>
                                 {!isMe && (
@@ -448,7 +449,7 @@ function LeagueBoard() {
                                     onClick={() => removeFriend(row)}
                                     className="btn-chip rounded-xl px-2 py-1 text-[11px] text-[#EF4444]/80"
                                   >
-                                    Arkadaşlıktan çıkar
+                                    {t('Arkadaşlıktan çıkar')}
                                   </button>
                                 )}
                               </div>

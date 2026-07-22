@@ -11,6 +11,7 @@ import { buildMilestones, buildDaily, buildRepeatables, questState } from '../li
 import useBlokTheme from '../hooks/useBlokTheme'
 import { BlokCheck } from '../components/blokSprites'
 import BronzeBadge from '../components/BronzeBadge'
+import { t, tc } from '../lib/i18n'
 
 // Görev Panosu'nun kendi büyüsü — menekşe gece + altın ışık.
 const GOLD = '#F2C94C'
@@ -141,7 +142,7 @@ function CollectButton({ disabled, onClick, small = false }) {
         >
           <PlateIcon size={small ? 13 : 16} />
         </motion.span>
-        Topla
+        {t('Topla')}
       </span>
     </motion.button>
   )
@@ -251,7 +252,7 @@ function QuestCard({ quest, index, saving, onCollect, gain }) {
           <CollectButton disabled={saving} onClick={(e) => onCollect(quest, e)} />
         ) : collected ? (
           <span className="text-[8.5px] font-semibold uppercase tracking-[0.14em]" style={{ color: `${GOLD}80` }}>
-            Toplandı
+            {t('Toplandı')}
           </span>
         ) : quest.progress == null ? (
           <span className="text-[9px]" style={{ color: MUTED }}>
@@ -519,7 +520,7 @@ export default function Quests() {
       </div>
 
       <div className="flex items-center justify-between">
-        <BackButton to="/ilerleme" label="İlerleme" />
+        <BackButton to="/ilerleme" label={t('İlerleme')} />
         <span ref={balanceRef} className="relative inline-flex shrink-0">
           <motion.span
             key={flash}
@@ -569,35 +570,35 @@ export default function Quests() {
             filter: 'drop-shadow(0 2px 12px rgba(139,92,246,0.35))',
           }}
         >
-          Görevler
+          {t('Görevler')}
         </h1>
         <p className="mt-2 text-[10px] tracking-[0.2em]" style={{ color: MUTED }}>
-          TAMAMLA · TOPLA · KUŞAN
+          {t('TAMAMLA · TOPLA · KUŞAN')}
         </p>
       </motion.div>
 
-      <RuneDivider hint="Her gün yenilenir">Günlük</RuneDivider>
+      <RuneDivider hint={t('Her gün yenilenir')}>{tc('quest', 'Günlük')}</RuneDivider>
       <div className="space-y-2.5">
         {daily.map((q, i) => (
           <QuestCard key={q.id} quest={q} index={i} saving={saving} onCollect={collect} gain={gain} />
         ))}
       </div>
 
-      <RuneDivider hint="Tamamlanınca yenilenir">Tekrarlanan</RuneDivider>
+      <RuneDivider hint={t('Tamamlanınca yenilenir')}>{t('Tekrarlanan')}</RuneDivider>
       <div className="space-y-2.5">
         {repeatables.map((q, i) => (
           <QuestCard key={q.id} quest={q} index={i} saving={saving} onCollect={collect} gain={gain} />
         ))}
       </div>
 
-      <RuneDivider hint="Bir kez">Nişanlar</RuneDivider>
+      <RuneDivider hint={t('Bir kez')}>{t('Nişanlar')}</RuneDivider>
       <div className="space-y-2.5">
         {badges.map((q, i) => (
           <QuestCard key={q.id} quest={q} index={i} saving={saving} onCollect={collect} gain={gain} />
         ))}
       </div>
 
-      <RuneDivider hint="5 → 500 gün">Seri Yolu</RuneDivider>
+      <RuneDivider hint={t('5 → 500 gün')}>{t('Seri Yolu')}</RuneDivider>
       <div
         className="relative overflow-hidden rounded-3xl border p-3.5"
         style={{
@@ -629,7 +630,7 @@ export default function Quests() {
       </div>
 
       <p className="px-1 pt-1 text-center text-[10px] tracking-[0.18em]" style={{ color: MUTED }}>
-        YENİ GÖREVLER YOLDA ✦
+        {t('YENİ GÖREVLER YOLDA ✦')}
       </p>
     </div>
   )

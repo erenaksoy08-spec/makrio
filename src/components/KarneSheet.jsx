@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
 import { scoreFood } from '../lib/foodScore'
+import { t } from '../lib/i18n'
 
 // Besin Karnesi açıklama sayfası — arama satırındaki / detaydaki ⓘ ile açılır.
 // Puanın nedenlerini artı-eksi satırlarıyla döker.
@@ -27,13 +28,13 @@ export default function KarneSheet({ food, onClose }) {
 
         <div className="mt-4 flex items-start justify-between gap-3">
           <div className="min-w-0">
-            <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-text-muted">Besin Karnesi</div>
+            <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-text-muted">{t('Besin Karnesi')}</div>
             <div className="mt-0.5 truncate text-base font-semibold text-text">{food.name_tr}</div>
           </div>
           <button
             type="button"
             onClick={onClose}
-            aria-label="Kapat"
+            aria-label={t('Kapat')}
             className="btn-icon relative flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-white/[0.1] text-text-muted after:absolute after:-inset-2 after:content-['']"
           >
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
@@ -54,7 +55,7 @@ export default function KarneSheet({ food, onClose }) {
             className="rounded-full px-2.5 py-1 text-[11px] font-semibold"
             style={{ backgroundColor: `${karne.color}1f`, color: karne.color }}
           >
-            {karne.verdict}
+            {t(karne.verdict)}
           </span>
         </div>
 
@@ -84,7 +85,7 @@ export default function KarneSheet({ food, onClose }) {
               key={tag}
               className="rounded-full border border-white/[0.08] bg-white/[0.04] px-2.5 py-1 text-[11px] font-medium text-text-muted"
             >
-              {tag}
+              {t(tag)}
             </span>
           ))}
         </div>
@@ -92,7 +93,7 @@ export default function KarneSheet({ food, onClose }) {
         {/* neden bu puan? */}
         {karne.reasons.length > 0 && (
           <div className="mt-4">
-            <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-text-muted">Neden bu puan?</div>
+            <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-text-muted">{t('Neden bu puan?')}</div>
             <ul className="mt-2 space-y-2">
               {karne.reasons.map((r, i) => (
                 <motion.li
@@ -112,7 +113,7 @@ export default function KarneSheet({ food, onClose }) {
                   >
                     {r.good ? '+' : '−'}
                   </span>
-                  {r.text}
+                  {t(r.text)}
                 </motion.li>
               ))}
             </ul>
@@ -120,7 +121,7 @@ export default function KarneSheet({ food, onClose }) {
         )}
 
         <p className="mt-4 text-[10px] leading-relaxed text-text-muted opacity-70">
-          Makro profili ve besin türüne göre otomatik hesaplanır — porsiyon miktarından bağımsızdır, tıbbi öneri değildir.
+          {t('Makro profili ve besin türüne göre otomatik hesaplanır — porsiyon miktarından bağımsızdır, tıbbi öneri değildir.')}
         </p>
       </motion.div>
     </motion.div>

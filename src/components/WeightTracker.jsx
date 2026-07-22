@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import WeightChart from './WeightChart'
+import { t, getIntlLocale } from '../lib/i18n'
 
 function deltaColorFor(delta, goal) {
   if (delta == null || delta === 0) return 'var(--color-text-muted)'
@@ -15,7 +16,7 @@ function deltaColorFor(delta, goal) {
 }
 
 function fmt(n) {
-  return (Math.round(n * 10) / 10).toLocaleString('tr-TR')
+  return (Math.round(n * 10) / 10).toLocaleString(getIntlLocale())
 }
 
 export default function WeightTracker({ logs, goal, onAdd }) {
@@ -45,7 +46,7 @@ export default function WeightTracker({ logs, goal, onAdd }) {
       {/* header */}
       <div className="flex items-start justify-between">
         <div>
-          <span className="text-sm text-text-muted">Kilo</span>
+          <span className="text-sm text-text-muted">{t('Kilo')}</span>
           {latest ? (
             <div className="mt-0.5 flex items-baseline gap-1.5">
               <motion.span
@@ -60,7 +61,7 @@ export default function WeightTracker({ logs, goal, onAdd }) {
               <span className="text-base text-text-muted">kg</span>
             </div>
           ) : (
-            <div className="mt-1 text-sm text-text-muted">Henüz kayıt yok</div>
+            <div className="mt-1 text-sm text-text-muted">{t('Henüz kayıt yok')}</div>
           )}
         </div>
 
@@ -78,11 +79,11 @@ export default function WeightTracker({ logs, goal, onAdd }) {
       {sorted.length > 1 && (
         <div className="grid grid-cols-2 gap-2">
           <div className="rounded-xl border border-border px-3 py-2.5">
-            <div className="text-[11px] uppercase tracking-wide text-text-muted">Başlangıç</div>
+            <div className="text-[11px] uppercase tracking-wide text-text-muted">{t('Başlangıç')}</div>
             <div className="text-sm font-semibold tabular-nums text-text">{fmt(first.kg)} kg</div>
           </div>
           <div className="rounded-xl border border-border px-3 py-2.5">
-            <div className="text-[11px] uppercase tracking-wide text-text-muted">Toplam değişim</div>
+            <div className="text-[11px] uppercase tracking-wide text-text-muted">{t('Toplam değişim')}</div>
             <div className="text-sm font-semibold tabular-nums" style={{ color: deltaColorFor(totalChange, goal) }}>
               {totalChange > 0 ? '+' : ''}
               {fmt(totalChange)} kg
@@ -95,7 +96,7 @@ export default function WeightTracker({ logs, goal, onAdd }) {
 
       {/* add form — compact & premium */}
       <form onSubmit={handleSubmit} className="rounded-2xl border border-border bg-bg p-3">
-        <div className="mb-2 text-xs text-text-muted">Bugünkü kilon</div>
+        <div className="mb-2 text-xs text-text-muted">{t('Bugünkü kilon')}</div>
         <div className="flex items-center gap-3">
           <div className="flex flex-1 items-baseline justify-center gap-1 rounded-xl bg-surface py-2.5 focus-within:ring-1 focus-within:ring-accent">
             <input
