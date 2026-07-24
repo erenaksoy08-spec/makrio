@@ -332,7 +332,7 @@ export default function SupplementTracker() {
                                   taken ? 'text-text-muted' : 'text-text'
                                 }`}
                               >
-                                {s.name}
+                                {t(s.name)}
                               </span>
                               <BrandChip brand={cat?.brand} small />
                             </span>
@@ -340,7 +340,7 @@ export default function SupplementTracker() {
                               <span className="mt-0.5 flex items-center gap-2">
                                 {taken && takenAt[s.id] ? (
                                   <span className="truncate text-[11px]" style={{ color: SUPP_GREEN }}>
-                                    {fmtTime(takenAt[s.id])}'te alındı
+                                    {t('{time} itibarıyla alındı', { time: fmtTime(takenAt[s.id]) })}
                                   </span>
                                 ) : (
                                   <span className="truncate text-[11px] text-text-muted">{s.note}</span>
@@ -371,7 +371,7 @@ export default function SupplementTracker() {
                           type="button"
                           onClick={() => startEdit(s)}
                           className="btn-icon flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-white/[0.07] text-[11px] text-text-muted"
-                          aria-label="Düzenle"
+                          aria-label={t('Düzenle')}
                         >
                           ✎
                         </button>
@@ -425,16 +425,16 @@ export default function SupplementTracker() {
                 </span>
                 <div className="min-w-0">
                   <div className="flex items-center gap-2">
-                    <span className="truncate text-[15px] font-semibold text-text">{picked.catalog.name}</span>
+                    <span className="truncate text-[15px] font-semibold text-text">{t(picked.catalog.name)}</span>
                     <BrandChip brand={picked.catalog.brand} />
                   </div>
                   <div className="text-[10px] uppercase tracking-[0.14em] text-text-muted">
-                    {picked.catalog.cat ?? t('Takviye')}
+                    {t(picked.catalog.cat ?? 'Takviye')}
                   </div>
                 </div>
               </div>
               {picked.catalog.desc && (
-                <p className="mt-2.5 text-xs leading-relaxed text-text-muted">{picked.catalog.desc}</p>
+                <p className="mt-2.5 text-xs leading-relaxed text-text-muted">{t(picked.catalog.desc)}</p>
               )}
             </div>
 
@@ -497,7 +497,7 @@ export default function SupplementTracker() {
                   onClick={() => setPicked(null)}
                   className="btn-chip px-3 py-1.5 text-sm text-text-muted"
                 >
-                  ‹ Kataloğa dön
+                  ‹ {t('Kataloğa dön')}
                 </button>
               ) : (
                 <button
@@ -505,7 +505,7 @@ export default function SupplementTracker() {
                   onClick={() => removeSupp(picked.editing.id)}
                   className="btn-chip px-3 py-1.5 text-sm text-red-400"
                 >
-                  Listeden çıkar
+                  {t('Listeden çıkar')}
                 </button>
               )}
             </div>
@@ -534,7 +534,7 @@ export default function SupplementTracker() {
               />
             </div>
             <p className="px-1 text-[11px] text-text-muted">
-              Listeye eklediklerin her gün aynen yenilenir — aldıkça işaretle.
+              {t('Listeye eklediklerin her gün aynen yenilenir — aldıkça işaretle.')}
             </p>
             <div className="max-h-[52svh] space-y-4 overflow-y-auto pr-1">
               {grouped.map((g) => (
@@ -542,7 +542,7 @@ export default function SupplementTracker() {
                   <div className="mb-1.5 flex items-center gap-2 px-1">
                     <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: CAT_COLORS[g.cat] }} />
                     <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-text-muted">
-                      {g.cat}
+                      {t(g.cat)}
                     </span>
                     <span
                       className="h-px flex-1"
@@ -563,10 +563,10 @@ export default function SupplementTracker() {
                         >
                           <span className="min-w-0 flex-1">
                             <span className="flex items-center gap-1.5">
-                              <span className="truncate text-sm text-text">{item.name}</span>
+                              <span className="truncate text-sm text-text">{t(item.name)}</span>
                               <BrandChip brand={item.brand} small />
                             </span>
-                            {item.desc && <span className="block truncate text-[11px] text-text-muted">{item.desc}</span>}
+                            {item.desc && <span className="block truncate text-[11px] text-text-muted">{t(item.desc)}</span>}
                           </span>
                           {added ? (
                             <span

@@ -2,17 +2,19 @@ import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import usePixelTheme from '../hooks/usePixelTheme'
 import { PixelArrowLeft } from './pixelSprites'
+import { t } from '../lib/i18n'
 
 // Uygulama geneli geri butonu.
 // Normal temalar: cam pill + chevron; piksel tema: retro "bas-çök" gölgeli kare buton + piksel ok.
-export default function BackButton({ onClick, to, label = 'Geri' }) {
+export default function BackButton({ onClick, to, label }) {
+  const text = label ?? t('Geri')
   const pixel = usePixelTheme()
 
   if (pixel) {
     const content = (
       <>
         <PixelArrowLeft size={13} />
-        {label}
+        {text}
       </>
     )
     const cls =
@@ -46,7 +48,7 @@ export default function BackButton({ onClick, to, label = 'Geri' }) {
           strokeLinejoin="round"
         />
       </svg>
-      {label}
+      {text}
     </>
   )
   const cls =

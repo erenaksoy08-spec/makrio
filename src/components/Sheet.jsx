@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { AnimatePresence, motion, useDragControls } from 'framer-motion'
+import { t } from '../lib/i18n'
 
 export default function Sheet({ open, onClose, title, children, variant = 'bottom' }) {
   const center = variant === 'center'
@@ -68,7 +69,7 @@ export default function Sheet({ open, onClose, title, children, variant = 'botto
               <button
                 type="button"
                 onClick={onClose}
-                aria-label="Kapat"
+                aria-label={t('Kapat')}
                 className="btn-icon relative flex h-8 w-8 items-center justify-center rounded-full border border-border text-text-muted after:absolute after:-inset-2 after:content-['']"
               >
                 ✕

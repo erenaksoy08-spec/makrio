@@ -69,7 +69,7 @@ export default function SwipeableLogRow({ id, onDelete, onTap, children }) {
         className="absolute inset-y-0 left-0 flex w-28 items-center gap-1.5 bg-red-500 pl-4 text-sm font-semibold text-white"
       >
         <motion.span style={{ opacity: bgOpacity }} className="flex items-center gap-1.5">
-          ✕ Sil
+          ✕ {t('Sil')}
         </motion.span>
       </button>
       <motion.div

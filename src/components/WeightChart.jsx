@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { mondayOf, formatShortDate } from '../lib/date'
+import { t } from '../lib/i18n'
 
 const WIDTH = 320
 const HEIGHT = 136
@@ -39,7 +40,7 @@ export default function WeightChart({ logs, color = 'var(--color-accent)' }) {
   if (logs.length === 0) {
     return (
       <div className="flex h-28 items-center justify-center text-sm text-text-muted">
-        Henüz kilo kaydı yok.
+        {t('Henüz kilo kaydı yok.')}
       </div>
     )
   }

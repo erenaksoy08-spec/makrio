@@ -47,6 +47,31 @@ export function t(text, vars) {
   return out
 }
 
+// Katalogdan gelen bir yemeğin gösterilecek adı. İngilizce'de foods.name_en
+// kullanılır; kullanıcının kendi eklediği kayıtlarda name_en olmadığı için
+// yazdığı ada düşer (kendi yemeğini kendi diliyle görmeli).
+export function foodName(food) {
+  if (!food) return ''
+  if (current === 'en') return food.name_en || food.name_tr || ''
+  return food.name_tr || ''
+}
+
+// food_logs satırı: ad kayıt anında kopyalanır (food_name), böylece katalog
+// değişse bile geçmiş bozulmaz. Katalog kaydından gelen loglarda foods
+// ilişkisi de çekilir; İngilizce'de oradaki ad tercih edilir.
+export function logName(log) {
+  if (!log) return ''
+  if (current === 'en' && log.foods?.name_en) return log.foods.name_en
+  return log.food_name ?? ''
+}
+
+// Tarif malzemesi: adın her iki dildeki kopyası malzeme eklenirken saklanır.
+export function itemName(item) {
+  if (!item) return ''
+  if (current === 'en' && item.food_name_en) return item.food_name_en
+  return item.food_name ?? ''
+}
+
 // Bağlamlı çeviri (gettext pgettext gibi): aynı Türkçe metnin iki farklı
 // İngilizce karşılığı olduğunda ayrıştırır. Türkçe her zaman metnin kendisini
 // gösterir; İngilizce önce "ctxmetin" anahtarına, yoksa düz metne bakar.

@@ -1,11 +1,15 @@
 // Şirket bilgileri (unvan, adres, MERSİS/vergi no, KEP) netleşince aşağıdaki
 // köşeli parantezli alanları güncelleyin. İçerikler yayına alınmadan önce
 // bir hukuk danışmanı tarafından teyit edilmelidir.
-const COMPANY = '[ŞİRKET UNVANI] (Makrio)'
-const ADDRESS = '[ŞİRKET ADRESİ]'
-const MERSIS = '[MERSİS NO]'
-const TAX = '[VERGİ DAİRESİ / VERGİ NO]'
-const EMAIL = 'destek@makrio.app'
+// Metinler i18n sözlüğünden geçtiği için şirket bilgileri düz metne gömülmez;
+// {company} gibi yer tutucular LegalPage'de LEGAL_VARS ile doldurulur.
+export const LEGAL_VARS = {
+  company: '[ŞİRKET UNVANI] (Makrio)',
+  address: '[ŞİRKET ADRESİ]',
+  mersis: '[MERSİS NO]',
+  tax: '[VERGİ DAİRESİ / VERGİ NO]',
+  email: 'destek@makrio.app',
+}
 
 export const LEGAL_PAGES = {
   kvkk: {
@@ -14,7 +18,7 @@ export const LEGAL_PAGES = {
       {
         heading: 'Veri Sorumlusu',
         paragraphs: [
-          `6698 sayılı Kişisel Verilerin Korunması Kanunu ("KVKK") uyarınca, kişisel verileriniz veri sorumlusu sıfatıyla ${COMPANY} (${ADDRESS}, MERSİS: ${MERSIS}) tarafından aşağıda açıklanan kapsamda işlenmektedir.`,
+          '6698 sayılı Kişisel Verilerin Korunması Kanunu ("KVKK") uyarınca, kişisel verileriniz veri sorumlusu sıfatıyla {company} ({address}, MERSİS: {mersis}) tarafından aşağıda açıklanan kapsamda işlenmektedir.',
         ],
       },
       {
@@ -53,7 +57,7 @@ export const LEGAL_PAGES = {
         heading: 'Haklarınız',
         paragraphs: [
           'KVKK m.11 uyarınca; kişisel verilerinizin işlenip işlenmediğini öğrenme, işlenmişse buna ilişkin bilgi talep etme, işlenme amacını ve amacına uygun kullanılıp kullanılmadığını öğrenme, yurt içinde/yurt dışında aktarıldığı üçüncü kişileri bilme, eksik/yanlış işlenmişse düzeltilmesini isteme, KVKK\'da öngörülen şartlar çerçevesinde silinmesini/yok edilmesini isteme, düzeltme ve silme işlemlerinin verilerin aktarıldığı üçüncü kişilere bildirilmesini isteme, işlenen verilerin münhasıran otomatik sistemlerle analiz edilmesi suretiyle aleyhinize bir sonucun ortaya çıkmasına itiraz etme ve kanuna aykırı işleme sebebiyle zarara uğramanız hâlinde zararın giderilmesini talep etme haklarına sahipsiniz.',
-          `Bu haklarınızı kullanmak için ${EMAIL} adresinden veya uygulama içindeki "Hesabı Sil / Destek" kanallarından bizimle iletişime geçebilirsiniz.`,
+          'Bu haklarınızı kullanmak için {email} adresinden veya uygulama içindeki "Hesabı Sil / Destek" kanallarından bizimle iletişime geçebilirsiniz.',
         ],
       },
     ],
@@ -65,7 +69,7 @@ export const LEGAL_PAGES = {
       {
         heading: '1. Taraflar ve Kabul',
         paragraphs: [
-          `İşbu Kullanım Şartları, ${COMPANY} tarafından işletilen Makrio mobil/web uygulaması ("Uygulama") ile kullanıcı arasındaki hukuki ilişkiyi düzenler. Uygulamaya hesap oluşturarak veya kullanarak bu şartları okuduğunuzu, anladığınızı ve kabul ettiğinizi beyan etmiş sayılırsınız.`,
+          'İşbu Kullanım Şartları, {company} tarafından işletilen Makrio mobil/web uygulaması ("Uygulama") ile kullanıcı arasındaki hukuki ilişkiyi düzenler. Uygulamaya hesap oluşturarak veya kullanarak bu şartları okuduğunuzu, anladığınızı ve kabul ettiğinizi beyan etmiş sayılırsınız.',
         ],
       },
       {
@@ -92,13 +96,13 @@ export const LEGAL_PAGES = {
       {
         heading: '5. Fikri Mülkiyet',
         paragraphs: [
-          `Uygulamanın tasarımı, yazılımı, logosu, marka adı ve içeriği ${COMPANY}'ye aittir ve fikri mülkiyet mevzuatı kapsamında korunmaktadır. Kullanıcılar, Uygulamayı yalnızca kişisel ve ticari olmayan amaçlarla kullanabilir.`,
+          'Uygulamanın tasarımı, yazılımı, logosu, marka adı ve içeriği {company}\'ye aittir ve fikri mülkiyet mevzuatı kapsamında korunmaktadır. Kullanıcılar, Uygulamayı yalnızca kişisel ve ticari olmayan amaçlarla kullanabilir.',
         ],
       },
       {
         heading: '6. Sorumluluğun Sınırlandırılması',
         paragraphs: [
-          `${COMPANY}, Uygulamada yer alan besin veritabanı bilgilerinin veya kullanıcı tarafından girilen verilerin doğruluğuna ilişkin mutlak bir garanti vermez. Uygulamanın kesintisiz veya hatasız çalışacağı taahhüt edilmez; mevzuatın izin verdiği azami ölçüde, Uygulamanın kullanımından doğabilecek dolaylı zararlardan sorumluluk kabul edilmez.`,
+          '{company}, Uygulamada yer alan besin veritabanı bilgilerinin veya kullanıcı tarafından girilen verilerin doğruluğuna ilişkin mutlak bir garanti vermez. Uygulamanın kesintisiz veya hatasız çalışacağı taahhüt edilmez; mevzuatın izin verdiği azami ölçüde, Uygulamanın kullanımından doğabilecek dolaylı zararlardan sorumluluk kabul edilmez.',
         ],
       },
       {
@@ -122,7 +126,7 @@ export const LEGAL_PAGES = {
       {
         heading: 'Madde 1 — Taraflar',
         paragraphs: [
-          `SATICI: ${COMPANY} — ${ADDRESS} — ${TAX} — E-posta: ${EMAIL}`,
+          'SATICI: {company} — {address} — {tax} — E-posta: {email}',
           'ALICI: Makrio uygulaması üzerinden Makrio Gold aboneliğini satın alan kullanıcı (uygulama içi hesap bilgileriyle tanımlanır).',
         ],
       },

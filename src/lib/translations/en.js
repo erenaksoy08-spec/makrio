@@ -893,4 +893,239 @@ export default {
   'Piksel Renkli': 'Pixel Color',
   'Gym': 'Gym',
   'Blok': 'Blok',
+
+  // ---- Günlük / tarif ekranı (kalan sabit metinler) ----
+  'Önizleme · 100 g': 'Preview · 100 g',
+  'Makrolara göre ≈': 'From macros ≈',
+  'Uygula': 'Apply',
+  'Porsiyon': 'Serving',
+  'Tarif': 'Recipe',
+  'Tarifi Kaydet': 'Save recipe',
+  'Tarife bir isim ver.': 'Give the recipe a name.',
+  'En az bir malzeme ekle.': 'Add at least one ingredient.',
+  '+ Malzeme ekle': '+ Add ingredient',
+  '+ Özel yemek ekle': '+ Add custom food',
+  'Yeni tarif oluştur': 'Create new recipe',
+  '"{q}" olarak ekle': 'Add as "{q}"',
+  'Ücretsiz kayıt': 'Free entries',
+  'Sınırsız için Gold': 'Go Gold for unlimited',
+  'Ürün {code}': 'Product {code}',
+  '{meal} öğünü düzenleniyor': 'Editing {meal} meal',
+  '{meal} öğününe ekleniyor': 'Adding to {meal}',
+  '{meal} öğününe ekle': 'Add to {meal}',
+  '{meal} öğününe ekle — {kcal} kcal': 'Add to {meal} — {kcal} kcal',
+
+  // ---- Takviye ----
+  '{time} itibarıyla alındı': 'Taken at {time}',
+  'Kataloğa dön': 'Back to catalog',
+  'Listeden çıkar': 'Remove from list',
+  'Listeye eklediklerin her gün aynen yenilenir — aldıkça işaretle.':
+    'Whatever you add to the list resets every day — check them off as you take them.',
+
+  // ---- Diğer ----
+  'Henüz kilo kaydı yok.': 'No weight entries yet.',
+
+  // ---- Besin Karnesi etiketleri ----
+  'Protein deposu': 'Protein powerhouse',
+  'İyi protein kaynağı': 'Good protein source',
+  'Lif zengini': 'High in fiber',
+  'Kalori yoğunluğu yüksek': 'Calorie dense',
+  'Düşük kalorili': 'Low calorie',
+  'Yağ ağırlıklı': 'Fat heavy',
+  'Karbonhidrat ağırlıklı': 'Carb heavy',
+  'Şeker ağırlıklı': 'Sugar heavy',
+  'Dengeli makro dağılımı': 'Balanced macro split',
+  'Karb ağırlıklı profil': 'Carb-leaning profile',
+  'Standart profil': 'Standard profile',
+  'Saf yağ kaynağı': 'Pure fat source',
+
+  // ---- Ödül nadirlikleri ----
+  'Yaygın': 'Common',
+  'Nadir': 'Rare',
+  'Epik': 'Epic',
+  'Efsanevi': 'Legendary',
+  'Hediye': 'Gift',
+
+  // ---- Vitrin ürün açıklamaları ----
+  'Uygulama kare kare bir maden dünyasına dönüşür: toprak zemin, taş butonlar, XP yeşili barlar ve blok yazı.':
+    'The app turns block by block into a mining world: dirt ground, stone buttons, XP-green bars and blocky type.',
+  'Güneşli bir platform dünyası: gökyüzü mavisi, bloklu bulutlar, kum panelleri ve sikke altını. Klasik oyun ruhu, Makrio diliyle.':
+    'A sunny platformer world: sky blue, blocky clouds, sand panels and coin gold. Classic game spirit, in Makrio’s own voice.',
+  'Ana sayfadaki kalori halkası yumuşak köşeli, keskin duruşlu bir kareye dönüşür.':
+    'The calorie ring on the home screen becomes a soft-cornered, sharp-looking square.',
+  "Adın Arkadaş Ligi'nde altın parıltısıyla yazılır — sıralamada herkes görür.":
+    'Your name is written with a golden shimmer in the Friends League — everyone sees it in the ranking.',
+  'Uygulamanın zeminini özenle seçilmiş dört derin tondan biriyle boya. Temalarla birlikte kullanılamaz — bir tema aktifken temanın kendi zemini geçerlidir.':
+    'Paint the app background with one of four carefully picked deep tones. Cannot be combined with themes — while a theme is active its own background applies.',
+
+  // ---- Takviye kataloğu ----
+  'Vitaminler': 'Vitamins',
+  'Mineraller': 'Minerals',
+  'Magnezyum Formları': 'Magnesium Forms',
+  'Kolajen': 'Collagen',
+  'Kombinasyonlar': 'Combinations',
+  'Omega & Yağlar': 'Omega & Oils',
+  'Aminoasitler': 'Amino Acids',
+  'Performans': 'Performance',
+  'Sağlık & Sindirim': 'Health & Digestion',
+  'A Vitamini': 'Vitamin A',
+  'B Kompleks': 'B Complex',
+  'B12 Vitamini': 'Vitamin B12',
+  'B7 Vitamini (Biotin)': 'Vitamin B7 (Biotin)',
+  'B9 Vitamini (Folat)': 'Vitamin B9 (Folate)',
+  'C Vitamini': 'Vitamin C',
+  'D3 Vitamini': 'Vitamin D3',
+  'E Vitamini': 'Vitamin E',
+  'K2 Vitamini': 'Vitamin K2',
+  'Lipozomal C Vitamini': 'Liposomal Vitamin C',
+  'Bakır': 'Copper',
+  'Demir': 'Iron',
+  'Demir + C Vitamini': 'Iron + Vitamin C',
+  'Kalsiyum': 'Calcium',
+  'Krom': 'Chromium',
+  'Potasyum': 'Potassium',
+  'Selenyum': 'Selenium',
+  'Çinko': 'Zinc',
+  'İyot': 'Iodine',
+  'Magnezyum Bisglisinat': 'Magnesium Bisglycinate',
+  'Magnezyum Kompleks': 'Magnesium Complex',
+  'Magnezyum L-Treonat': 'Magnesium L-Threonate',
+  'Magnezyum Malat': 'Magnesium Malate',
+  'Magnezyum Sitrat': 'Magnesium Citrate',
+  'Magnezyum Taurat': 'Magnesium Taurate',
+  'Sitrat, Malat ve Glisinat karışımları': 'Citrate, malate and glycinate blends',
+  'Tip 1 Kolajen': 'Type 1 Collagen',
+  'Tip 2 Kolajen': 'Type 2 Collagen',
+  'Tip 3 Kolajen': 'Type 3 Collagen',
+  'Kalsiyum + Magnezyum + Çinko': 'Calcium + Magnesium + Zinc',
+  'Kalsiyum + Magnezyum + Çinko + D3': 'Calcium + Magnesium + Zinc + D3',
+  'Vitamin C + Çinko': 'Vitamin C + Zinc',
+  'Vitamin C + D3 + Çinko': 'Vitamin C + D3 + Zinc',
+  'Çinko + Magnezyum + B6 Vitamini': 'Zinc + Magnesium + Vitamin B6',
+  'Glukozamin + Kondroitin + MSM': 'Glucosamine + Chondroitin + MSM',
+  'Glukozamin + Kondroitin + MSM + Tip 2 Kolajen': 'Glucosamine + Chondroitin + MSM + Type 2 Collagen',
+  'Kreatin': 'Creatine',
+  'Kafein': 'Caffeine',
+  'Maltodekstrin': 'Maltodextrin',
+  'Elektrolit': 'Electrolytes',
+  'Probiyotik': 'Probiotic',
+  'Multivitamin ve Multimineral': 'Multivitamin & Multimineral',
+  'L-Arjinin': 'L-Arginine',
+  'L-Glutamin': 'L-Glutamine',
+  'L-Karnitin': 'L-Carnitine',
+  'L-Sitrülin': 'L-Citrulline',
+  'L-Tirozin': 'L-Tyrosine',
+  'Maca Kökü Tozu': 'Maca Root Powder',
+  'Termojenik Yağ Yakıcı': 'Thermogenic Fat Burner',
+  'Genel takviye': 'General supplement',
+  'Emilimi artıran ikili': 'Absorption-boosting duo',
+  'Eklem destek kompleksi': 'Joint support complex',
+  'Kemik ve kas destek kompleksi': 'Bone and muscle support complex',
+  'Kemik ve kalp sağlığı kombinasyonu': 'Bone and heart health combination',
+  'Kalp sağlığı kombinasyonu': 'Heart health combination',
+
+  // ---- Yasal sayfalar ----
+  'Yasal': 'Legal',
+  'Sayfa bulunamadı.': 'Page not found.',
+  'Bu metin bilgilendirme amaçlıdır ve şirket kuruluş süreci tamamlandıkça güncellenecektir.':
+    'This text is for information only and will be updated as the company incorporation process is completed.',
+
+  'KVKK Aydınlatma Metni': 'Privacy Notice (KVKK)',
+  'Veri Sorumlusu': 'Data Controller',
+  '6698 sayılı Kişisel Verilerin Korunması Kanunu ("KVKK") uyarınca, kişisel verileriniz veri sorumlusu sıfatıyla {company} ({address}, MERSİS: {mersis}) tarafından aşağıda açıklanan kapsamda işlenmektedir.':
+    'Under Turkish Personal Data Protection Law no. 6698 ("KVKK"), your personal data is processed by {company} ({address}, MERSIS: {mersis}) as data controller, within the scope described below.',
+  'İşlenen Kişisel Veriler': 'Personal Data Processed',
+  'Hesabınızı oluşturmanız ve Makrio uygulamasını kullanmanız sırasında; ad-soyad, e-posta adresi, doğum tarihi/yaş, cinsiyet gibi kimlik ve iletişim verileriniz,':
+    'When you create an account and use the Makrio app: identity and contact data such as your name, email address, date of birth/age and gender,',
+  'boy, kilo, hedef kilo, aktivite seviyesi, günlük besin ve su tüketim kayıtları gibi sağlık ve beslenmeye ilişkin özel nitelikli verileriniz,':
+    'special-category health and nutrition data such as your height, weight, target weight, activity level, and daily food and water logs,',
+  'cihaz bilgisi, uygulama içi kullanım istatistikleri ve hata kayıtları gibi teknik veriler işlenmektedir.':
+    'and technical data such as device information, in-app usage statistics and error logs.',
+  'İşleme Amaçları': 'Purposes of Processing',
+  'Kişisel verileriniz; hesabınızın oluşturulması ve kimlik doğrulaması, kalori/makro hedeflerinizin hesaplanması ve ilerleme takibinizin sağlanması, uygulama içi bildirim, seri (streak) ve ödül mekanizmalarının yürütülmesi, Makrio Gold aboneliğine ilişkin faturalandırma ve müşteri desteği süreçlerinin yürütülmesi, hizmet kalitesinin artırılması ve hataların giderilmesi amaçlarıyla sınırlı olarak işlenir.':
+    'Your personal data is processed solely for the purposes of creating and authenticating your account, calculating your calorie/macro targets and tracking your progress, running in-app notifications, streaks and reward mechanics, handling billing and customer support for the Makrio Gold subscription, and improving service quality and fixing errors.',
+  'Hukuki Sebep': 'Legal Basis',
+  'Kimlik ve iletişim verileriniz KVKK m.5/2 kapsamında sözleşmenin kurulması ve ifası hukuki sebebine dayanılarak; sağlık ve beslenmeye ilişkin özel nitelikli verileriniz ise KVKK m.6/2 uyarınca açık rızanıza dayanılarak işlenmektedir. Uygulamayı kullanmaya devam etmeniz veya kayıt sırasında onay vermeniz açık rızanızın alınması anlamına gelir; bu rızayı istediğiniz zaman geri çekebilirsiniz.':
+    'Your identity and contact data is processed on the legal basis of the conclusion and performance of a contract under KVKK art. 5/2; your special-category health and nutrition data is processed on the basis of your explicit consent under KVKK art. 6/2. Continuing to use the app or giving consent during sign-up constitutes your explicit consent; you may withdraw it at any time.',
+  'Aktarım': 'Transfers',
+  "Kişisel verileriniz; uygulamanın barındırma ve veritabanı altyapısını sağlayan yurt içi/yurt dışı bulut hizmet sağlayıcılarına (ör. sunucu barındırma hizmeti), ödeme ve abonelik işlemlerinin yürütülmesi için ilgili ödeme kuruluşlarına ve yasal yükümlülüklerimiz kapsamında yetkili kamu kurum ve kuruluşlarına, KVKK'da öngörülen güvenlik önlemleri sağlanmak kaydıyla aktarılabilir.":
+    'Your personal data may be transferred to domestic or international cloud providers supplying the hosting and database infrastructure (e.g. server hosting), to the relevant payment institutions for processing payments and subscriptions, and to authorised public authorities within the scope of our legal obligations, provided that the security measures required by the KVKK are in place.',
+  'Saklama Süresi': 'Retention Period',
+  'Kişisel verileriniz, hesabınız aktif olduğu sürece ve ilgili mevzuatta öngörülen zamanaşımı süreleri boyunca saklanır. Hesabınızı silmeniz halinde verileriniz, yasal saklama yükümlülüklerimiz saklı kalmak kaydıyla makul bir süre içinde silinir, yok edilir veya anonim hale getirilir.':
+    'Your personal data is retained for as long as your account is active and for the limitation periods set out in applicable legislation. If you delete your account, your data is erased, destroyed or anonymised within a reasonable period, without prejudice to our statutory retention obligations.',
+  'Haklarınız': 'Your Rights',
+  "KVKK m.11 uyarınca; kişisel verilerinizin işlenip işlenmediğini öğrenme, işlenmişse buna ilişkin bilgi talep etme, işlenme amacını ve amacına uygun kullanılıp kullanılmadığını öğrenme, yurt içinde/yurt dışında aktarıldığı üçüncü kişileri bilme, eksik/yanlış işlenmişse düzeltilmesini isteme, KVKK'da öngörülen şartlar çerçevesinde silinmesini/yok edilmesini isteme, düzeltme ve silme işlemlerinin verilerin aktarıldığı üçüncü kişilere bildirilmesini isteme, işlenen verilerin münhasıran otomatik sistemlerle analiz edilmesi suretiyle aleyhinize bir sonucun ortaya çıkmasına itiraz etme ve kanuna aykırı işleme sebebiyle zarara uğramanız hâlinde zararın giderilmesini talep etme haklarına sahipsiniz.":
+    'Under KVKK art. 11 you have the right to: learn whether your personal data is processed; request information if it has been; learn the purpose of processing and whether it is used accordingly; know the third parties to whom it is transferred at home or abroad; request correction if it is incomplete or inaccurate; request erasure or destruction under the conditions set out in the KVKK; request that corrections and erasures be notified to the third parties to whom the data was transferred; object to an outcome against you arising from analysis carried out solely by automated systems; and claim compensation if you suffer damage due to unlawful processing.',
+  'Bu haklarınızı kullanmak için {email} adresinden veya uygulama içindeki "Hesabı Sil / Destek" kanallarından bizimle iletişime geçebilirsiniz.':
+    'To exercise these rights you can contact us at {email} or through the in-app "Delete account / Support" channels.',
+
+  'Kullanım Şartları': 'Terms of Use',
+  '1. Taraflar ve Kabul': '1. Parties and Acceptance',
+  'İşbu Kullanım Şartları, {company} tarafından işletilen Makrio mobil/web uygulaması ("Uygulama") ile kullanıcı arasındaki hukuki ilişkiyi düzenler. Uygulamaya hesap oluşturarak veya kullanarak bu şartları okuduğunuzu, anladığınızı ve kabul ettiğinizi beyan etmiş sayılırsınız.':
+    'These Terms of Use govern the legal relationship between the user and the Makrio mobile/web application (the "App") operated by {company}. By creating an account or using the App you are deemed to have read, understood and accepted these terms.',
+  '2. Hizmetin Kapsamı': '2. Scope of the Service',
+  'Makrio; kullanıcıların günlük besin, kalori ve makro besin (protein/yağ/karbonhidrat) tüketimini, su alımını, kiloyu ve hedeflerine olan ilerlemesini takip etmesine imkân tanıyan bir kişisel takip ve motivasyon uygulamasıdır.':
+    'Makrio is a personal tracking and motivation app that lets users track their daily food, calorie and macronutrient (protein/fat/carbohydrate) intake, water intake, weight and progress towards their goals.',
+  'Uygulama içeriği tıbbi teşhis, tedavi veya profesyonel diyetisyen/doktor tavsiyesi niteliği taşımaz; yalnızca bilgilendirme ve kişisel takip amaçlıdır. Sağlık durumunuza ilişkin kararları almadan önce bir sağlık profesyoneline danışmanız önerilir.':
+    'App content does not constitute medical diagnosis, treatment or professional dietitian/doctor advice; it is for information and personal tracking only. You are advised to consult a health professional before making decisions about your health.',
+  '3. Hesap ve Kullanıcı Yükümlülükleri': '3. Account and User Obligations',
+  'Hesabınızı oluştururken verdiğiniz bilgilerin doğru, güncel ve eksiksiz olmasından siz sorumlusunuz. Hesap bilgilerinizin (e-posta, şifre) gizliliğini korumak ve hesabınız üzerinden gerçekleşen tüm işlemlerden sorumlu olmak sizin yükümlülüğünüzdedir.':
+    'You are responsible for ensuring that the information you provide when creating your account is accurate, current and complete. Keeping your account credentials (email, password) confidential and being responsible for all activity carried out through your account is your obligation.',
+  'Uygulamayı yasa dışı amaçlarla kullanmak, sistemin işleyişine müdahale etmek, başkalarının hesaplarına yetkisiz erişim sağlamaya çalışmak veya Uygulama üzerinden elde edilen içerikleri izinsiz çoğaltmak/dağıtmak yasaktır.':
+    'Using the App for unlawful purposes, interfering with the operation of the system, attempting unauthorised access to other users\' accounts, or reproducing/distributing content obtained through the App without permission is prohibited.',
+  '4. Makrio Gold Aboneliği': '4. Makrio Gold Subscription',
+  'Uygulama, ücretsiz olarak sunulan temel özelliklerin yanı sıra "Makrio Gold" adıyla ücretli bir abonelik planı sunar. Abonelik kapsamındaki özellikler, ücret ve süre bilgileri satın alma ekranında açıkça gösterilir ve satın alma anında kabul edilmiş sayılır.':
+    'In addition to the core features offered free of charge, the App offers a paid subscription plan called "Makrio Gold". The features, price and term of the subscription are shown clearly on the purchase screen and are deemed accepted at the moment of purchase.',
+  'Abonelik, aksi belirtilmedikçe seçilen dönem sonunda otomatik olarak yenilenir; aboneliğinizi dönem bitiminden önce iptal etmediğiniz sürece bir sonraki dönem için ücretlendirme yapılır. Aboneliği dilediğiniz zaman uygulama içi ayarlardan veya ilgili mağaza (App Store/Google Play) hesap ayarlarından iptal edebilirsiniz.':
+    'Unless stated otherwise, the subscription renews automatically at the end of the selected term; you will be charged for the next term unless you cancel before the current term ends. You can cancel at any time from in-app settings or from your store account settings (App Store/Google Play).',
+  '5. Fikri Mülkiyet': '5. Intellectual Property',
+  "Uygulamanın tasarımı, yazılımı, logosu, marka adı ve içeriği {company}'ye aittir ve fikri mülkiyet mevzuatı kapsamında korunmaktadır. Kullanıcılar, Uygulamayı yalnızca kişisel ve ticari olmayan amaçlarla kullanabilir.":
+    'The design, software, logo, brand name and content of the App belong to {company} and are protected under intellectual property legislation. Users may use the App for personal, non-commercial purposes only.',
+  '6. Sorumluluğun Sınırlandırılması': '6. Limitation of Liability',
+  '{company}, Uygulamada yer alan besin veritabanı bilgilerinin veya kullanıcı tarafından girilen verilerin doğruluğuna ilişkin mutlak bir garanti vermez. Uygulamanın kesintisiz veya hatasız çalışacağı taahhüt edilmez; mevzuatın izin verdiği azami ölçüde, Uygulamanın kullanımından doğabilecek dolaylı zararlardan sorumluluk kabul edilmez.':
+    '{company} gives no absolute warranty as to the accuracy of the food database information in the App or of the data entered by users. The App is not guaranteed to operate uninterrupted or error-free; to the maximum extent permitted by law, no liability is accepted for indirect damages arising from use of the App.',
+  '7. Fesih': '7. Termination',
+  'Kullanıcı, hesabını dilediği zaman uygulama içi ayarlardan silebilir. Bu şartların ihlali hâlinde hesabınız askıya alınabilir veya sonlandırılabilir.':
+    'You may delete your account at any time from in-app settings. In the event of a breach of these terms your account may be suspended or terminated.',
+  '8. Değişiklikler ve Uyuşmazlık Çözümü': '8. Changes and Dispute Resolution',
+  'Bu Kullanım Şartları zaman zaman güncellenebilir; güncel sürüm Uygulama içinden erişilebilir olacaktır. İşbu şartlardan doğan uyuşmazlıklarda Türkiye Cumhuriyeti kanunları uygulanır ve tüketici işlemlerinde Tüketici Hakem Heyetleri ile Tüketici Mahkemeleri yetkilidir.':
+    'These Terms of Use may be updated from time to time; the current version will be accessible within the App. Disputes arising from these terms are governed by the laws of the Republic of Türkiye, and for consumer transactions the Consumer Arbitration Committees and Consumer Courts have jurisdiction.',
+
+  'Mesafeli Satış Sözleşmesi': 'Distance Sales Agreement',
+  'Madde 1 — Taraflar': 'Article 1 — Parties',
+  'SATICI: {company} — {address} — {tax} — E-posta: {email}': 'SELLER: {company} — {address} — {tax} — Email: {email}',
+  'ALICI: Makrio uygulaması üzerinden Makrio Gold aboneliğini satın alan kullanıcı (uygulama içi hesap bilgileriyle tanımlanır).':
+    'BUYER: the user who purchases the Makrio Gold subscription through the Makrio app (identified by their in-app account details).',
+  'Madde 2 — Sözleşmenin Konusu': 'Article 2 — Subject of the Agreement',
+  'İşbu sözleşmenin konusu, ALICI\'nın Makrio uygulaması üzerinden elektronik ortamda sipariş verdiği "Makrio Gold" dijital abonelik hizmetinin satışı ve ifasına ilişkin olarak, 6502 sayılı Tüketicinin Korunması Hakkında Kanun ve Mesafeli Sözleşmeler Yönetmeliği hükümleri uyarınca tarafların hak ve yükümlülüklerinin belirlenmesidir.':
+    'The subject of this agreement is to set out the rights and obligations of the parties, under Consumer Protection Law no. 6502 and the Distance Contracts Regulation, regarding the sale and performance of the "Makrio Gold" digital subscription service ordered electronically by the BUYER through the Makrio app.',
+  'Madde 3 — Hizmetin Niteliği, Süresi ve Ücreti': 'Article 3 — Nature, Term and Price of the Service',
+  'Makrio Gold; sınırsız yemek kaydı, detaylı raporlar, özel temalar/rozetler, reklamsız kullanım ve öncelikli destek gibi ek özellikleri kapsayan dijital bir aboneliktir. Hizmetin süresi (aylık/yıllık) ve güncel ücreti, satın alma ekranında ALICI\'ya açıkça gösterilir ve ödeme onayı ile birlikte kabul edilmiş sayılır.':
+    'Makrio Gold is a digital subscription covering additional features such as unlimited food logging, detailed reports, exclusive themes/badges, ad-free use and priority support. The term of the service (monthly/annual) and its current price are shown clearly to the BUYER on the purchase screen and are deemed accepted upon payment confirmation.',
+  'Abonelik ücreti, ALICI\'nın işlemi gerçekleştirdiği App Store/Google Play hesabı üzerinden, seçilen dönem başında tahsil edilir ve aksi iptal edilmediği sürece dönem sonunda otomatik olarak yenilenir.':
+    'The subscription fee is charged at the start of the selected term through the App Store/Google Play account used by the BUYER, and renews automatically at the end of the term unless cancelled.',
+  'Madde 4 — Ödeme Şekli': 'Article 4 — Method of Payment',
+  'Ödeme, ALICI\'nın mobil cihazında oturum açtığı ilgili uygulama mağazası (Apple App Store veya Google Play) altyapısı üzerinden gerçekleştirilir. SATICI, ödeme kartı bilgilerini görüntülemez veya saklamaz; ödeme işlemi tamamen ilgili mağaza sağlayıcısının güvenli altyapısında yürütülür.':
+    'Payment is made through the infrastructure of the app store the BUYER is signed in to on their mobile device (Apple App Store or Google Play). The SELLER does not view or store payment card details; the payment is handled entirely within the secure infrastructure of the relevant store provider.',
+  'Madde 5 — Cayma Hakkı': 'Article 5 — Right of Withdrawal',
+  'Mesafeli Sözleşmeler Yönetmeliği\'nin 15. maddesi uyarınca, ALICI\'nın onayı ile ifasına başlanan ve elektronik ortamda anında ifa edilen hizmetlere ve tüketiciye anında teslim edilen gayrimaddi mallara (dijital içerik/hizmetlere) ilişkin sözleşmelerde cayma hakkı bulunmamaktadır.':
+    'Under article 15 of the Distance Contracts Regulation, there is no right of withdrawal for contracts covering services performed instantly in electronic form and started with the BUYER\'s approval, or intangible goods (digital content/services) delivered instantly to the consumer.',
+  'Satın alma onayı sırasında ALICI, aboneliğin hemen aktifleştirilmesini talep ederek cayma hakkının bu kapsamda kullanılamayacağını kabul etmiş sayılır. Bu durum, ALICI\'nın aboneliği dilediği zaman ileriye dönük olarak iptal etme hakkını (mevcut dönem sonuna kadar hizmetin kullanılmaya devam etmesi kaydıyla) etkilemez.':
+    'By requesting immediate activation of the subscription at the point of purchase, the BUYER is deemed to have accepted that the right of withdrawal cannot be exercised in this respect. This does not affect the BUYER\'s right to cancel the subscription prospectively at any time (with the service remaining usable until the end of the current term).',
+  'Madde 6 — İptal ve Fesih': 'Article 6 — Cancellation and Termination',
+  'ALICI, aboneliğini dilediği zaman uygulama içi ayarlardan veya ilgili mağaza hesap ayarlarından iptal edebilir. İptal, cari ödeme döneminin sonunda geçerli olur; iptal tarihine kadar geçen süre için ücret iadesi yapılmaz, ancak dönem sonuna kadar hizmetten yararlanmaya devam edilir.':
+    'The BUYER may cancel the subscription at any time from in-app settings or from the relevant store account settings. Cancellation takes effect at the end of the current billing term; no refund is made for the period already elapsed, but the service remains available until the end of the term.',
+  'Madde 7 — Uyuşmazlıkların Çözümü': 'Article 7 — Dispute Resolution',
+  'İşbu sözleşmenin uygulanmasından doğan uyuşmazlıklarda, Ticaret Bakanlığı\'nca her yıl ilan edilen parasal sınırlar dâhilinde ALICI\'nın yerleşim yerindeki Tüketici Hakem Heyetleri, bu sınırları aşan uyuşmazlıklarda ise Tüketici Mahkemeleri yetkilidir.':
+    'For disputes arising from the performance of this agreement, the Consumer Arbitration Committees at the BUYER\'s place of residence have jurisdiction within the monetary limits announced each year by the Ministry of Trade, and the Consumer Courts have jurisdiction for disputes exceeding those limits.',
+
+  // ---- Yasal: şirket bilgisi yer tutucuları ----
+  '[ŞİRKET UNVANI] (Makrio)': '[COMPANY NAME] (Makrio)',
+  '[ŞİRKET ADRESİ]': '[COMPANY ADDRESS]',
+  '[MERSİS NO]': '[MERSIS NO]',
+  '[VERGİ DAİRESİ / VERGİ NO]': '[TAX OFFICE / TAX NO]',
+
+  // ---- Tarif porsiyon/malzeme ----
+  '{n} porsiyon': '{n} servings',
+  'malzeme: {count}': 'ingredients: {count}',
 }

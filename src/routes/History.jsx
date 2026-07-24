@@ -8,7 +8,7 @@ import WeeklyBarChart from '../components/WeeklyBarChart'
 import { Skeleton } from '../components/SkeletonLoader'
 import MealPeriodIcon from '../components/MealPeriodIcon'
 import { scoreDay, scoreColor, fmtScore } from '../lib/dayScore'
-import { t } from '../lib/i18n'
+import { t, logName } from '../lib/i18n'
 
 export default function History() {
   const { user } = useAuth()
@@ -28,7 +28,7 @@ export default function History() {
       const [{ data: logs }, { data: water }, { data: goalRows }] = await Promise.all([
         supabase
           .from('food_logs')
-          .select('date, calories, food_name, meal_type, amount_g, protein_g, carbs_g, fat_g')
+          .select('date, calories, food_name, meal_type, amount_g, protein_g, carbs_g, fat_g, foods(name_en)')
           .eq('user_id', user.id)
           .gte('date', days[0])
           .lte('date', days[days.length - 1]),
@@ -259,7 +259,7 @@ export default function History() {
                   </span>
 
                   <div className="min-w-0 flex-1">
-                    <div className="truncate text-sm text-text">{log.food_name}</div>
+                    <div className="truncate text-sm text-text">{logName(log)}</div>
                     <div className="text-xs text-text-muted">
                       {getMealTypeLabel(log.meal_type)}
                       {log.amount_g ? ` · ${log.amount_g}g` : ''}

@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { t } from '../lib/i18n'
+import { t, foodName } from '../lib/i18n'
 
 // Barkod sonucu — tarayıcı kapanınca sahneye girer.
 // 'lookup'   : ürün aranıyor (nabız animasyonlu barkod)
@@ -130,7 +130,7 @@ export default function ScanResult({ result, onUse, onDefine, onRescan, onClose 
               </div>
             )}
             <div className="mt-0.5 text-lg font-bold leading-snug" style={{ color: IVORY }}>
-              {food.name_tr}
+              {foodName(food)}
             </div>
             <div className="mt-2 flex items-center justify-center gap-3 text-xs tabular-nums" style={{ color: MUTED }}>
               <span className="font-bold" style={{ color: GREEN }}>

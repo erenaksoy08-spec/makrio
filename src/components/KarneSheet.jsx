@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import { scoreFood } from '../lib/foodScore'
-import { t } from '../lib/i18n'
+import { t, foodName } from '../lib/i18n'
 
 // Besin Karnesi açıklama sayfası — arama satırındaki / detaydaki ⓘ ile açılır.
 // Puanın nedenlerini artı-eksi satırlarıyla döker.
@@ -29,7 +29,7 @@ export default function KarneSheet({ food, onClose }) {
         <div className="mt-4 flex items-start justify-between gap-3">
           <div className="min-w-0">
             <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-text-muted">{t('Besin Karnesi')}</div>
-            <div className="mt-0.5 truncate text-base font-semibold text-text">{food.name_tr}</div>
+            <div className="mt-0.5 truncate text-base font-semibold text-text">{foodName(food)}</div>
           </div>
           <button
             type="button"
