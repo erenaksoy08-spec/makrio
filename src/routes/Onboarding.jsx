@@ -6,6 +6,7 @@ import { useAuth } from '../contexts/AuthContext'
 import { ACTIVITY_LEVELS, GOALS, computePlan, carbsForRemaining, maxSafeLossRate, calorieFloor } from '../lib/nutrition'
 import MacroTuner from '../components/MacroTuner'
 import PaceWarning, { SafeFloorNote } from '../components/PaceWarning'
+import AuthLangSwitch from '../components/AuthLangSwitch'
 import { t, getIntlLocale } from '../lib/i18n'
 
 // Hesapsız (ilk giriş) akışında cevaplar tarayıcıda saklanır;
@@ -279,11 +280,15 @@ export default function Onboarding() {
     <div className="mx-auto flex min-h-svh max-w-md flex-col px-5 py-8">
       {/* marka + giriş (yalnızca hesapsız akışta) */}
       {preAuth && (
-        <div className="mb-5 flex items-center justify-between">
+        <div className="mb-5 flex items-center justify-between gap-2">
           <span className="text-sm font-bold uppercase tracking-[0.2em] text-accent">Makrio</span>
-          <Link to="/giris" className="btn-chip text-sm text-text-muted">
-            {t('Zaten üye misin? ')}<span className="font-medium text-text">{t('Giriş yap')}</span>
-          </Link>
+          <div className="flex items-center gap-2">
+            {/* Dil seçici — yabancı kullanıcı kayıt akışını anlayabilsin */}
+            <AuthLangSwitch />
+            <Link to="/giris" className="btn-chip text-sm text-text-muted">
+              {t('Zaten üye misin? ')}<span className="font-medium text-text">{t('Giriş yap')}</span>
+            </Link>
+          </div>
         </div>
       )}
 

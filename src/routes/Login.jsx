@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { supabase } from '../lib/supabase'
 import { t } from '../lib/i18n'
+import AuthLangSwitch from '../components/AuthLangSwitch'
 
 function BrandMark() {
   return (
@@ -103,6 +104,9 @@ export default function Login() {
 
   return (
     <div className="relative flex min-h-svh items-center justify-center overflow-hidden px-4">
+      {/* Dil seçici — yabancı kullanıcı giriş ekranını anlayabilsin */}
+      <AuthLangSwitch className="absolute right-4 top-4 z-10" />
+
       {/* Tek ambiyans kaynağı: marka halkasının ışığı — jenerik renk küreleri yok */}
       <div
         className="pointer-events-none absolute left-1/2 top-[12%] h-[420px] w-[420px] -translate-x-1/2 rounded-full blur-3xl"
