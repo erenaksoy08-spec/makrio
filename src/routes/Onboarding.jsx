@@ -7,6 +7,7 @@ import { ACTIVITY_LEVELS, GOALS, computePlan, carbsForRemaining, maxSafeLossRate
 import MacroTuner from '../components/MacroTuner'
 import PaceWarning, { SafeFloorNote } from '../components/PaceWarning'
 import AuthLangSwitch from '../components/AuthLangSwitch'
+import OAuthButtons from '../components/OAuthButtons'
 import { t, getIntlLocale } from '../lib/i18n'
 
 // Hesapsız (ilk giriş) akışında cevaplar tarayıcıda saklanır;
@@ -550,6 +551,16 @@ export default function Onboarding() {
                     </span>
                   </div>
                 )}
+
+                {/* Sosyal giriş: dönüşte cevaplar taslakta bekler, OnboardingGate
+                    /onboarding'e getirir ve kullanıcı kaldığı yerden onaylar. */}
+                <OAuthButtons />
+
+                <div className="flex items-center gap-3">
+                  <span className="h-px flex-1 bg-white/[0.08]" />
+                  <span className="text-[11px] uppercase tracking-wide text-text-muted">{t('veya e-posta ile')}</span>
+                  <span className="h-px flex-1 bg-white/[0.08]" />
+                </div>
 
                 <div className="space-y-3">
                   <div className="rounded-2xl border border-border bg-surface px-4 py-3">

@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import { supabase } from '../lib/supabase'
 import { t } from '../lib/i18n'
 import AuthLangSwitch from '../components/AuthLangSwitch'
+import OAuthButtons from '../components/OAuthButtons'
 
 function BrandMark() {
   return (
@@ -165,6 +166,14 @@ export default function Login() {
           >
             {loading ? t('Giriş yapılıyor...') : t('Giriş Yap')}
           </motion.button>
+
+          {/* sosyal giriş */}
+          <div className="flex items-center gap-3 py-1">
+            <span className="h-px flex-1 bg-white/[0.08]" />
+            <span className="text-[11px] uppercase tracking-wide text-text-muted">{t('veya')}</span>
+            <span className="h-px flex-1 bg-white/[0.08]" />
+          </div>
+          <OAuthButtons />
 
           <div className="pt-1 text-center">
             <Link to="/sifre-sifirla" className="text-xs text-text-muted hover:text-accent">
