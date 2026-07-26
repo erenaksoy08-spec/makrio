@@ -285,8 +285,10 @@ export default function Onboarding() {
           <div className="flex items-center gap-2">
             {/* Dil seçici — yabancı kullanıcı kayıt akışını anlayabilsin */}
             <AuthLangSwitch />
-            <Link to="/giris" className="btn-chip text-sm text-text-muted">
-              {t('Zaten üye misin? ')}<span className="font-medium text-text">{t('Giriş yap')}</span>
+            <Link to="/giris" className="btn-chip whitespace-nowrap text-sm text-text-muted">
+              {/* Dar ekranda soru gizlenir — satır kırılmasın, yalnız "Giriş yap" kalsın */}
+              <span className="hidden min-[430px]:inline">{t('Zaten üye misin? ')}</span>
+              <span className="font-medium text-text">{t('Giriş yap')}</span>
             </Link>
           </div>
         </div>
