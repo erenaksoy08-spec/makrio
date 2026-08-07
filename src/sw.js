@@ -1,5 +1,6 @@
-/* Makrio service worker — önbellek + günaydın bildirimi.
-   Bildirim felsefesi: günde tek mesaj, sabah 5'te. Başka push yok. */
+/* Makrio service worker — önbellek + push bildirimleri.
+   Push kaynakları: günaydın (sabah 5, cron) + lig beğeni/yorum (league-notify).
+   Beğeni 24 saatte bir kişi başı — bildirim yağmuru yok. */
 import { precacheAndRoute, cleanupOutdatedCaches } from 'workbox-precaching'
 import { clientsClaim } from 'workbox-core'
 

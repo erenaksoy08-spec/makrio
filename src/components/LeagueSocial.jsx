@@ -9,7 +9,7 @@ import { t, getIntlLocale } from '../lib/i18n'
 
 const LIKE_RED = '#F26B6B'
 
-function timeAgo(iso) {
+export function timeAgo(iso) {
   const s = Math.max(0, (Date.now() - new Date(iso).getTime()) / 1000)
   if (s < 60) return t('şimdi')
   if (s < 3600) return t('{n} dk', { n: Math.floor(s / 60) })

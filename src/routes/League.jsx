@@ -14,7 +14,7 @@ import { Skeleton } from '../components/SkeletonLoader'
 import BronzeBadge from '../components/BronzeBadge'
 import usePixelTheme from '../hooks/usePixelTheme'
 import { PixelFlame } from '../components/pixelSprites'
-import LeagueSocial, { HeartIcon, BubbleIcon } from '../components/LeagueSocial'
+import LeagueSocial, { HeartIcon, BubbleIcon, timeAgo } from '../components/LeagueSocial'
 import { t } from '../lib/i18n'
 
 // İlk üç sıranın tonu: altın, gümüş, bronz. Gerisi nötr.
@@ -68,7 +68,7 @@ export default function League() {
   return <LeagueBoard />
 }
 
-function LeagueBoard() {
+export function LeagueBoard() {
   const { user, profile } = useAuth()
   const pixelUi = usePixelTheme()
   const today = todayStr()
@@ -83,20 +83,36 @@ function LeagueBoard() {
   const [notice, setNotice] = useState(null) // { tone: 'ok' | 'err', text }
   const [expanded, setExpanded] = useState(null)
   const [social, setSocial] = useState({}) // {id: {like_count, liked_by_me, comment_count}}
+  const [notifCount, setNotifCount] = useState(0)
+  const [notifOpen, setNotifOpen] = useState(false)
+  const [notifs, setNotifs] = useState(null) // null = henüz açılmadı
 
   const loadAll = useCallback(async () => {
-    const [codeRes, boardRes, reqRes, socialRes] = await Promise.all([
+    const [codeRes, boardRes, reqRes, socialRes, unreadRes] = await Promise.all([
       supabase.rpc('get_my_friend_code'),
       supabase.rpc('get_leaderboard', { p_date: today }),
       supabase.rpc('get_friend_requests'),
       supabase.rpc('get_league_social'),
+      supabase.rpc('get_unread_league_count'),
     ])
     setCode(codeRes.data ?? null)
     setRows(boardRes.data ?? [])
     setRequests(reqRes.data ?? { incoming: [], outgoing: [] })
     setSocial(Object.fromEntries((socialRes.data ?? []).map((s) => [s.target_id, s])))
+    setNotifCount(unreadRes.data ?? 0)
     setLoading(false)
   }, [today])
+
+  async function openNotifs() {
+    const next = !notifOpen
+    setNotifOpen(next)
+    if (!next) return
+    const { data } = await supabase.rpc('get_league_notifications')
+    setNotifs(Array.isArray(data) ? data : [])
+    // Panel açıldı = görüldü; rozet söner.
+    supabase.rpc('mark_league_notifications_read')
+    setNotifCount(0)
+  }
 
   useEffect(() => {
     loadAll()
@@ -182,10 +198,80 @@ function LeagueBoard() {
     <div className="mx-auto max-w-md space-y-5 px-4 py-6">
       <BackButton to="/ilerleme" label={t('İlerleme')} />
 
-      <div>
-        <div className="text-xs font-medium uppercase tracking-[0.14em] text-text-muted">{t('REKABET')}</div>
-        <h1 className="mt-1 text-[26px] font-semibold tracking-tight text-text">{t('Arkadaş Ligi 🏆')}</h1>
+      <div className="flex items-end justify-between gap-3">
+        <div>
+          <div className="text-xs font-medium uppercase tracking-[0.14em] text-text-muted">{t('REKABET')}</div>
+          <h1 className="mt-1 text-[26px] font-semibold tracking-tight text-text">{t('Arkadaş Ligi 🏆')}</h1>
+        </div>
+        {/* bildirimler — beğeni/yorum gelince rozet yanar */}
+        <button
+          type="button"
+          onClick={openNotifs}
+          aria-label={t('Bildirimler')}
+          className="btn-icon relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/[0.08] text-text-muted"
+        >
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path
+              d="M18 9.5a6 6 0 1 0-12 0c0 5-2 6-2 6h16s-2-1-2-6M13.7 19.5a2 2 0 0 1-3.4 0"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+          {notifCount > 0 && (
+            <span className="absolute -right-0.5 -top-0.5 flex h-4.5 min-w-[18px] items-center justify-center rounded-full bg-[#F26B6B] px-1 text-[10px] font-bold tabular-nums text-white">
+              {notifCount > 9 ? '9+' : notifCount}
+            </span>
+          )}
+        </button>
       </div>
+
+      <AnimatePresence initial={false}>
+        {notifOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.22 }}
+            className="overflow-hidden"
+          >
+            <div className="rounded-3xl border border-white/[0.06] bg-surface p-2">
+              {notifs === null ? (
+                <div className="p-3 text-xs text-text-muted opacity-60">…</div>
+              ) : notifs.length === 0 ? (
+                <div className="p-3 text-xs text-text-muted">{t('Henüz bildirim yok')}</div>
+              ) : (
+                notifs.map((n) => (
+                  <div
+                    key={n.id}
+                    className={`flex items-start gap-2.5 rounded-2xl px-3 py-2 ${n.unread ? 'bg-white/[0.03]' : ''}`}
+                  >
+                    <span className="mt-px text-[13px]">{n.kind === 'like' ? '❤️' : '💬'}</span>
+                    <p className="min-w-0 flex-1 text-[13px] leading-snug text-text">
+                      <span
+                        className="font-semibold"
+                        style={(() => {
+                          if (n.actor_color === 'gold') return GOLD_NAME_STYLE
+                          if (n.actor_color === 'bronze') return BRONZE_NAME_STYLE
+                          return undefined
+                        })()}
+                      >
+                        {n.actor_name ?? t('İsimsiz')}
+                      </span>{' '}
+                      {n.kind === 'like' ? t('ilerlemeni beğendi') : t('yorum yaptı:')}
+                      {n.kind === 'comment' && n.preview && (
+                        <span className="text-text-muted"> “{n.preview}”</span>
+                      )}
+                      <span className="ml-1.5 whitespace-nowrap text-[10px] text-text-muted">{timeAgo(n.created_at)}</span>
+                    </p>
+                  </div>
+                ))
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {loading ? (
         <div className="space-y-4">
