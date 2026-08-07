@@ -1151,4 +1151,12 @@ export default {
   // ---- Tarif porsiyon/malzeme ----
   '{n} porsiyon': '{n} servings',
   'malzeme: {count}': 'ingredients: {count}',
+
+  // ---- Profil fotoğrafı ----
+  'Profil fotoğrafı ekle': 'Add a profile photo',
+  'Profil fotoğrafını değiştir': 'Change profile photo',
+  'Değiştir': 'Change',
+  'Kaldır': 'Remove',
+  'Fotoğraf çok büyük (en fazla 12 MB).': 'Photo is too large (12 MB max).',
+  'Fotoğraf yüklenemedi, tekrar dene.': "Couldn't upload the photo, try again.",
 }

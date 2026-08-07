@@ -15,6 +15,7 @@ import BronzeBadge from '../components/BronzeBadge'
 import usePixelTheme from '../hooks/usePixelTheme'
 import { PixelFlame } from '../components/pixelSprites'
 import LeagueSocial, { HeartIcon, BubbleIcon, timeAgo } from '../components/LeagueSocial'
+import Avatar from '../components/Avatar'
 import { t } from '../lib/i18n'
 
 // İlk üç sıranın tonu: altın, gümüş, bronz. Gerisi nötr.
@@ -247,7 +248,12 @@ export function LeagueBoard() {
                     key={n.id}
                     className={`flex items-start gap-2.5 rounded-2xl px-3 py-2 ${n.unread ? 'bg-white/[0.03]' : ''}`}
                   >
-                    <span className="mt-px text-[13px]">{n.kind === 'like' ? '❤️' : '💬'}</span>
+                    <span className="relative mt-px shrink-0">
+                      <Avatar url={n.actor_avatar} name={n.actor_name} size={30} color={n.actor_color} />
+                      <span className="absolute -bottom-1 -right-1 text-[11px] leading-none">
+                        {n.kind === 'like' ? '❤️' : '💬'}
+                      </span>
+                    </span>
                     <p className="min-w-0 flex-1 text-[13px] leading-snug text-text">
                       <span
                         className="font-semibold"
@@ -339,8 +345,11 @@ export function LeagueBoard() {
               <span className="text-[10px] font-medium uppercase tracking-[0.14em] text-text-muted">{t('İstekler')}</span>
               {requests.incoming.map((r) => (
                 <div key={r.id} className="flex items-center justify-between gap-3">
-                  <span className="min-w-0 truncate text-sm text-text">
-                    <span className="font-semibold">{r.name ?? t('İsimsiz')}</span>{t(' seni eklemek istiyor')}
+                  <span className="flex min-w-0 items-center gap-2.5">
+                    <Avatar url={r.avatar_url} name={r.name} size={30} />
+                    <span className="min-w-0 truncate text-sm text-text">
+                      <span className="font-semibold">{r.name ?? t('İsimsiz')}</span>{t(' seni eklemek istiyor')}
+                    </span>
                   </span>
                   <span className="flex shrink-0 gap-2">
                     <button
@@ -362,8 +371,11 @@ export function LeagueBoard() {
               ))}
               {requests.outgoing.map((r) => (
                 <div key={r.id} className="flex items-center justify-between gap-3">
-                  <span className="min-w-0 truncate text-sm text-text-muted">
-                    <span className="font-semibold text-text">{r.name ?? t('İsimsiz')}</span>{t(' — istek bekliyor ⏳')}
+                  <span className="flex min-w-0 items-center gap-2.5">
+                    <Avatar url={r.avatar_url} name={r.name} size={30} />
+                    <span className="min-w-0 truncate text-sm text-text-muted">
+                      <span className="font-semibold text-text">{r.name ?? t('İsimsiz')}</span>{t(' — istek bekliyor ⏳')}
+                    </span>
                   </span>
                   <button
                     type="button"
@@ -406,6 +418,12 @@ export function LeagueBoard() {
                         className="btn-chip flex w-full items-center gap-3 p-4 text-left"
                       >
                         <RankChip index={i} />
+                        <Avatar
+                          url={isMe ? (profile?.avatar_url ?? row.avatar_url) : row.avatar_url}
+                          name={row.name}
+                          size={38}
+                          color={isMe ? profile?.preferences?.nameColor : row.name_color}
+                        />
 
                         <span className="min-w-0 flex-1">
                           <span className="flex items-center gap-2">
@@ -430,7 +448,8 @@ export function LeagueBoard() {
                             )}
                           </span>
 
-                          <span className="mt-1 flex items-center gap-1.5 text-xs text-text-muted">
+                          {/* rozet sayısı kişiden kişiye değişir: sığmayınca taşmak yerine alta sarsın */}
+                          <span className="mt-1 flex min-w-0 flex-wrap items-center gap-x-1.5 gap-y-1 text-xs text-text-muted">
                             {flame}
                             <span className="font-semibold tabular-nums text-text">{row.current_streak ?? 0}</span>
                             <span>{t('gün')}</span>

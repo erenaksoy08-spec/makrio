@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import { supabase } from '../lib/supabase'
 import { GOLD_NAME_STYLE, BRONZE_NAME_STYLE } from '../lib/store'
 import { t, getIntlLocale } from '../lib/i18n'
+import Avatar from './Avatar'
 
 // Lig satırının sosyal bloğu: kalp + kompakt yorum akışı (IG yorum düzeni).
 // Sayaçlar üstte (get_league_social) yaşar; akış her açılışta taze çekilir.
@@ -159,12 +160,13 @@ export default function LeagueSocial({ targetId, isMe, summary, onSummary }) {
         ) : (
           comments.map((c) => (
             <div key={c.id} className="group flex items-start gap-2">
-              <span
-                className="mt-px flex h-[22px] w-[22px] shrink-0 items-center justify-center rounded-full bg-white/[0.07] text-[10px] font-bold uppercase text-text-muted"
-                aria-hidden="true"
-              >
-                {(c.author_name ?? '?').trim().charAt(0) || '?'}
-              </span>
+              <Avatar
+                url={c.author_avatar}
+                name={c.author_name}
+                size={22}
+                color={c.author_color}
+                className="mt-px"
+              />
               <p className="min-w-0 flex-1 text-[13px] leading-snug text-text">
                 <span className="font-semibold" style={nameStyle(c.author_color)}>
                   {c.author_name ?? t('İsimsiz')}

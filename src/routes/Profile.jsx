@@ -5,6 +5,7 @@ import { useAuth } from '../contexts/AuthContext'
 import { supabase } from '../lib/supabase'
 import { purchasesAvailable } from '../lib/purchases'
 import Paywall from '../components/Paywall'
+import AvatarPicker from '../components/AvatarPicker'
 import GoldPricing from '../components/GoldPricing'
 import { t } from '../lib/i18n'
 
@@ -113,7 +114,6 @@ export default function Profile() {
   const streak = profile?.current_streak ?? 0
   const longest = profile?.longest_streak ?? 0
   const isGold = ['gold', 'active'].includes(profile?.subscription_status)
-  const initial = (profile?.name || user.email || '?').trim().charAt(0).toUpperCase()
 
   // Kilo, onboarding'de kalan değer yerine son tartı kaydını gösterir.
   const [latestWeight, setLatestWeight] = useState(null)
@@ -132,10 +132,8 @@ export default function Profile() {
       <h1 className="text-2xl font-semibold text-text">{t('Profil')}</h1>
 
       {/* account */}
-      <div className="flex items-center gap-3 rounded-2xl border border-white/5 bg-surface p-4">
-        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-accent/15 text-lg font-bold text-accent">
-          {initial}
-        </div>
+      <div className="flex items-center gap-3.5 rounded-2xl border border-white/5 bg-surface p-4">
+        <AvatarPicker size={56} />
         <div className="min-w-0">
           {profile?.name && <div className="truncate font-medium text-text">{profile.name}</div>}
           <div className="truncate text-sm text-text-muted">{user.email}</div>
