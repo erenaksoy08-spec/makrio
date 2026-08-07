@@ -14,6 +14,7 @@ import { Skeleton } from '../components/SkeletonLoader'
 import BronzeBadge from '../components/BronzeBadge'
 import usePixelTheme from '../hooks/usePixelTheme'
 import { PixelFlame } from '../components/pixelSprites'
+import LeagueSocial, { HeartIcon, BubbleIcon } from '../components/LeagueSocial'
 import { t } from '../lib/i18n'
 
 // İlk üç sıranın tonu: altın, gümüş, bronz. Gerisi nötr.
@@ -81,16 +82,19 @@ function LeagueBoard() {
   const [sending, setSending] = useState(false)
   const [notice, setNotice] = useState(null) // { tone: 'ok' | 'err', text }
   const [expanded, setExpanded] = useState(null)
+  const [social, setSocial] = useState({}) // {id: {like_count, liked_by_me, comment_count}}
 
   const loadAll = useCallback(async () => {
-    const [codeRes, boardRes, reqRes] = await Promise.all([
+    const [codeRes, boardRes, reqRes, socialRes] = await Promise.all([
       supabase.rpc('get_my_friend_code'),
       supabase.rpc('get_leaderboard', { p_date: today }),
       supabase.rpc('get_friend_requests'),
+      supabase.rpc('get_league_social'),
     ])
     setCode(codeRes.data ?? null)
     setRows(boardRes.data ?? [])
     setRequests(reqRes.data ?? { incoming: [], outgoing: [] })
+    setSocial(Object.fromEntries((socialRes.data ?? []).map((s) => [s.target_id, s])))
     setLoading(false)
   }, [today])
 
@@ -304,6 +308,7 @@ function LeagueBoard() {
                   const isMe = row.id === user?.id
                   const loggedToday = row.last_log_date === today
                   const open = expanded === row.id
+                  const soc = social[row.id] ?? { like_count: 0, liked_by_me: false, comment_count: 0 }
                   const kcalPct = row.goal_calories
                     ? Math.min(100, (row.calories / row.goal_calories) * 100)
                     : 0
@@ -354,6 +359,22 @@ function LeagueBoard() {
                                     <span key={b.id}>{b.icon}</span>
                                   ),
                                 )}
+                              </span>
+                            )}
+                            {/* sosyal özet — kalp kırmızı kalır (ben beğendiysem) */}
+                            {soc.like_count > 0 && (
+                              <span
+                                className="ml-1 inline-flex items-center gap-0.5 tabular-nums"
+                                style={soc.liked_by_me ? { color: '#F26B6B' } : undefined}
+                              >
+                                <HeartIcon filled={soc.liked_by_me} size={11} />
+                                {soc.like_count}
+                              </span>
+                            )}
+                            {soc.comment_count > 0 && (
+                              <span className="inline-flex items-center gap-0.5 tabular-nums">
+                                <BubbleIcon size={11} />
+                                {soc.comment_count}
                               </span>
                             )}
                           </span>
@@ -422,6 +443,15 @@ function LeagueBoard() {
                                   </div>
                                 </div>
                               </div>
+
+                              {/* beğeni + yorumlar — arkadaşlar birbirini gazlar 🎉 */}
+                              <LeagueSocial
+                                targetId={row.id}
+                                isMe={isMe}
+                                summary={soc}
+                                onSummary={(next) => setSocial((s) => ({ ...s, [row.id]: next }))}
+                              />
+
                               <div className="flex items-center justify-between px-1">
                                 {/* rekor seri — altın madalya rozeti */}
                                 <span

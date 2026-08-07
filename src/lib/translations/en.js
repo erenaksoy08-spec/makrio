@@ -481,6 +481,17 @@ export default {
   'puan': 'points',
   'Karb · Yağ': 'Carbs · Fat',
   'Rekor Seri': 'Record Streak',
+  // lig sosyal — beğeni + yorum
+  'Yorum yaz…': 'Write a comment…',
+  'İlk yorumu sen yaz 💬': 'Be the first to comment 💬',
+  'Yorum gönderilemedi, tekrar dene.': "Comment couldn't be sent, try again.",
+  'Yorumu sil': 'Delete comment',
+  'Beğen': 'Like',
+  'Gönder': 'Send',
+  'şimdi': 'now',
+  '{n} dk': '{n}m',
+  '{n} sa': '{n}h',
+  '{n} g': '{n}d',
   'Arkadaşlıktan çıkar': 'Remove friend',
 
   // ---- Vitrin / Mağaza ----
