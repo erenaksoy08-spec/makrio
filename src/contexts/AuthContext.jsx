@@ -1,7 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
 import { initPurchases, hasGoldEntitlement, purchasesAvailable } from '../lib/purchases'
-import { setLocale } from '../lib/i18n'
+import { setLocale, getLocale } from '../lib/i18n'
 
 const AuthContext = createContext(null)
 
@@ -23,6 +23,13 @@ export function AuthProvider({ children }) {
       // Başka cihazda seçilmiş dil bu cihaza taşınsın; ilk yüklemede
       // sözlük değişti diye tüm ekranı tazelemek için reload gerekir.
       if (data.preferences?.language && setLocale(data.preferences.language)) window.location.reload()
+      // Profilde dil yoksa (giriş ekranında seçilmiş olabilir) cihazdakini yukarı taşı:
+      // push metinleri sunucuda bu alana bakarak diline göre kuruluyor.
+      if (!data.preferences?.language) {
+        supabase.rpc('update_preferences', {
+          p_preferences: { ...(data.preferences ?? {}), language: getLocale() },
+        })
+      }
       setProfile(data)
     } else if (!error || error.code === 'PGRST116') {
       // Satır gerçekten yok (yeni kullanıcı) — onboarding'e gitmesi doğru.
